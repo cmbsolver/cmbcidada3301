@@ -1,12 +1,9 @@
 ﻿using LiberPrimusAnalysisTool.Application.Commands.Directory;
 using LiberPrimusAnalysisTool.Application.Queries;
-using LiberPrimusAnalysisTool.Application.Queries.Page;
 using LiberPrimusAnalysisTool.Application.Queries.Selection;
-using LiberPrimusAnalysisTool.Entity;
 using LiberPrimusAnalysisTool.Utility.Character;
 using MediatR;
 using Spectre.Console;
-using System.Drawing;
 
 namespace LiberPrimusAnalysisTool.Application.Commands.Image
 {

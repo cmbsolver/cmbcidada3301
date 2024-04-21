@@ -67,7 +67,7 @@ namespace LiberPrimusAnalysisTool.Application.Commands.TextUtilies
                     switch (choice.Trim())
                     {
                         case "1":
-                            await _mediator.Publish(new GetWordFromInts.Command());
+                            //await _mediator.Publish(new GetWordFromInts.Command());
                             break;
 
                         case "99":

@@ -9,11 +9,13 @@
 - Put together something to encrypt and embed and image.
 - Put in something to possibly detect which kind of encryption.
 - Finish out the sequences.
+- Add something to bulk rotate the images.  The DCT math will change if we do that as the square quantization changes.
 
 ## Add Stuff
-- Shedding circumference algo / w LSB (see above)
+- Shedding circumference algo / w LSB
 - Vigenere cracker
 - Cesar cracker
 - Atbash cracker
 - Feistel cracker
 - Hill cracker
+- Huffman decoder

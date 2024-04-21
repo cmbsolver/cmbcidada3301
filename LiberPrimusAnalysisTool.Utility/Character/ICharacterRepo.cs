@@ -34,26 +34,6 @@
         string GetASCIICharFromDec(int dec, bool includeControlCharacters);
 
         /// <summary>
-        /// Gets the character from gematria value.
-        /// </summary>
-        /// <param name="value">The value.</param>
-        /// <returns></returns>
-        string GetCharacterFromGematriaValue(int value);
-
-        /// <summary>
-        /// Gets the value from string.
-        /// </summary>
-        /// <param name="value">The value.</param>
-        /// <returns></returns>
-        int GetValueFromString(string value);
-
-        /// <summary>
-        /// Gets the gematria strings.
-        /// </summary>
-        /// <returns></returns>
-        string[] GetGematriaStrings();
-
-        /// <summary>
         /// Gets the gematria strings Cicada Solver Style.
         /// </summary>
         /// <returns></returns>
@@ -65,6 +45,13 @@
         /// <param name="value">The value.</param>
         /// <returns></returns>
         string GetCharFromRune(string value);
+
+        /// <summary>
+        /// Gets the rune from value.
+        /// </summary>
+        /// <param name="value">The value.</param>
+        /// <returns></returns>
+        string GetRuneFromValue(int value);
 
         /// <summary>
         /// Gets the permutations.

@@ -183,7 +183,7 @@ namespace LiberPrimusAnalysisTool.Application.Commands.Image.ByteProcessing
                             case 9:
                                 try
                                 {
-                                    file.Write(_characterRepo.GetCharacterFromGematriaValue(Convert.ToInt32(charBin, 2)));
+                                    file.Write(_characterRepo.GetRuneFromValue(Convert.ToInt32(charBin, 2)));
                                 }
                                 catch (Exception e)
                                 {

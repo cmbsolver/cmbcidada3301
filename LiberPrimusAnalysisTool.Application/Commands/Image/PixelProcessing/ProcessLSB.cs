@@ -267,7 +267,7 @@ namespace LiberPrimusAnalysisTool.Application.Commands.Image.PixelProcessing
                             case 9:
                                 try
                                 {
-                                    file.Write(_characterRepo.GetCharacterFromGematriaValue(Convert.ToInt32(charBin, 2)));
+                                    file.Write(_characterRepo.GetRuneFromValue(Convert.ToInt32(charBin, 2)));
                                 }
                                 catch (Exception e)
                                 {

@@ -1,11 +1,9 @@
 ﻿using LiberPrimusAnalysisTool.Application.Commands.Directory;
 using LiberPrimusAnalysisTool.Application.Queries;
 using LiberPrimusAnalysisTool.Application.Queries.Selection;
-using LiberPrimusAnalysisTool.Entity;
 using LiberPrimusAnalysisTool.Utility.Character;
 using MediatR;
 using Spectre.Console;
-using System.Drawing;
 
 namespace LiberPrimusAnalysisTool.Application.Commands.Image
 {
@@ -69,7 +67,7 @@ namespace LiberPrimusAnalysisTool.Application.Commands.Image
                     var fileInfo = new FileInfo(ifile);
                     var file = await _mediator.Send(new GetPageData.Query(ifile, true, invertPixels));
                     AnsiConsole.WriteLine($"Processing {file}");
-                    
+
                     string currentColor = string.Empty;
                     int currentColorCount = 0;
                     List<byte> bytes = new List<byte>();

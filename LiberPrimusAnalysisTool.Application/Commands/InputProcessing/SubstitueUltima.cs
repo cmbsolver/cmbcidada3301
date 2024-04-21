@@ -70,7 +70,7 @@ namespace LiberPrimusAnalysisTool.Application.Commands.InputProcessing
                     FileInfo fileInfo = new FileInfo(file);
                     var flines = File.ReadAllLines(file);
 
-                    filesContents.Add(new Tuple<string, string[]>($"{fileInfo.Name}", flines));                    
+                    filesContents.Add(new Tuple<string, string[]>($"{fileInfo.Name}", flines));
                 }
 
                 AnsiConsole.Status()
@@ -123,7 +123,7 @@ namespace LiberPrimusAnalysisTool.Application.Commands.InputProcessing
                                 for (int i = 0; i < file.Item2.Length; i++)
                                 {
                                     StringBuilder tmpLine = new StringBuilder();
-                                    
+
                                     for (int j = 0; j < file.Item2[i].Length; j++)
                                     {
                                         var transcription = transcriptions.FirstOrDefault(x => x.Item1 == file.Item2[i][j].ToString());

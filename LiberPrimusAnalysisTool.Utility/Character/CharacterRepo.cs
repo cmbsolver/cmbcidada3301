@@ -486,289 +486,6 @@ namespace LiberPrimusAnalysisTool.Utility.Character
         }
 
         /// <summary>
-        /// Gets the character from gematria value.
-        /// </summary>
-        /// <param name="value">The value.</param>
-        /// <returns></returns>
-        public string GetCharacterFromGematriaValue(int value)
-        {
-            string retval;
-            switch (value)
-            {
-                case 2:
-                    retval = "F";
-                    break;
-
-                case 3:
-                    retval = "U";
-                    break;
-
-                case 5:
-                    retval = "TH";
-                    break;
-
-                case 7:
-                    retval = "O";
-                    break;
-
-                case 11:
-                    retval = "R";
-                    break;
-
-                case 13:
-                    retval = "K";
-                    break;
-
-                case 17:
-                    retval = "G";
-                    break;
-
-                case 19:
-                    retval = "W";
-                    break;
-
-                case 23:
-                    retval = "H";
-                    break;
-
-                case 29:
-                    retval = "N";
-                    break;
-
-                case 31:
-                    retval = "I";
-                    break;
-
-                case 37:
-                    retval = "J";
-                    break;
-
-                case 41:
-                    retval = "EO";
-                    break;
-
-                case 43:
-                    retval = "P";
-                    break;
-
-                case 47:
-                    retval = "X";
-                    break;
-
-                case 53:
-                    retval = "Z";
-                    break;
-
-                case 59:
-                    retval = "T";
-                    break;
-
-                case 61:
-                    retval = "B";
-                    break;
-
-                case 67:
-                    retval = "E";
-                    break;
-
-                case 71:
-                    retval = "M";
-                    break;
-
-                case 73:
-                    retval = "L";
-                    break;
-
-                case 79:
-                    retval = "NG";
-                    break;
-
-                case 83:
-                    retval = "OE";
-                    break;
-
-                case 89:
-                    retval = "D";
-                    break;
-
-                case 97:
-                    retval = "A";
-                    break;
-
-                case 101:
-                    retval = "AE";
-                    break;
-
-                case 103:
-                    retval = "Y";
-                    break;
-
-                case 107:
-                    retval = "IA";
-                    break;
-
-                case 109:
-                    retval = "EA";
-                    break;
-
-                default:
-                    retval = string.Empty;
-                    break;
-            }
-
-            return retval;
-        }
-
-        /// <summary>
-        /// Gets the value from string.
-        /// </summary>
-        /// <param name="value">The value.</param>
-        /// <returns></returns>
-        public int GetValueFromString(string value)
-        {
-            int retval;
-            switch (value)
-            {
-                case "F":
-                    retval = 2;
-                    break;
-
-                case "V":
-                case "U":
-                    retval = 3;
-                    break;
-
-                case "TH":
-                    retval = 5;
-                    break;
-
-                case "O":
-                    retval = 7;
-                    break;
-
-                case "R":
-                    retval = 11;
-                    break;
-
-                case "C":
-                case "K":
-                case "Q":
-                    retval = 13;
-                    break;
-
-                case "G":
-                    retval = 17;
-                    break;
-
-                case "W":
-                    retval = 19;
-                    break;
-
-                case "H":
-                    retval = 23;
-                    break;
-
-                case "N":
-                    retval = 29;
-                    break;
-
-                case "I":
-                    retval = 31;
-                    break;
-
-                case "J":
-                    retval = 37;
-                    break;
-
-                case "EO":
-                    retval = 41;
-                    break;
-
-                case "P":
-                    retval = 43;
-                    break;
-
-                case "X":
-                    retval = 47;
-                    break;
-
-                case "S":
-                case "Z":
-                    retval = 53;
-                    break;
-
-                case "T":
-                    retval = 59;
-                    break;
-
-                case "B":
-                    retval = 61;
-                    break;
-
-                case "E":
-                    retval = 67;
-                    break;
-
-                case "M":
-                    retval = 71;
-                    break;
-
-                case "L":
-                    retval = 73;
-                    break;
-
-                case "ING":
-                case "NG":
-                    retval = 79;
-                    break;
-
-                case "OE":
-                    retval = 83;
-                    break;
-
-                case "D":
-                    retval = 89;
-                    break;
-
-                case "A":
-                    retval = 97;
-                    break;
-
-                case "AE":
-                    retval = 101;
-                    break;
-
-                case "Y":
-                    retval = 103;
-                    break;
-
-                case "IO":
-                case "IA":
-                    retval = 107;
-                    break;
-
-                case "EA":
-                    retval = 109;
-                    break;
-
-                default:
-                    retval = -1;
-                    break;
-            }
-
-            return retval;
-        }
-
-        /// <summary>
-        /// Gets the gematria strings.
-        /// </summary>
-        /// <returns></returns>
-        public string[] GetGematriaStrings()
-        {
-            return new string[] { "ING", "NG", "OE", "EO", "IO", "IA", "EA", "AE", "F", "V", "U", "O", "R", "C", "K", "G", "W", "H", "N", "I", "J", "P", "X", "S", "Z", "T", "B", "E", "M", "L", "D", "A", "Y", "Q" };
-        }
-
-        /// <summary>
         /// Gets the gematria strings Cicada Solver Style.
         /// </summary>
         /// <returns></returns>
@@ -818,65 +535,258 @@ namespace LiberPrimusAnalysisTool.Utility.Character
             switch (value)
             {
                 case "ᛝ":
-                    retval = "ING"; break;
+                    retval = "ING";
+                    break;
+
                 case "ᛟ":
-                    retval = "OE"; break;
+                    retval = "OE";
+                    break;
+
                 case "ᛇ":
-                    retval = "EO"; break;
+                    retval = "EO";
+                    break;
+
                 case "ᛡ":
-                    retval = "IO"; break;
+                    retval = "IO";
+                    break;
+
                 case "ᛠ":
-                    retval = "EA"; break;
+                    retval = "EA";
+                    break;
+
                 case "ᚫ":
-                    retval = "AE"; break;
+                    retval = "AE";
+                    break;
+
                 case "ᚦ":
-                    retval = "TH"; break;
+                    retval = "TH";
+                    break;
+
                 case "ᚠ":
-                    retval = "F"; break;
+                    retval = "F";
+                    break;
+
                 case "ᚢ":
-                    retval = "U"; break;
+                    retval = "U";
+                    break;
+
                 case "ᚩ":
-                    retval = "O"; break;
+                    retval = "O";
+                    break;
+
                 case "ᚱ":
-                    retval = "R"; break;
+                    retval = "R";
+                    break;
+
                 case "ᚳ":
-                    retval = "C"; break;
+                    retval = "C";
+                    break;
+
                 case "ᚷ":
-                    retval = "G"; break;
+                    retval = "G";
+                    break;
+
                 case "ᚹ":
-                    retval = "W"; break;
+                    retval = "W";
+                    break;
+
                 case "ᚻ":
-                    retval = "H"; break;
+                    retval = "H";
+                    break;
+
                 case "ᚾ":
-                    retval = "N"; break;
+                    retval = "N";
+                    break;
+
                 case "ᛁ":
-                    retval = "I"; break;
+                    retval = "I";
+                    break;
+
                 case "ᛄ":
-                    retval = "J"; break;
+                    retval = "J";
+                    break;
+
                 case "ᛈ":
-                    retval = "P"; break;
+                    retval = "P";
+                    break;
+
                 case "ᛉ":
-                    retval = "X"; break;
+                    retval = "X";
+                    break;
+
                 case "ᛋ":
-                    retval = "S"; break;
+                    retval = "S";
+                    break;
+
                 case "ᛏ":
-                    retval = "T"; break;
+                    retval = "T";
+                    break;
+
                 case "ᛒ":
-                    retval = "B"; break;
+                    retval = "B";
+                    break;
+
                 case "ᛖ":
-                    retval = "E"; break;
+                    retval = "E";
+                    break;
+
                 case "ᛗ":
-                    retval = "M"; break;
+                    retval = "M";
+                    break;
+
                 case "ᛚ":
-                    retval = "L"; break;
+                    retval = "L";
+                    break;
+
                 case "ᛞ":
-                    retval = "D"; break;
+                    retval = "D";
+                    break;
+
                 case "ᚪ":
-                    retval = "A"; break;
+                    retval = "A";
+                    break;
+
                 case "ᚣ":
-                    retval = "Y"; break;
+                    retval = "Y";
+                    break;
+
                 default:
-                    retval = " "; break;
+                    retval = " ";
+                    break;
+            }
+
+            return retval;
+        }
+
+        /// <summary>
+        /// Gets the rune from value.
+        /// </summary>
+        /// <param name="value">The value.</param>
+        /// <returns></returns>
+        public string GetRuneFromValue(int value)
+        {
+            string retval;
+            switch (value)
+            {
+                case 2:
+                    retval = "ᚠ";
+                    break;
+
+                case 3:
+                    retval = "ᚢ";
+                    break;
+
+                case 5:
+                    retval = "ᚦ";
+                    break;
+
+                case 7:
+                    retval = "ᚩ";
+                    break;
+
+                case 11:
+                    retval = "ᚱ";
+                    break;
+
+                case 13:
+                    retval = "ᚳ";
+                    break;
+
+                case 17:
+                    retval = "ᚷ";
+                    break;
+
+                case 19:
+                    retval = "ᚹ";
+                    break;
+
+                case 23:
+                    retval = "ᚻ";
+                    break;
+
+                case 29:
+                    retval = "ᚾ";
+                    break;
+
+                case 31:
+                    retval = "ᛁ";
+                    break;
+
+                case 37:
+                    retval = "ᛄ";
+                    break;
+
+                case 41:
+                    retval = "ᛇ";
+                    break;
+
+                case 43:
+                    retval = "ᛈ";
+                    break;
+
+                case 47:
+                    retval = "ᛉ";
+                    break;
+
+                case 53:
+                    retval = "ᛋ";
+                    break;
+
+                case 59:
+                    retval = "ᛏ";
+                    break;
+
+                case 61:
+                    retval = "ᛒ";
+                    break;
+
+                case 67:
+                    retval = "ᛖ";
+                    break;
+
+                case 71:
+                    retval = "ᛗ";
+                    break;
+
+                case 73:
+                    retval = "ᛚ";
+                    break;
+
+                case 79:
+                    retval = "ᛝ";
+                    break;
+
+                case 83:
+                    retval = "ᛟ";
+                    break;
+
+                case 89:
+                    retval = "ᛞ";
+                    break;
+
+                case 97:
+                    retval = "ᚪ";
+                    break;
+
+                case 101:
+                    retval = "ᚫ";
+                    break;
+
+                case 103:
+                    retval = "ᚣ";
+                    break;
+
+                case 107:
+                    retval = "ᛡ";
+                    break;
+
+                case 109:
+                    retval = "ᛠ";
+                    break;
+
+                default:
+                    retval = string.Empty;
+                    break;
             }
 
             return retval;
