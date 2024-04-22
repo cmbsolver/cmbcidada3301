@@ -73,7 +73,7 @@ namespace LiberPrimusAnalysisTool.Application.Commands.InputProcessing
                             {
                                 if (isGpStrict)
                                 {
-                                    englishDictionary.Add(line.ToUpper().Replace("QU", "KW").Replace("Q", "K").Replace("V", "U"));
+                                    englishDictionary.Add(line.ToUpper().Replace("QU", "CW").Replace("Q", "C").Replace("K", "C").Replace("V", "U").Replace("Z", "S"));
                                 }
                                 else
                                 {
