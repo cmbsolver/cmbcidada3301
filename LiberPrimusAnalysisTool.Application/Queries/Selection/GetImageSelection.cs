@@ -87,7 +87,7 @@ namespace LiberPrimusAnalysisTool.Application.Queries.Selection
                     retval.Add(f);
                 });
 
-                return retval;
+                return retval.OrderBy(x => x).ToList();
             }
         }
     }
