@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net8.0</TargetFrameworks>
+    <TargetFramework>net8.0</TargetFramework>
     <Description>netstandard library for detecting file types by 'magic numbers', similar to the `file` command in Linux/Unix. Useful for validating file uploads instead of trusting file extensions.</Description>
     <Copyright>2022 @ ghost1face, BeyondTechIO</Copyright>
     <PackageProjectUrl>https://github.com/ghost1face/FileTypeInterrogator</PackageProjectUrl>
