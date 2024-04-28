@@ -104,7 +104,11 @@ namespace LiberPrimusAnalysisTool.Application.Commands.InputProcessing
                         ctx.Status("Processing");
                         ctx.Refresh();
 
+                        DateTime startTime = DateTime.Now;
                         long counter = 0;
+                        double average = 0;
+                        TimeSpan elapsed = new TimeSpan();
+                        
                         foreach (var permutation in _characterRepo.GetPermutations(permuteRunes))
                         {
                             counter++;
@@ -112,8 +116,15 @@ namespace LiberPrimusAnalysisTool.Application.Commands.InputProcessing
                             {
                                 AnsiConsole.WriteLine($"Processed {counter} - {DateTime.Now}");
                                 counter = 0;
+                                startTime = DateTime.Now;
                             }
-
+                            
+                            elapsed = DateTime.Now - startTime;
+                            average = counter / elapsed.TotalSeconds;
+                            
+                            ctx.Status($"Average permutations per second: {average.ToString("N2")}");
+                            ctx.Refresh();
+                            
                             List<Tuple<string, string>> transcriptions = new List<Tuple<string, string>>();
 
                             for (int i = 0; i < permutation.Length; i++)
