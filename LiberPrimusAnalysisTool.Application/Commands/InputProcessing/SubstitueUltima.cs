@@ -103,7 +103,7 @@ namespace LiberPrimusAnalysisTool.Application.Commands.InputProcessing
                         ctx.Status("Processing");
                         ctx.Refresh();
 
-                        foreach (var permutation in _characterRepo.GetPermutations(runes.ToArray()))
+                        foreach (var permutation in _characterRepo.GetPermutations(runes.Reverse().ToArray()))
                         {
                             var permString = string.Join(",", permutation.Select(x => _characterRepo.GetCharFromRune(x)));
                             ctx.Status($"Processing: {permString}");
