@@ -11,7 +11,7 @@ namespace LiberPrimusAnalysisTool.Utility.Character
         /// <summary>
         /// The ASCII ANSI items
         /// </summary>
-        private readonly List<Tuple<string, string, int, string>> _asciiAnsiItems;
+        private readonly HashSet<Tuple<string, string, int, string>> _asciiAnsiItems;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CharacterRepo"/> class.
@@ -20,7 +20,7 @@ namespace LiberPrimusAnalysisTool.Utility.Character
         {
             #region ANSI
 
-            _asciiAnsiItems = new List<Tuple<string, string, int, string>>();
+            _asciiAnsiItems = new HashSet<Tuple<string, string, int, string>>();
             _asciiAnsiItems.Add(new Tuple<string, string, int, string>("ASCII", "<NUL>", 0, "0000000"));
             _asciiAnsiItems.Add(new Tuple<string, string, int, string>("ASCII", "<SOH>", 1, "0000001"));
             _asciiAnsiItems.Add(new Tuple<string, string, int, string>("ASCII", "<STX>", 2, "0000010"));
@@ -478,7 +478,7 @@ namespace LiberPrimusAnalysisTool.Utility.Character
         public string GetASCIICharFromDec(int dec, bool includeControlCharacters)
         {
             var value = _asciiAnsiItems.Where(x => x.Item3 == dec && x.Item1 == "ASCII").Select(x => x.Item2).FirstOrDefault();
-            if (value != null && value.StartsWith("<") && value.EndsWith(">") && !includeControlCharacters)
+            if (value != null && value.StartsWith('<') && value.EndsWith('>') && !includeControlCharacters)
             {
                 return string.Empty;
             }

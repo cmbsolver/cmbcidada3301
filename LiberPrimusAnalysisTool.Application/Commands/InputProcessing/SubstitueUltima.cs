@@ -52,7 +52,7 @@ namespace LiberPrimusAnalysisTool.Application.Commands.InputProcessing
             /// <param name="cancellationToken">The cancellation token.</param>
             public async Task Handle(Command request, CancellationToken cancellationToken)
             {
-                List<string> englishDictionary = new List<string>();
+                HashSet<string> englishDictionary = new HashSet<string>();
 
                 var isGpStrict = AnsiConsole.Confirm("Use GP spellings?", true);
 
@@ -61,7 +61,7 @@ namespace LiberPrimusAnalysisTool.Application.Commands.InputProcessing
                 string[] runes = _characterRepo.GetGematriaRunes();
                 string[] permuteRunes = _characterRepo.GetGematriaRunes().Reverse().ToArray();
 
-                List<Tuple<string, string[]>> filesContents = new List<Tuple<string, string[]>>();
+                HashSet<Tuple<string, string[]>> filesContents = new HashSet<Tuple<string, string[]>>();
 
                 Dictionary<string, double> fileLeader = new Dictionary<string, double>();
                 Dictionary<string, string[]> fileContents = new Dictionary<string, string[]>();
