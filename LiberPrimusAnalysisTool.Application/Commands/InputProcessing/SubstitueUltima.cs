@@ -59,6 +59,7 @@ namespace LiberPrimusAnalysisTool.Application.Commands.InputProcessing
                 var allFiles = await _mediator.Send(new GetTextSelection.Query());
 
                 string[] runes = _characterRepo.GetGematriaRunes();
+                string[] permuteRunes = _characterRepo.GetGematriaRunes().Reverse().ToArray();
 
                 List<Tuple<string, string[]>> filesContents = new List<Tuple<string, string[]>>();
 
@@ -103,11 +104,15 @@ namespace LiberPrimusAnalysisTool.Application.Commands.InputProcessing
                         ctx.Status("Processing");
                         ctx.Refresh();
 
-                        foreach (var permutation in _characterRepo.GetPermutations(runes.Reverse().ToArray()))
+                        long counter = 0;
+                        foreach (var permutation in _characterRepo.GetPermutations(permuteRunes))
                         {
-                            var permString = string.Join(",", permutation.Select(x => _characterRepo.GetCharFromRune(x)));
-                            ctx.Status($"Processing: {permString}");
-                            ctx.Refresh();
+                            counter++;
+                            if (counter == long.MaxValue - 1)
+                            {
+                                AnsiConsole.WriteLine($"Processed {counter} - {DateTime.Now}");
+                                counter = 0;
+                            }
 
                             List<Tuple<string, string>> transcriptions = new List<Tuple<string, string>>();
 
