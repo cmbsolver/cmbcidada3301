@@ -120,7 +120,7 @@ namespace LiberPrimusAnalysisTool.Application.Commands.InputProcessing
                         foreach (var permutation in _characterRepo.GetPermutations(permuteRunes))
                         {
                             counterWrite++;
-                            if (counterWrite >= int.MaxValue)
+                            if (counterWrite >= (long.MaxValue - 1))
                             {
                                 counterWrite = 0;
                                 runNumber++;
