@@ -104,107 +104,127 @@ namespace LiberPrimusAnalysisTool.Application.Commands.InputProcessing
                         ctx.Status("Processing");
                         ctx.Refresh();
 
-                        DateTime startTime = DateTime.Now;
-                        long counter = 0;
-                        double average = 0;
-                        TimeSpan elapsed = new TimeSpan();
+                        long counterWrite = 0;
+                        long runNumber = 0;
+                        long lastRunNumber = 0;
+                        long lastWrite = 0;
+                        
+                        if (File.Exists("lastrun.txt"))
+                        {
+                            string lastRun = File.ReadAllText("lastrun.txt");
+                            string[] lastRunSplit = lastRun.Split(":");
+                            lastRunNumber = long.Parse(lastRunSplit[0]);
+                            lastWrite = long.Parse(lastRunSplit[1]);
+                        }
                         
                         foreach (var permutation in _characterRepo.GetPermutations(permuteRunes))
                         {
-                            counter++;
-                            if (counter == long.MaxValue - 1)
+                            counterWrite++;
+                            if (counterWrite >= int.MaxValue)
                             {
-                                AnsiConsole.WriteLine($"Processed {counter} - {DateTime.Now}");
-                                counter = 0;
-                                startTime = DateTime.Now;
+                                counterWrite = 0;
+                                runNumber++;
+                                File.WriteAllText("lastrun.txt", $"{runNumber}:{counterWrite}");
                             }
-                            
-                            elapsed = DateTime.Now - startTime;
-                            average = counter / elapsed.TotalSeconds;
-                            
-                            ctx.Status($"Average permutations per second: {average.ToString("N2")}");
-                            ctx.Refresh();
-                            
-                            List<Tuple<string, string>> transcriptions = new List<Tuple<string, string>>();
-
-                            for (int i = 0; i < permutation.Length; i++)
+                            else if (counterWrite % 1000000 == 0)
                             {
-                                transcriptions.Add(new Tuple<string, string>(runes[i], permutation[i]));
+                                File.WriteAllText("lastrun.txt", $"{runNumber}:{counterWrite}");
                             }
 
-                            Parallel.ForEach(filesContents, file =>
+                            if (runNumber >= lastRunNumber && counterWrite >= lastWrite)
                             {
-                                List<string> tlines = new List<string>();
+                                List<Tuple<string, string>> transcriptions = new List<Tuple<string, string>>();
 
-                                for (int i = 0; i < file.Item2.Length; i++)
+                                for (int i = 0; i < permutation.Length; i++)
                                 {
-                                    StringBuilder tmpLine = new StringBuilder();
+                                    transcriptions.Add(new Tuple<string, string>(runes[i], permutation[i]));
+                                }
 
-                                    for (int j = 0; j < file.Item2[i].Length; j++)
+                                Parallel.ForEach(filesContents, file =>
+                                {
+                                    List<string> tlines = new List<string>();
+
+                                    for (int i = 0; i < file.Item2.Length; i++)
                                     {
-                                        var transcription = transcriptions.FirstOrDefault(x => x.Item1 == file.Item2[i][j].ToString());
+                                        StringBuilder tmpLine = new StringBuilder();
 
-                                        if (transcription != null)
+                                        for (int j = 0; j < file.Item2[i].Length; j++)
                                         {
-                                            tmpLine.Append(_characterRepo.GetCharFromRune(transcription.Item2));
+                                            var transcription = transcriptions.FirstOrDefault(x =>
+                                                x.Item1 == file.Item2[i][j].ToString());
+
+                                            if (transcription != null)
+                                            {
+                                                tmpLine.Append(_characterRepo.GetCharFromRune(transcription.Item2));
+                                            }
+                                            else
+                                            {
+                                                tmpLine.Append(file.Item2[i][j]);
+                                            }
                                         }
-                                        else
+
+                                        tlines.Add(tmpLine.ToString());
+                                    }
+
+                                    int score = 0;
+                                    int wordCount = 0;
+                                    for (int i = 0; i < tlines.Count; i++)
+                                    {
+                                        if (tlines[i].Trim().Length == 0)
                                         {
-                                            tmpLine.Append(file.Item2[i][j]);
+                                            continue;
+                                        }
+
+                                        var wordList = tlines[i].Trim().Split(" ");
+                                        wordCount += wordList.Length;
+                                        foreach (var word in wordList)
+                                        {
+                                            if (englishDictionary.Contains(word))
+                                            {
+                                                score++;
+                                            }
                                         }
                                     }
 
-                                    tlines.Add(tmpLine.ToString());
-                                }
-
-                                int score = 0;
-                                int wordCount = 0;
-                                for (int i = 0; i < tlines.Count; i++)
-                                {
-                                    if (tlines[i].Trim().Length == 0)
+                                    // This is if the dictionary matches the word count.
+                                    var percentage = ((double)score / (double)wordCount) * 100;
+                                    if (score == wordCount || percentage > 90)
                                     {
-                                        continue;
-                                    }
-
-                                    var wordList = tlines[i].Trim().Split(" ");
-                                    wordCount += wordList.Length;
-                                    foreach (var word in wordList)
-                                    {
-                                        if (englishDictionary.Contains(word))
-                                        {
-                                            score++;
-                                        }
-                                    }
-                                }
-
-                                // This is if the dictionary matches the word count.
-                                var percentage = ((double)score / (double)wordCount) * 100;
-                                if (score == wordCount || percentage > 90)
-                                {
-                                    AnsiConsole.WriteLine($"File: {file.Item1} - {DateTime.Now}");
-                                    string filename = $"output/POSSIBLE-MATCH{DateTime.Now.ToBinary()}-{file.Item1}";
-                                    File.AppendAllText(filename, $"ORIGINAL: {string.Join(",", runes)}\r\n");
-                                    File.AppendAllText(filename, $"REPLACE : {string.Join(",", permutation)}\r\n");
-                                    File.AppendAllLines(filename, tlines);
-                                }
-                                else
-                                {
-                                    if (fileLeader.ContainsKey(file.Item1))
-                                    {
-                                        if (percentage > fileLeader[file.Item1])
-                                        {
-                                            AnsiConsole.WriteLine($"File: {file.Item1} - Highest Percentage: {percentage}");
-                                            fileLeader[file.Item1] = percentage;
-                                            fileContents[file.Item1] = tlines.ToArray();
-                                        }
+                                        AnsiConsole.WriteLine($"File: {file.Item1} - {DateTime.Now}");
+                                        string filename =
+                                            $"output/POSSIBLE-MATCH{DateTime.Now.ToBinary()}-{file.Item1}";
+                                        File.AppendAllText(filename, $"PERCENTAGE: {percentage}\r\n");
+                                        File.AppendAllText(filename, $"ORIGINAL: {string.Join(",", runes)}\r\n");
+                                        File.AppendAllText(filename, $"REPLACE : {string.Join(",", permutation)}\r\n");
+                                        File.AppendAllLines(filename, tlines);
                                     }
                                     else
                                     {
-                                        fileLeader.Add(file.Item1, percentage);
-                                        fileContents.Add(file.Item1, tlines.ToArray());
+                                        if (fileLeader.ContainsKey(file.Item1))
+                                        {
+                                            if (percentage > fileLeader[file.Item1])
+                                            {
+                                                AnsiConsole.WriteLine(
+                                                    $"File: {file.Item1} - Highest Percentage: {percentage}");
+                                                fileLeader[file.Item1] = percentage;
+                                                fileContents[file.Item1] = tlines.ToArray();
+                                                
+                                                string filename =
+                                                    $"output/POSSIBLE-MATCH{DateTime.Now.ToBinary()}-{file.Item1}";
+                                                File.AppendAllText(filename, $"PERCENTAGE: {percentage}\r\n");
+                                                File.AppendAllText(filename, $"ORIGINAL: {string.Join(",", runes)}\r\n");
+                                                File.AppendAllText(filename, $"REPLACE : {string.Join(",", permutation)}\r\n");
+                                                File.AppendAllLines(filename, tlines);
+                                            }
+                                        }
+                                        else
+                                        {
+                                            fileLeader.Add(file.Item1, percentage);
+                                            fileContents.Add(file.Item1, tlines.ToArray());
+                                        }
                                     }
-                                }
-                            });
+                                });
+                            }
                         }
 
                         foreach (var file in fileContents)
