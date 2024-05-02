@@ -212,7 +212,7 @@ namespace LiberPrimusAnalysisTool.Application.Commands.InputProcessing
                     }
                     
                     var percentage = ((double)score / (double)wordCount) * 100;
-                    if (score == wordCount || percentage > highestPercentage || percentage > 80)
+                    if (percentage > highestPercentage)
                     {
                         highestPercentage = percentage;
                         AnsiConsole.WriteLine($"File: {fileName}:{lineNumber}-{percentage}");
@@ -228,6 +228,17 @@ namespace LiberPrimusAnalysisTool.Application.Commands.InputProcessing
                             string.Join(",", permutation), 
                             tmpLine.ToString(), 
                             lineNumber);
+                    }
+                    
+                    if (percentage > 80)
+                    {
+                        AnsiConsole.WriteLine($"File: {fileName}:{lineNumber}-{percentage}");
+                        string filename =
+                            $"output/BEST-POSSIBLE-MATCH-LINE-{lineNumber}-{percentage}-{fileName}";
+                        File.AppendAllText(filename, $"PERCENTAGE: {percentage}\r\n");
+                        File.AppendAllText(filename, $"ORIGINAL: {string.Join(",", runes)}\r\n");
+                        File.AppendAllText(filename, $"REPLACE : {string.Join(",", permutation)}\r\n");
+                        File.AppendAllText(filename, tmpLine.ToString());
                     }
                 }
 
