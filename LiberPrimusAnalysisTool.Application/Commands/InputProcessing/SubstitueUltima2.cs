@@ -228,6 +228,11 @@ namespace LiberPrimusAnalysisTool.Application.Commands.InputProcessing
                             string.Join(",", permutation), 
                             tmpLine.ToString(), 
                             lineNumber);
+
+                        if (percentage >= 100)
+                        {
+                            break;
+                        }
                     }
                     
                     if (percentage > 80)
