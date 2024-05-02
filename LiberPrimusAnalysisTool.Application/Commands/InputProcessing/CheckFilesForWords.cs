@@ -56,7 +56,7 @@ namespace LiberPrimusAnalysisTool.Application.Commands.InputProcessing
 
                 var isGpStrict = AnsiConsole.Confirm("Use GP strict spellings?");
 
-                var allFiles = await _mediator.Send(new GetTextSelection.Query());
+                var allFiles = await _mediator.Send(new GetTextSelection.Query(false));
 
                 AnsiConsole.Status()
                     .AutoRefresh(true)

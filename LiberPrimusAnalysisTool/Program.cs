@@ -64,6 +64,7 @@ namespace LiberPrimusAnalysisTool
 
                     // Quick and dirty character
                     services.AddSingleton<ICharacterRepo, CharacterRepo>();
+                    services.AddTransient<IPermutator, Permutator>();
 
                     // The application singleton
                     services.AddSingleton<App>();

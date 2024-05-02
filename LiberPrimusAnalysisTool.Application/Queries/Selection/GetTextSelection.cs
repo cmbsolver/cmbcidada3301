@@ -17,10 +17,16 @@ namespace LiberPrimusAnalysisTool.Application.Queries.Selection
             /// <summary>
             /// Initializes a new instance of the <see cref="Query"/> class.
             /// </summary>
-            /// <param name="includeImageData">if set to <c>true</c> [include image data].</param>
-            public Query()
+            /// <param name="singleSelectionOnly">Whether or not to use a single selection for files.</param>
+            public Query(bool singleSelectionOnly)
             {
+                SingleSelectionOnly = singleSelectionOnly;
             }
+            
+            /// <summary>
+            /// Single selection only
+            /// </summary>
+            public bool SingleSelectionOnly { get; set; }
         }
 
         /// <summary>
@@ -45,26 +51,44 @@ namespace LiberPrimusAnalysisTool.Application.Queries.Selection
             /// </returns>
             public Task<List<string>> Handle(Query request, CancellationToken cancellationToken)
             {
-                var returnAllImages = AnsiConsole.Confirm("Get all text files?", false);
-
-                if (returnAllImages)
-                {
-                    return Task.FromResult(GetTextFiles("./input/text"));
-                }
-                else
+                if (request.SingleSelectionOnly)
                 {
                     var fileList = GetTextFiles("./input/text");
 
-                    var fileSelections = AnsiConsole.Prompt(
-                                            new MultiSelectionPrompt<string>()
-                                            .Title("[green]Please select text files[/]:")
-                                            .PageSize(10)
-                                            .MoreChoicesText("[grey](Move up and down to reveal more text files)[/]")
-                                            .AddChoices(fileList));
+                    var fileSelection = AnsiConsole.Prompt(
+                        new SelectionPrompt<string>()
+                            .Title("[green]Please select text files[/]:")
+                            .PageSize(10)
+                            .MoreChoicesText("[grey](Move up and down to reveal more text files)[/]")
+                            .AddChoices(fileList));
 
-                    List<string> retval = [.. fileSelections];
+                    List<string> retval = new List<string>() { fileSelection};
 
                     return Task.FromResult(retval);
+                }
+                else
+                {
+                    var returnAllFiles = AnsiConsole.Confirm("Get all text files?", false);
+
+                    if (returnAllFiles)
+                    {
+                        return Task.FromResult(GetTextFiles("./input/text"));
+                    }
+                    else
+                    {
+                        var fileList = GetTextFiles("./input/text");
+
+                        var fileSelections = AnsiConsole.Prompt(
+                            new MultiSelectionPrompt<string>()
+                                .Title("[green]Please select text files[/]:")
+                                .PageSize(10)
+                                .MoreChoicesText("[grey](Move up and down to reveal more text files)[/]")
+                                .AddChoices(fileList));
+
+                        List<string> retval = [.. fileSelections];
+
+                        return Task.FromResult(retval);
+                    }
                 }
             }
 

@@ -651,7 +651,7 @@ namespace LiberPrimusAnalysisTool.Utility.Character
                     break;
 
                 default:
-                    retval = " ";
+                    retval = value;
                     break;
             }
 

@@ -56,7 +56,7 @@ namespace LiberPrimusAnalysisTool.Application.Commands.InputProcessing
 
                 var isGpStrict = AnsiConsole.Confirm("Use GP spellings?", true);
 
-                var allFiles = await _mediator.Send(new GetTextSelection.Query());
+                var allFiles = await _mediator.Send(new GetTextSelection.Query(false));
 
                 string[] runes = _characterRepo.GetGematriaRunes();
                 string[] permuteRunes = _characterRepo.GetGematriaRunes().Reverse().ToArray();
@@ -89,7 +89,8 @@ namespace LiberPrimusAnalysisTool.Application.Commands.InputProcessing
                             {
                                 if (isGpStrict)
                                 {
-                                    englishDictionary.Add(line.ToUpper().Trim().Replace("QU", "CW").Replace("Q", "C").Replace("K", "C").Replace("V", "U").Replace("Z", "S"));
+                                    englishDictionary.Add(line.ToUpper().Trim().Replace("QU", "CW").Replace("Q", "C")
+                                        .Replace("K", "C").Replace("V", "U").Replace("Z", "S"));
                                 }
                                 else
                                 {
@@ -108,7 +109,7 @@ namespace LiberPrimusAnalysisTool.Application.Commands.InputProcessing
                         long runNumber = 0;
                         long lastRunNumber = 0;
                         long lastWrite = 0;
-                        
+
                         if (File.Exists("lastrun.txt"))
                         {
                             string lastRun = File.ReadAllText("lastrun.txt");
@@ -116,7 +117,7 @@ namespace LiberPrimusAnalysisTool.Application.Commands.InputProcessing
                             lastRunNumber = long.Parse(lastRunSplit[0]);
                             lastWrite = long.Parse(lastRunSplit[1]);
                         }
-                        
+
                         foreach (var permutation in _characterRepo.GetPermutations(permuteRunes))
                         {
                             counterWrite++;
@@ -126,69 +127,38 @@ namespace LiberPrimusAnalysisTool.Application.Commands.InputProcessing
                                 runNumber++;
                                 File.WriteAllText("lastrun.txt", $"{runNumber}:{counterWrite}");
                             }
-                            else if (counterWrite % 1000000 == 0)
+                            else if (counterWrite % 3301 == 0)
                             {
+                                AnsiConsole.Write($"Processed: {runNumber}:{counterWrite} run permutations - {DateTime.Now}");
                                 File.WriteAllText("lastrun.txt", $"{runNumber}:{counterWrite}");
                             }
 
                             if (runNumber >= lastRunNumber && counterWrite >= lastWrite)
                             {
-                                List<Tuple<string, string>> transcriptions = new List<Tuple<string, string>>();
+                                HashSet<Tuple<string, string>> transcriptions = new HashSet<Tuple<string, string>>();
 
                                 for (int i = 0; i < permutation.Length; i++)
                                 {
                                     transcriptions.Add(new Tuple<string, string>(runes[i], permutation[i]));
                                 }
 
-                                Parallel.ForEach(filesContents, file =>
+                                foreach (var file in filesContents)
                                 {
-                                    List<string> tlines = new List<string>();
-
-                                    for (int i = 0; i < file.Item2.Length; i++)
+                                    var lineScore = file.Item2.AsParallel().Select(x =>
                                     {
-                                        StringBuilder tmpLine = new StringBuilder();
-
-                                        for (int j = 0; j < file.Item2[i].Length; j++)
-                                        {
-                                            var transcription = transcriptions.FirstOrDefault(x =>
-                                                x.Item1 == file.Item2[i][j].ToString());
-
-                                            if (transcription != null)
-                                            {
-                                                tmpLine.Append(_characterRepo.GetCharFromRune(transcription.Item2));
-                                            }
-                                            else
-                                            {
-                                                tmpLine.Append(file.Item2[i][j]);
-                                            }
-                                        }
-
-                                        tlines.Add(tmpLine.ToString());
-                                    }
-
-                                    int score = 0;
-                                    int wordCount = 0;
-                                    for (int i = 0; i < tlines.Count; i++)
-                                    {
-                                        if (tlines[i].Trim().Length == 0)
-                                        {
-                                            continue;
-                                        }
-
-                                        var wordList = tlines[i].Trim().Split(" ");
-                                        wordCount += wordList.Length;
-                                        foreach (var word in wordList)
-                                        {
-                                            if (englishDictionary.Contains(word))
-                                            {
-                                                score++;
-                                            }
-                                        }
-                                    }
+                                        int lineNumber = Array.IndexOf(file.Item2, x);
+                                        var scoreAndWordCount = CalculateScoreAndWordCount(x, lineNumber, transcriptions,
+                                            englishDictionary);
+                                        return scoreAndWordCount;
+                                    });
+                                    
+                                    var wordCount = lineScore.Sum(x => x.Item1);
+                                    var score = lineScore.Sum(x => x.Item2);
+                                    var tlines = lineScore.OrderBy(x => x.Item4).Select(x => x.Item3);
 
                                     // This is if the dictionary matches the word count.
                                     var percentage = ((double)score / (double)wordCount) * 100;
-                                    if (score == wordCount || percentage > 90)
+                                    if (score == wordCount || percentage > 80)
                                     {
                                         AnsiConsole.WriteLine($"File: {file.Item1} - {DateTime.Now}");
                                         string filename =
@@ -208,12 +178,14 @@ namespace LiberPrimusAnalysisTool.Application.Commands.InputProcessing
                                                     $"File: {file.Item1} - Highest Percentage: {percentage}");
                                                 fileLeader[file.Item1] = percentage;
                                                 fileContents[file.Item1] = tlines.ToArray();
-                                                
+
                                                 string filename =
                                                     $"output/POSSIBLE-MATCH{DateTime.Now.ToBinary()}-{file.Item1}";
                                                 File.AppendAllText(filename, $"PERCENTAGE: {percentage}\r\n");
-                                                File.AppendAllText(filename, $"ORIGINAL: {string.Join(",", runes)}\r\n");
-                                                File.AppendAllText(filename, $"REPLACE : {string.Join(",", permutation)}\r\n");
+                                                File.AppendAllText(filename,
+                                                    $"ORIGINAL: {string.Join(",", runes)}\r\n");
+                                                File.AppendAllText(filename,
+                                                    $"REPLACE : {string.Join(",", permutation)}\r\n");
                                                 File.AppendAllLines(filename, tlines);
                                             }
                                         }
@@ -223,16 +195,52 @@ namespace LiberPrimusAnalysisTool.Application.Commands.InputProcessing
                                             fileContents.Add(file.Item1, tlines.ToArray());
                                         }
                                     }
-                                });
+                                }
                             }
                         }
-
-                        foreach (var file in fileContents)
-                        {
-                            string filename = $"output/{file.Key}";
-                            File.AppendAllLines(filename, file.Value);
-                        }
                     });
+            }
+
+            private Tuple<int, int, string, int> CalculateScoreAndWordCount(string line, int lineNumber,
+                HashSet<Tuple<string, string>> transcriptions, HashSet<string> englishDictionary)
+            {
+                if (line.Trim().Length <= 0)
+                {
+                    return new Tuple<int, int, string, int>(0, 0, string.Empty, lineNumber);
+                }
+                
+                Tuple<int, int, string, int> retval = null;
+                int score = 0;
+                int wordCount = 0;
+
+                StringBuilder tmpLine = new StringBuilder();
+
+                for (int j = 0; j < line.Length; j++)
+                {
+                    var transcription = transcriptions.FirstOrDefault(x => x.Item1 == line[j].ToString());
+
+                    if (transcription != null)
+                    {
+                        tmpLine.Append(_characterRepo.GetCharFromRune(transcription.Item2));
+                    }
+                    else
+                    {
+                        tmpLine.Append(line[j]);
+                    }
+                }
+
+                var wordList = tmpLine.ToString().Trim().Split(" ");
+                wordCount += wordList.Length;
+                foreach (var word in wordList)
+                {
+                    if (englishDictionary.Contains(word))
+                    {
+                        score++;
+                    }
+                }
+
+                retval = new Tuple<int, int, string, int>(wordCount, score, tmpLine.ToString(), lineNumber);
+                return retval;
             }
         }
     }

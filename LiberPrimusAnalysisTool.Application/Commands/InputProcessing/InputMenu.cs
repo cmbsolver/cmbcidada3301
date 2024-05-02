@@ -59,6 +59,8 @@ namespace LiberPrimusAnalysisTool.Application.Commands.InputProcessing
                         "2: Detect Words in Files",
                         "3: Decode Base64 Lines",
                         "4: Substitute Ultima",
+                        "5: Brute Force Fiestel",
+                        "6: Substitute Ultima Deux",
                         "99: Previous Menu",
                         }));
 
@@ -83,6 +85,14 @@ namespace LiberPrimusAnalysisTool.Application.Commands.InputProcessing
 
                         case "4":
                             await _mediator.Publish(new SubstituteUltima.Command());
+                            break;
+                        
+                        case "5":
+                            await _mediator.Publish(new BruteForceFiestel.Command());
+                            break;
+                        
+                        case "6":
+                            await _mediator.Publish(new SubstituteUltima2.Command());
                             break;
 
                         case "99":

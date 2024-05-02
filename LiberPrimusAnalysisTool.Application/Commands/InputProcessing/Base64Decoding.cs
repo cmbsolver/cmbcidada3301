@@ -46,7 +46,7 @@ namespace LiberPrimusAnalysisTool.Application.Commands.InputProcessing
             {
                 Console.Clear();
                 AnsiConsole.Write(new FigletText("Decode Base64 Lines").Centered().Color(Color.Green));
-                var binFiles = _mediator.Send(new GetTextSelection.Query()).Result;
+                var binFiles = _mediator.Send(new GetTextSelection.Query(false)).Result;
 
                 DecodeFiles(binFiles);
 
