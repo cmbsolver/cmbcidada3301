@@ -162,15 +162,11 @@ namespace LiberPrimusAnalysisTool.Application.Commands.InputProcessing
                     int wordCount = 0;
 
                     counter++;
-                    if (counter % 333301 == 0)
-                    {
-                        AnsiConsole.WriteLine($"Processed: {runCounter}:{counter} run permutations on {fileName}:{lineNumber} - {DateTime.Now}");
-                    }
-                    
                     if (counter >= long.MaxValue - 1)
                     {
                         counter = 0;
                         runCounter++;
+                        AnsiConsole.WriteLine($"Processed: {runCounter} runs for {fileName}:{lineNumber}. Restarting counter.");
                     }
                     
                     if (runCounter >= long.MaxValue - 1)
@@ -215,6 +211,7 @@ namespace LiberPrimusAnalysisTool.Application.Commands.InputProcessing
                     if (percentage > highestPercentage)
                     {
                         highestPercentage = percentage;
+                        AnsiConsole.WriteLine($"File: {fileName}:{lineNumber}-{runCounter}:{counter}");
                         AnsiConsole.WriteLine($"File: {fileName}:{lineNumber}-{percentage}");
                         string filename =
                             $"output/BEST-POSSIBLE-MATCH-LINE-{lineNumber}-{percentage}-{fileName}";
