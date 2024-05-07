@@ -6,6 +6,11 @@
         <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
         <ApplicationManifest>app.manifest</ApplicationManifest>
         <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+        <MagickCopyNativeWindows>true</MagickCopyNativeWindows>
+        <MagickCopyNativeLinux>true</MagickCopyNativeLinux>
+        <MagickCopyNativeLinuxMusl>true</MagickCopyNativeLinuxMusl>
+        <MagickCopyNativeMacOS>true</MagickCopyNativeMacOS>
+        <Platforms>AnyCPU;x64</Platforms>
     </PropertyGroup>
 
     <ItemGroup>

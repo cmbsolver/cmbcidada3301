@@ -7,6 +7,7 @@
         <entry key="../LiberPrimusUi/Assets/LpatStyles.axaml" value="../LiberPrimusUi/LiberPrimusUi.csproj" />
         <entry key="../LiberPrimusUi/Views/HomePageView.axaml" value="../LiberPrimusUi/LiberPrimusUi.csproj" />
         <entry key="../LiberPrimusUi/Views/MainWindow.axaml" value="../LiberPrimusUi/LiberPrimusUi.csproj" />
+        <entry key="../LiberPrimusUi/Views/PrimeCheckerView.axaml" value="../LiberPrimusUi/LiberPrimusUi.csproj" />
       </map>
     </option>
   </component>
