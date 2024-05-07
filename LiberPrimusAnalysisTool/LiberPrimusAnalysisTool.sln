@@ -15,6 +15,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LiberPrimusAnalysisTool.Dat
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FileTypeInterrogator", "..\FileTypeInterrogator\FileTypeInterrogator.csproj", "{9A27C40A-BAEE-4E75-9A26-3E6CB56ADC41}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiberPrimusUi", "..\LiberPrimusUi\LiberPrimusUi.csproj", "{D2BA2283-5552-41CF-A342-F8DE26E0568C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -71,6 +73,14 @@ Global
 		{9A27C40A-BAEE-4E75-9A26-3E6CB56ADC41}.Release|Any CPU.Build.0 = Release|Any CPU
 		{9A27C40A-BAEE-4E75-9A26-3E6CB56ADC41}.Release|x64.ActiveCfg = Release|x64
 		{9A27C40A-BAEE-4E75-9A26-3E6CB56ADC41}.Release|x64.Build.0 = Release|x64
+		{D2BA2283-5552-41CF-A342-F8DE26E0568C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D2BA2283-5552-41CF-A342-F8DE26E0568C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D2BA2283-5552-41CF-A342-F8DE26E0568C}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{D2BA2283-5552-41CF-A342-F8DE26E0568C}.Debug|x64.Build.0 = Debug|Any CPU
+		{D2BA2283-5552-41CF-A342-F8DE26E0568C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D2BA2283-5552-41CF-A342-F8DE26E0568C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D2BA2283-5552-41CF-A342-F8DE26E0568C}.Release|x64.ActiveCfg = Release|Any CPU
+		{D2BA2283-5552-41CF-A342-F8DE26E0568C}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

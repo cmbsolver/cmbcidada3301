@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AvaloniaProject">
+    <option name="projectPerEditor">
+      <map>
+        <entry key="../LiberPrimusUi/App.axaml" value="../LiberPrimusUi/LiberPrimusUi.csproj" />
+        <entry key="../LiberPrimusUi/Assets/LpatStyles.axaml" value="../LiberPrimusUi/LiberPrimusUi.csproj" />
+        <entry key="../LiberPrimusUi/Views/HomePageView.axaml" value="../LiberPrimusUi/LiberPrimusUi.csproj" />
+        <entry key="../LiberPrimusUi/Views/MainWindow.axaml" value="../LiberPrimusUi/LiberPrimusUi.csproj" />
+      </map>
+    </option>
+  </component>
+</project>
