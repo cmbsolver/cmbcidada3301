@@ -38,6 +38,8 @@ public partial class MainWindowViewModel : ViewModelBase
     [ObservableProperty]
     private ListItemTemplate? _selectedListItem;
 
+    private List<Tuple<string, object>> _windows = new List<Tuple<string, object>>();
+
     private readonly ICharacterRepo _characterRepo;
     private readonly IPermutator _permutator;
     private readonly IMediator _mediator;
@@ -49,10 +51,14 @@ public partial class MainWindowViewModel : ViewModelBase
         switch(value.ModelType)
         {
             case Type t when t == typeof(HomePageViewModel):
-                CurrentPage = new HomePageViewModel();
+                if (!_windows.Any(w => w.Item1 == value.Label))
+                    _windows.Add(new Tuple<string, object>(value.Label, new HomePageViewModel()));
+                CurrentPage = _windows.FirstOrDefault(w => w.Item1 == value.Label)?.Item2 as HomePageViewModel;
                 break;
             case Type t when t == typeof(PrimeCheckerViewModel):
-                CurrentPage = new PrimeCheckerViewModel(_mediator);
+                if (!_windows.Any(w => w.Item1 == value.Label))
+                    _windows.Add(new Tuple<string, object>(value.Label, new PrimeCheckerViewModel(_mediator)));
+                CurrentPage = _windows.FirstOrDefault(w => w.Item1 == value.Label)?.Item2 as PrimeCheckerViewModel;
                 break;
         }
     }
