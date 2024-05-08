@@ -56,8 +56,6 @@ namespace LiberPrimusAnalysisTool.Application.Commands.Math
                         .PageSize(10)
                         .MoreChoicesText("[grey](Move up and down to reveal more math functions)[/]")
                         .AddChoices(new[] {
-                        "1: Check if number is prime",
-                        "2: Output numeric sequence",
                         "99: Previous Menu",
                         }));
 
@@ -68,14 +66,6 @@ namespace LiberPrimusAnalysisTool.Application.Commands.Math
 
                     switch (choice.Trim())
                     {
-                        case "1":
-                            await _mediator.Publish(new CheckIfNumberIsPrime.Command());
-                            break;
-
-                        case "2":
-                            await _mediator.Send(new CalculateSequence.Query(true, true, 0, string.Empty));
-                            break;
-
                         case "99":
                             dontExit = false;
                             break;

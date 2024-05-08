@@ -5,6 +5,8 @@
       <map>
         <entry key="../LiberPrimusUi/App.axaml" value="../LiberPrimusUi/LiberPrimusUi.csproj" />
         <entry key="../LiberPrimusUi/Assets/LpatStyles.axaml" value="../LiberPrimusUi/LiberPrimusUi.csproj" />
+        <entry key="../LiberPrimusUi/ViewModels/GenerateSequenceView.axaml" value="../LiberPrimusUi/LiberPrimusUi.csproj" />
+        <entry key="../LiberPrimusUi/Views/GenerateSequenceView.axaml" value="../LiberPrimusUi/LiberPrimusUi.csproj" />
         <entry key="../LiberPrimusUi/Views/HomePageView.axaml" value="../LiberPrimusUi/LiberPrimusUi.csproj" />
         <entry key="../LiberPrimusUi/Views/MainWindow.axaml" value="../LiberPrimusUi/LiberPrimusUi.csproj" />
         <entry key="../LiberPrimusUi/Views/PrimeCheckerView.axaml" value="../LiberPrimusUi/LiberPrimusUi.csproj" />
