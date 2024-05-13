@@ -24,11 +24,11 @@
         <PackageReference Include="Avalonia.Fonts.Inter" Version="11.0.10"/>
         <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
         <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.0.10"/>
-        <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.1"/>
+        <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
         <PackageReference Include="LiveChartsCore.SkiaSharpView.Avalonia" Version="2.0.0-rc2" />
         <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
         <PackageReference Include="Microsoft.Extensions.Http" Version="8.0.0" />
-        <PackageReference Include="Magick.NET-Q16-AnyCPU" Version="13.7.0" />
+        <PackageReference Include="Magick.NET-Q16-AnyCPU" Version="13.8.0" />
         <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.4" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Abstractions" Version="8.0.4" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Analyzers" Version="8.0.4" />
