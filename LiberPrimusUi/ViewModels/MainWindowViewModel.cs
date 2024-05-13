@@ -27,7 +27,9 @@ public partial class MainWindowViewModel : ViewModelBase
     [
         new ListItemTemplate(typeof(HomePageViewModel), "HomeRegular", "Home"),
         new ListItemTemplate(typeof(PrimeCheckerViewModel), "Calculator", "Prime Checker"),
-        new ListItemTemplate(typeof(GenerateSequenceViewModel), "Calculator", "Generate Sequence"),
+        new ListItemTemplate(typeof(GenerateSequenceViewModel), "NumberList", "Generate Sequence"),
+        
+        new ListItemTemplate(typeof(CreditsViewModel), "ListIcon", "Credits"),
     ];
 
     [ObservableProperty]
@@ -65,6 +67,12 @@ public partial class MainWindowViewModel : ViewModelBase
                 if (!_windows.Any(w => w.Item1 == value.Label))
                     _windows.Add(new Tuple<string, object>(value.Label, new GenerateSequenceViewModel(_mediator)));
                 CurrentPage = _windows.FirstOrDefault(w => w.Item1 == value.Label)?.Item2 as GenerateSequenceViewModel;
+                break;
+            
+            case Type t when t == typeof(CreditsViewModel):
+                if (!_windows.Any(w => w.Item1 == value.Label))
+                    _windows.Add(new Tuple<string, object>(value.Label, new CreditsViewModel()));
+                CurrentPage = _windows.FirstOrDefault(w => w.Item1 == value.Label)?.Item2 as CreditsViewModel;
                 break;
         }
     }

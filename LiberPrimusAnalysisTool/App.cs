@@ -1,8 +1,4 @@
-﻿using LiberPrimusAnalysisTool.Application.Commands.Directory;
-using LiberPrimusAnalysisTool.Application.Commands.Image;
-using LiberPrimusAnalysisTool.Application.Commands.InputProcessing;
-using LiberPrimusAnalysisTool.Application.Commands.Math;
-using MediatR;
+﻿using MediatR;
 using Spectre.Console;
 
 namespace LiberPrimusAnalysisTool
