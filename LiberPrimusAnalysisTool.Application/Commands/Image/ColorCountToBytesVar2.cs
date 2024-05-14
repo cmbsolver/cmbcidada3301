@@ -1,6 +1,5 @@
 ﻿using LiberPrimusAnalysisTool.Application.Commands.Directory;
 using LiberPrimusAnalysisTool.Application.Queries;
-using LiberPrimusAnalysisTool.Application.Queries.Selection;
 using LiberPrimusAnalysisTool.Utility.Character;
 using MediatR;
 using Spectre.Console;
@@ -60,7 +59,7 @@ namespace LiberPrimusAnalysisTool.Application.Commands.Image
 
                 var tag = invertPixels ? "Reversed" : "Normal";
 
-                var files = await _mediator.Send(new GetImageSelection.Query());
+                var files = new string[0]; //var files = await _mediator.Send(new GetImageSelection.Query());
 
                 Parallel.ForEach(files, async ifile =>
                 {

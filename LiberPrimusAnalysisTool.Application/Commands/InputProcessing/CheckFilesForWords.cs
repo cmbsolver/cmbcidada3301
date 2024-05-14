@@ -1,5 +1,4 @@
-﻿using LiberPrimusAnalysisTool.Application.Queries.Selection;
-using LiberPrimusAnalysisTool.Entity;
+﻿using LiberPrimusAnalysisTool.Entity;
 using LiberPrimusAnalysisTool.Utility.Character;
 using MediatR;
 using Spectre.Console;
@@ -56,7 +55,7 @@ namespace LiberPrimusAnalysisTool.Application.Commands.InputProcessing
 
                 var isGpStrict = AnsiConsole.Confirm("Use GP strict spellings?");
 
-                var allFiles = await _mediator.Send(new GetTextSelection.Query(false));
+                var allfiles = new string[0]; //var allFiles = await _mediator.Send(new GetTextSelection.Query(false));
 
                 AnsiConsole.Status()
                     .AutoRefresh(true)
@@ -90,7 +89,7 @@ namespace LiberPrimusAnalysisTool.Application.Commands.InputProcessing
 
                         englishDictionary = englishDictionary.OrderBy(x => x.Length).ToList();
 
-                        Parallel.ForEach(allFiles, file =>
+                        foreach (var file in allfiles)
                         {
                             FileInfo fileInfo = new FileInfo(file);
 
@@ -118,7 +117,7 @@ namespace LiberPrimusAnalysisTool.Application.Commands.InputProcessing
                                 File.AppendAllText($"output/word_readible_{fileInfo.Name}", Environment.NewLine);
                                 File.AppendAllText($"output/word_readible_{fileInfo.Name}", Environment.NewLine);
                             }
-                        });
+                        }
                     });
             }
         }

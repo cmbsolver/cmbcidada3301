@@ -1,5 +1,4 @@
-﻿using LiberPrimusAnalysisTool.Application.Queries.Selection;
-using MediatR;
+﻿using MediatR;
 using Spectre.Console;
 
 namespace LiberPrimusAnalysisTool.Application.Commands.InputProcessing
@@ -45,7 +44,7 @@ namespace LiberPrimusAnalysisTool.Application.Commands.InputProcessing
             {
                 Console.Clear();
                 AnsiConsole.Write(new FigletText("Detect Bin Files").Centered().Color(Color.Green));
-                var binFiles = _mediator.Send(new GetBinarySelection.Query()).Result;
+                var binFiles = new string[0]; //var binFiles = _mediator.Send(new GetBinarySelection.Query()).Result;
 
                 DetectBinaryFiles(binFiles);
 
@@ -56,11 +55,11 @@ namespace LiberPrimusAnalysisTool.Application.Commands.InputProcessing
             /// Detects the binary files.
             /// </summary>
             /// <param name="files">The files.</param>
-            private static void DetectBinaryFiles(List<string> files)
+            private static void DetectBinaryFiles(string[] files)
             {
                 List<string> lines = new List<string>();
 
-                if (files.Count == 0)
+                if (files.Length == 0)
                 {
                     AnsiConsole.WriteLine("No bin files found.");
                 }

@@ -2,7 +2,6 @@
 using LiberPrimusAnalysisTool.Application.Commands.Image.PixelProcessing;
 using LiberPrimusAnalysisTool.Application.Commands.Math;
 using LiberPrimusAnalysisTool.Application.Queries;
-using LiberPrimusAnalysisTool.Application.Queries.Selection;
 using LiberPrimusAnalysisTool.Entity;
 using MediatR;
 using Spectre.Console;
@@ -56,7 +55,7 @@ namespace LiberPrimusAnalysisTool.Application.Commands.Image
                     Console.Clear();
                     AnsiConsole.Write(new FigletText("Winnow By Pixels").Centered().Color(Color.Green));
 
-                    var pageSelection = await _mediator.Send(new GetImageSelection.Query());
+                    var pageSelection = new string[0]; //var pageSelection = await _mediator.Send(new GetImageSelection.Query());
 
                     var includeControlCharacters = AnsiConsole.Confirm("Include control characters?", false);
                     var reversePixels = AnsiConsole.Confirm("Reverse Pixels?", false);

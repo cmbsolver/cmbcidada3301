@@ -1,5 +1,4 @@
-﻿using LiberPrimusAnalysisTool.Application.Queries.Selection;
-using LiberPrimusAnalysisTool.Utility.Character;
+﻿using LiberPrimusAnalysisTool.Utility.Character;
 using MediatR;
 using Spectre.Console;
 using System.Text;
@@ -55,7 +54,7 @@ namespace LiberPrimusAnalysisTool.Application.Commands.Image
                 Console.Clear();
                 AnsiConsole.Write(new FigletText("Reverse Bytes And Compare").Centered().Color(Color.Green));
 
-                var files = await _mediator.Send(new GetImageSelection.Query());
+                var files = new string[0]; //var files = await _mediator.Send(new GetImageSelection.Query());
 
                 AnsiConsole.WriteLine($"Processing {string.Join(",", files)}");
 

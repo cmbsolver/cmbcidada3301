@@ -1,5 +1,4 @@
-﻿using LiberPrimusAnalysisTool.Application.Queries.Selection;
-using LiberPrimusAnalysisTool.Utility.Character;
+﻿using LiberPrimusAnalysisTool.Utility.Character;
 using MediatR;
 using Spectre.Console;
 using System.Text;
@@ -56,7 +55,7 @@ namespace LiberPrimusAnalysisTool.Application.Commands.InputProcessing
 
                 var isGpStrict = AnsiConsole.Confirm("Use GP spellings?", true);
 
-                var allFiles = await _mediator.Send(new GetTextSelection.Query(false));
+                var allFiles = new string[0]; //var allFiles = await _mediator.Send(new GetTextSelection.Query(false));
 
                 string[] runes = _characterRepo.GetGematriaRunes();
                 string[] permuteRunes = _characterRepo.GetGematriaRunes().Reverse().ToArray();

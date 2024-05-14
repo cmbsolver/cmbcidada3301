@@ -1,5 +1,4 @@
 using System.Text;
-using LiberPrimusAnalysisTool.Application.Queries.Selection;
 using LiberPrimusAnalysisTool.Utility.Character;
 using MediatR;
 using Spectre.Console;
@@ -63,7 +62,7 @@ namespace LiberPrimusAnalysisTool.Application.Commands.InputProcessing
             /// <param name="cancellationToken">The cancellation token.</param>
             public async Task Handle(Command request, CancellationToken cancellationToken)
             {
-                var allFiles = await _mediator.Send(new GetTextSelection.Query(false));
+                var allFiles = new string[0]; //await _mediator.Send(new GetTextSelection.Query(false));
                 HashSet<Tuple<string, string[]>> filesContents = new HashSet<Tuple<string, string[]>>();
 
                 foreach (var file in allFiles)

@@ -1,6 +1,4 @@
-﻿using LiberPrimusAnalysisTool.Application.Queries.Selection;
-using MediatR;
-using Spectre.Console;
+﻿using MediatR;
 using System.Text;
 
 namespace LiberPrimusAnalysisTool.Application.Commands.InputProcessing
@@ -14,14 +12,28 @@ namespace LiberPrimusAnalysisTool.Application.Commands.InputProcessing
         /// Command
         /// </summary>
         /// <seealso cref="IRequest" />
-        public class Command : INotification
+        public class Command : IRequest<string>
         {
+            /// <summary>
+            /// The input string
+            /// </summary>
+            public string Input { get; set; }
+            
+            /// <summary>
+            /// What to decode it as.
+            /// </summary>
+            public string Encoding { get; set; }
+
+            /// <summary>
+            ///  The other encoding.
+            /// </summary>
+            public string OtherEncoding { get; set; }
         }
 
         /// <summary>
         /// Handler
         /// </summary>
-        public class Handler : INotificationHandler<Command>
+        public class Handler : IRequestHandler<Command, string>
         {
             /// <summary>
             /// The mediator
@@ -42,62 +54,50 @@ namespace LiberPrimusAnalysisTool.Application.Commands.InputProcessing
             /// </summary>
             /// <param name="request">The request.</param>
             /// <param name="cancellationToken">The cancellation token.</param>
-            public Task Handle(Command request, CancellationToken cancellationToken)
+            public Task<string> Handle(Command request, CancellationToken cancellationToken)
             {
-                Console.Clear();
-                AnsiConsole.Write(new FigletText("Decode Base64 Lines").Centered().Color(Color.Green));
-                var binFiles = _mediator.Send(new GetTextSelection.Query(false)).Result;
-
-                DecodeFiles(binFiles);
-
-                return Task.CompletedTask;
-            }
-
-            /// <summary>
-            /// Decodes the files.
-            /// </summary>
-            /// <param name="files">The files.</param>
-            private static void DecodeFiles(List<string> files)
-            {
-                List<FileInfo> fileInfos = [.. files.Select(file => new FileInfo(file))];
-                fileInfos = fileInfos.OrderBy(fileInfos => fileInfos.Length).ToList();
-
-                int counter = 1;
-                foreach (var file in fileInfos)
+                string decoded = string.Empty;
+                
+                try
                 {
-                    var base64Lines = File.ReadAllLines(file.FullName);
-                    List<byte> bytes = new List<byte>();
-
-                    AnsiConsole.WriteLine($"{counter}/{fileInfos.Count}: {file.Name} - {base64Lines.Length}");
-                    counter++;
-
-                    int lineCounter = 1;
-                    foreach (var line in base64Lines)
+                    var decodedBytes = Convert.FromBase64String(request.Input);
+                    switch (request.Encoding)
                     {
-                        AnsiConsole.WriteLine($"Processing line {lineCounter}/{base64Lines.Length}");
-                        lineCounter++;
-
-                        try
-                        {
-                            var decoded = Convert.FromBase64String(line);
-                            if (decoded.Length > 0)
-                            {
-                                bytes.AddRange(decoded);
-                                File.AppendAllText($"./output/text/{file.Name}.ASCII.txt", Encoding.ASCII.GetString(decoded));
-                                File.AppendAllText($"./output/text/{file.Name}.UTF8.txt", Encoding.UTF8.GetString(decoded));
-                            }
-                        }
-                        catch (Exception)
-                        {
-                            //AnsiConsole.WriteLine($"Error decoding base64 line in {file}: {line}");
-                        }
-                    }
-
-                    if (bytes.Count > 0)
-                    {
-                        File.WriteAllBytes($"./output/bin/{file.Name}.bin", bytes.ToArray());
+                        case "ASCII":
+                            decoded = Encoding.ASCII.GetString(decodedBytes);
+                            break;
+                        case "UTF8":
+                            decoded = Encoding.UTF8.GetString(decodedBytes);
+                            break;
+                        case "UTF7":
+                            decoded = Encoding.UTF7.GetString(decodedBytes);
+                            break;
+                        case "UTF32":
+                            decoded = Encoding.UTF32.GetString(decodedBytes);
+                            break;
+                        case "Latin1":
+                            decoded = Encoding.Latin1.GetString(decodedBytes);
+                            break;
+                        case "UNICODE":
+                            decoded = Encoding.Unicode.GetString(decodedBytes);
+                            break;
+                        case "HEX":
+                            decoded = BitConverter.ToString(decodedBytes).Replace("-", "");
+                            break;
+                        case "OTHER":
+                            decoded = Encoding.GetEncoding(request.Encoding).GetString(decodedBytes);
+                            break;
+                        default:
+                            decoded = Encoding.ASCII.GetString(decodedBytes);
+                            break;
                     }
                 }
+                catch (Exception ex)
+                {
+                    decoded = ex.Message;
+                }
+
+                return Task.FromResult(decoded);
             }
         }
     }

@@ -1,7 +1,6 @@
 ﻿using ImageMagick;
 using LiberPrimusAnalysisTool.Application.Queries;
 using LiberPrimusAnalysisTool.Application.Queries.Page;
-using LiberPrimusAnalysisTool.Application.Queries.Selection;
 using LiberPrimusAnalysisTool.Entity;
 using MediatR;
 using Spectre.Console;
@@ -56,7 +55,7 @@ namespace LiberPrimusAnalysisTool.Application.Commands.Image
 
                     // Getting the pages we want
                     List<LiberPage> liberPages = new List<LiberPage>();
-                    var pageSelection = await _mediator.Send(new GetImageSelection.Query());
+                    var pageSelection = new string[0]; //var pageSelection = await _mediator.Send(new GetImageSelection.Query());
 
                     foreach (var selection in pageSelection)
                     {

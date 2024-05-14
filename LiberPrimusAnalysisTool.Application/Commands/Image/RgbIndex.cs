@@ -1,6 +1,5 @@
 ﻿using LiberPrimusAnalysisTool.Application.Commands.Directory;
 using LiberPrimusAnalysisTool.Application.Queries;
-using LiberPrimusAnalysisTool.Application.Queries.Selection;
 using LiberPrimusAnalysisTool.Entity;
 using LiberPrimusAnalysisTool.Utility.Character;
 using MediatR;
@@ -63,7 +62,7 @@ namespace LiberPrimusAnalysisTool.Application.Commands.Image
 
                 var includeControlCharacters = AnsiConsole.Confirm("Include control characters?", false);
 
-                var files = await _mediator.Send(new GetImageSelection.Query());
+                var files = new string[0]; //var files = await _mediator.Send(new GetImageSelection.Query());
 
                 Parallel.ForEach(files, async ifile =>
                 {

@@ -28,7 +28,7 @@ public partial class MainWindowViewModel : ViewModelBase
         new ListItemTemplate(typeof(HomePageViewModel), "HomeRegular", "Home"),
         new ListItemTemplate(typeof(PrimeCheckerViewModel), "Calculator", "Prime Checker"),
         new ListItemTemplate(typeof(GenerateSequenceViewModel), "NumberList", "Generate Sequence"),
-        
+        new ListItemTemplate(typeof(Base64DecodeViewModel), "Wrench", "Base64 Decode"),
         new ListItemTemplate(typeof(CreditsViewModel), "ListIcon", "Credits"),
     ];
 
@@ -73,6 +73,12 @@ public partial class MainWindowViewModel : ViewModelBase
                 if (!_windows.Any(w => w.Item1 == value.Label))
                     _windows.Add(new Tuple<string, object>(value.Label, new CreditsViewModel()));
                 CurrentPage = _windows.FirstOrDefault(w => w.Item1 == value.Label)?.Item2 as CreditsViewModel;
+                break;
+            
+            case Type t when t == typeof(Base64DecodeViewModel):
+                if (!_windows.Any(w => w.Item1 == value.Label))
+                    _windows.Add(new Tuple<string, object>(value.Label, new Base64DecodeViewModel(_mediator)));
+                CurrentPage = _windows.FirstOrDefault(w => w.Item1 == value.Label)?.Item2 as Base64DecodeViewModel;
                 break;
         }
     }
