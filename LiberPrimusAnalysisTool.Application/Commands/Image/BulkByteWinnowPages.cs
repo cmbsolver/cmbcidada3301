@@ -1,5 +1,4 @@
-﻿using LiberPrimusAnalysisTool.Application.Commands.Directory;
-using LiberPrimusAnalysisTool.Application.Commands.Image.ByteProcessing;
+﻿using LiberPrimusAnalysisTool.Application.Commands.Image.ByteProcessing;
 using LiberPrimusAnalysisTool.Application.Commands.Math;
 using LiberPrimusAnalysisTool.Application.Queries;
 using LiberPrimusAnalysisTool.Entity;
@@ -166,13 +165,6 @@ namespace LiberPrimusAnalysisTool.Application.Commands.Image
                             }
                         }
                     });
-
-                    await _mediator.Publish(new FlushZeroOutputDirectory.Command());
-
-                    bool moveFiles = AnsiConsole.Confirm("Move files to input directory?", false);
-                    {
-                        await _mediator.Publish(new MoveFilesToInput.Command());
-                    }
 
                     returnToMenu = AnsiConsole.Confirm("Return to main menu?");
                 }

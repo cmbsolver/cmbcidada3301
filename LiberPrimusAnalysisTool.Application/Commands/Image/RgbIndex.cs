@@ -1,5 +1,4 @@
-﻿using LiberPrimusAnalysisTool.Application.Commands.Directory;
-using LiberPrimusAnalysisTool.Application.Queries;
+﻿using LiberPrimusAnalysisTool.Application.Queries;
 using LiberPrimusAnalysisTool.Entity;
 using LiberPrimusAnalysisTool.Utility.Character;
 using MediatR;
@@ -88,8 +87,6 @@ namespace LiberPrimusAnalysisTool.Application.Commands.Image
                     File.AppendAllText($"./output/imagep/RgbIndex_{file.PageName}.txt", "Green Text: " + rgbIndex.G + Environment.NewLine + Environment.NewLine);
                     File.AppendAllText($"./output/imagep/RgbIndex_{file.PageName}.txt", "Blue Text: " + rgbIndex.B + Environment.NewLine + Environment.NewLine);
                 });
-
-                await _mediator.Publish(new FlushZeroOutputDirectory.Command());
             }
         }
     }

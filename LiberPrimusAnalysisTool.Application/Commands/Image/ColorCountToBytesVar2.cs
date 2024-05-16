@@ -1,5 +1,4 @@
-﻿using LiberPrimusAnalysisTool.Application.Commands.Directory;
-using LiberPrimusAnalysisTool.Application.Queries;
+﻿using LiberPrimusAnalysisTool.Application.Queries;
 using LiberPrimusAnalysisTool.Utility.Character;
 using MediatR;
 using Spectre.Console;
@@ -102,13 +101,6 @@ namespace LiberPrimusAnalysisTool.Application.Commands.Image
                         File.WriteAllBytes($"./output/bin/CTB-{tag}-{color.Replace("#", string.Empty)}-{fileInfo.Name}.bin", bytes.ToArray());
                     }
                 });
-
-                await _mediator.Publish(new FlushZeroOutputDirectory.Command());
-
-                bool moveFiles = AnsiConsole.Confirm("Move files to input directory?", false);
-                {
-                    await _mediator.Publish(new MoveFilesToInput.Command());
-                }
             }
         }
     }
