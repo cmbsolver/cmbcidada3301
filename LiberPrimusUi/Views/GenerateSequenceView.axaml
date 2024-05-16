@@ -12,7 +12,7 @@
             <ComboBox ItemsSource="{Binding SequenceTypes}" SelectedItem="{Binding SelectedSequenceType}"></ComboBox>
         </StackPanel>
         <StackPanel Orientation="Horizontal" Spacing="5">
-            <TextBlock VerticalAlignment="Center">Number</TextBlock>
+            <TextBlock VerticalAlignment="Center">Max Number</TextBlock>
             <TextBox Text="{Binding NumberToCheck}"></TextBox>
         </StackPanel>
         <StackPanel Orientation="Horizontal" Spacing="5">
