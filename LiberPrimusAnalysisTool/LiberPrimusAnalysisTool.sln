@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34616.47
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LiberPrimusAnalysisTool", "LiberPrimusAnalysisTool.csproj", "{0CEAE8C1-33DD-4A70-9C95-D700A6AF265C}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LiberPrimusAnalysisTool.Entity", "..\LiberPrimusAnalysisTool.Entity\LiberPrimusAnalysisTool.Entity.csproj", "{B07D9EC0-EC2D-4F3A-9401-44EE15C3B03B}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LiberPrimusAnalysisTool.Utility", "..\LiberPrimusAnalysisTool.Utility\LiberPrimusAnalysisTool.Utility.csproj", "{E37F3EB6-E51C-4380-B0EE-464091EED455}"
@@ -25,14 +23,6 @@ Global
 		Release|x64 = Release|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{0CEAE8C1-33DD-4A70-9C95-D700A6AF265C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0CEAE8C1-33DD-4A70-9C95-D700A6AF265C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0CEAE8C1-33DD-4A70-9C95-D700A6AF265C}.Debug|x64.ActiveCfg = Debug|x64
-		{0CEAE8C1-33DD-4A70-9C95-D700A6AF265C}.Debug|x64.Build.0 = Debug|x64
-		{0CEAE8C1-33DD-4A70-9C95-D700A6AF265C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0CEAE8C1-33DD-4A70-9C95-D700A6AF265C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0CEAE8C1-33DD-4A70-9C95-D700A6AF265C}.Release|x64.ActiveCfg = Release|x64
-		{0CEAE8C1-33DD-4A70-9C95-D700A6AF265C}.Release|x64.Build.0 = Release|x64
 		{B07D9EC0-EC2D-4F3A-9401-44EE15C3B03B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B07D9EC0-EC2D-4F3A-9401-44EE15C3B03B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B07D9EC0-EC2D-4F3A-9401-44EE15C3B03B}.Debug|x64.ActiveCfg = Debug|x64

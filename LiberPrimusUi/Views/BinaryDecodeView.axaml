@@ -1,0 +1,27 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:LiberPrimusUi.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="LiberPrimusUi.Views.BinaryDecodeView"
+             x:DataType="vm:BinaryDecodeViewModel">
+    <StackPanel Margin="20" Spacing="10">
+        <StackPanel Orientation="Horizontal" Spacing="5">
+            <TextBlock VerticalAlignment="Center">Decode As</TextBlock>
+            <ComboBox ItemsSource="{Binding BinDecodeTypes}" SelectedItem="{Binding BinSelectedEncoding}"></ComboBox>
+            <TextBlock VerticalAlignment="Center">File Name</TextBlock>
+            <TextBox Text="{Binding BinFileName}"></TextBox>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" Spacing="5">
+            <TextBlock VerticalAlignment="Center">Input Text</TextBlock>
+            <TextBox Height="100" AcceptsReturn="True" TextWrapping="Wrap" MaxWidth="800" Text="{Binding BinStringToDecode}"></TextBox>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" Spacing="5">
+            <Button Command="{Binding DecodeBinaryStringCommand}">Decode</Button>
+        </StackPanel>
+        <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Height="500">
+            <TextBlock Text="{Binding BinDecodedString}" Background="White" Foreground="Black"></TextBlock>
+        </ScrollViewer>
+    </StackPanel>
+</UserControl>
