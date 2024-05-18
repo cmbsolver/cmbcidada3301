@@ -396,3 +396,5 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+/LiberPrimusAnalysisTool/.idea/.idea.LiberPrimusAnalysisTool/.idea/avalonia.xml
+/LiberPrimusAnalysisTool/.idea/.idea.LiberPrimusAnalysisTool/.idea/workspace.xml
