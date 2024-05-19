@@ -7,9 +7,9 @@ using MediatR;
 namespace LiberPrimusAnalysisTool.Application.Queries.Math
 {
     /// <summary>
-    /// Get Fibonacci Sequence
+    /// Get the prime sequence
     /// </summary>
-    public class GetFibonacciPrimeSequence : ISequence
+    public class GetEuclidNumbersSequence : ISequence
     {
         /// <summary>
         /// Gets the name.
@@ -17,7 +17,7 @@ namespace LiberPrimusAnalysisTool.Application.Queries.Math
         /// <value>
         /// The name.
         /// </value>
-        public static string Name => "Fibonacci Prime";
+        public static string Name => "Euclid Numbers";
 
         /// <summary>
         /// Builds the command.
@@ -26,17 +26,18 @@ namespace LiberPrimusAnalysisTool.Application.Queries.Math
         /// <returns></returns>
         public static object BuildCommand(long number)
         {
-            var fibonacciSequence = new GetFibonacciPrimeSequence.Query() { MaxNumber = number };
+            var primeSequence = new GetEuclidNumbersSequence.Query() { Number = number };
 
-            return fibonacciSequence;
+            return primeSequence;
         }
 
         /// <summary>
         /// Command
         /// </summary>
+        /// <seealso cref="IRequest" />
         public class Query : IRequest<NumericSequence>
         {
-            public long MaxNumber { get; set; }
+            public long Number { get; set; }
         }
 
         /// <summary>
@@ -44,12 +45,11 @@ namespace LiberPrimusAnalysisTool.Application.Queries.Math
         /// </summary>
         public class Handler : IRequestHandler<Query, NumericSequence>
         {
-            private IMediator _mediator;
+            private readonly IMediator _mediator;
 
             /// <summary>
             /// Initializes a new instance of the <see cref="Handler" /> class.
             /// </summary>
-            /// <param name="mediator">The mediator.</param>
             public Handler(IMediator mediator)
             {
                 _mediator = mediator;
@@ -63,32 +63,19 @@ namespace LiberPrimusAnalysisTool.Application.Queries.Math
             /// <returns>
             /// Response from the request
             /// </returns>
-            public Task<NumericSequence> Handle(Query request, CancellationToken cancellationToken)
+            public async Task<NumericSequence> Handle(Query request, CancellationToken cancellationToken)
             {
-                NumericSequence result = new NumericSequence(Name);
-                result.Number = request.MaxNumber;
-
-                long a = 0;
-                long b = 1;
-                long c = 0;
-
-                while (c <= request.MaxNumber)
+                var primoSequence = await _mediator.Send(new GetPrimorialSequence.Query() { Number = request.Number });
+                NumericSequence numericSequence = new NumericSequence(Name);
+                numericSequence.Number = request.Number;
+                
+                for (int i = 0; i < primoSequence.Sequence.Count; i++)
                 {
-                    c = a + b;
-                    a = b;
-                    b = c;
-
-                    if (c <= request.MaxNumber)
-                    {
-                        var isPrime = _mediator.Send(new GetIsPrime.Query { Number = c }).Result;
-                        if (isPrime)
-                        {
-                            result.Sequence.Add(c);
-                        }
-                    }
+                    var value = primoSequence.Sequence[i] + 1;
+                    numericSequence.Sequence.Add(value);
                 }
 
-                return Task.FromResult(result);
+                return numericSequence;
             }
         }
     }

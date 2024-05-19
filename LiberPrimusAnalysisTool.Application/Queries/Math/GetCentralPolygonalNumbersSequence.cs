@@ -9,7 +9,7 @@ namespace LiberPrimusAnalysisTool.Application.Queries.Math
     /// <summary>
     /// Get Fibonacci Sequence
     /// </summary>
-    public class CentralPolygonalNumbersSequence : ISequence
+    public class GetCentralPolygonalNumbersSequence : ISequence
     {
         /// <summary>
         /// Gets the name.
@@ -17,7 +17,7 @@ namespace LiberPrimusAnalysisTool.Application.Queries.Math
         /// <value>
         /// The name.
         /// </value>
-        public static string Name => "CentralPolygonalNumbers";
+        public static string Name => "Central Polygonal Numbers";
 
         /// <summary>
         /// Builds the command.
@@ -26,7 +26,7 @@ namespace LiberPrimusAnalysisTool.Application.Queries.Math
         /// <returns></returns>
         public static object BuildCommand(long number)
         {
-            var fibonacciSequence = new CentralPolygonalNumbersSequence.Query() { MaxNumber = number };
+            var fibonacciSequence = new GetCentralPolygonalNumbersSequence.Query() { MaxNumber = number };
 
             return fibonacciSequence;
         }

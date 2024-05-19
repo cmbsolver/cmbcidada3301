@@ -9,7 +9,7 @@ namespace LiberPrimusAnalysisTool.Application.Queries.Math
     /// <summary>
     /// Get Fibonacci Sequence
     /// </summary>
-    public class GetFibonacciPrimeSequence : ISequence
+    public class GetCubesSequence : ISequence
     {
         /// <summary>
         /// Gets the name.
@@ -17,7 +17,7 @@ namespace LiberPrimusAnalysisTool.Application.Queries.Math
         /// <value>
         /// The name.
         /// </value>
-        public static string Name => "Fibonacci Prime";
+        public static string Name => "Cubes";
 
         /// <summary>
         /// Builds the command.
@@ -26,7 +26,7 @@ namespace LiberPrimusAnalysisTool.Application.Queries.Math
         /// <returns></returns>
         public static object BuildCommand(long number)
         {
-            var fibonacciSequence = new GetFibonacciPrimeSequence.Query() { MaxNumber = number };
+            var fibonacciSequence = new GetCubesSequence.Query() { MaxNumber = number };
 
             return fibonacciSequence;
         }
@@ -68,23 +68,16 @@ namespace LiberPrimusAnalysisTool.Application.Queries.Math
                 NumericSequence result = new NumericSequence(Name);
                 result.Number = request.MaxNumber;
 
-                long a = 0;
-                long b = 1;
-                long c = 0;
-
-                while (c <= request.MaxNumber)
+                for (long n = 0; n < request.MaxNumber; n++)
                 {
-                    c = a + b;
-                    a = b;
-                    b = c;
-
-                    if (c <= request.MaxNumber)
+                    try
                     {
-                        var isPrime = _mediator.Send(new GetIsPrime.Query { Number = c }).Result;
-                        if (isPrime)
-                        {
-                            result.Sequence.Add(c);
-                        }
+                        var item = n * n * n;
+                        result.Sequence.Add(item);
+                    }
+                    catch
+                    {
+                        break;   
                     }
                 }
 
