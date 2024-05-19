@@ -1,4 +1,9 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
+using System.Threading;
+using System.Threading.Tasks;
 using LiberPrimusAnalysisTool.Application.Commands.Math;
 using MediatR;
 
@@ -16,7 +21,6 @@ public class GetSequences
         {
             Assembly asm = Assembly.GetAssembly(typeof(CalculateSequence));
             List<string> mathTypes = new List<string>();
-            var counter = 1;
 
             foreach (Type type in asm.GetTypes())
             {
@@ -24,11 +28,10 @@ public class GetSequences
                 {
                     var name = type.GetProperties().Where(p => p.Name == "Name").FirstOrDefault().GetValue(null);
                     mathTypes.Add($"{name}");
-                    counter++;
                 }
             }
 
-            return Task.FromResult(mathTypes);
+            return Task.FromResult(mathTypes.OrderBy(x => x).ToList());
         }
     }
 }

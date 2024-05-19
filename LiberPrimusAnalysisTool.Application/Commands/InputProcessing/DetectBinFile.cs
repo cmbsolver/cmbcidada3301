@@ -1,5 +1,8 @@
-﻿using MediatR;
-using Spectre.Console;
+﻿using System;
+using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
+using MediatR;
 
 namespace LiberPrimusAnalysisTool.Application.Commands.InputProcessing
 {
@@ -54,7 +57,6 @@ namespace LiberPrimusAnalysisTool.Application.Commands.InputProcessing
             {
                 string fileType = string.Empty;
                 string justFileName = Path.GetFileName(file);
-                AnsiConsole.WriteLine(file);
                 FileTypeInterrogator.IFileTypeInterrogator interrogator =
                     new FileTypeInterrogator.FileTypeInterrogator();
 

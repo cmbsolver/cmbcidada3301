@@ -1,10 +1,15 @@
-﻿using LiberPrimusAnalysisTool.Application.Commands.Image.ByteProcessing;
+﻿using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
+using LiberPrimusAnalysisTool.Application.Commands.Image.ByteProcessing;
 using LiberPrimusAnalysisTool.Application.Commands.Math;
 using LiberPrimusAnalysisTool.Application.Queries;
 using LiberPrimusAnalysisTool.Entity;
 using MediatR;
-using Spectre.Console;
 using System.Reflection;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace LiberPrimusAnalysisTool.Application.Commands.Image
 {
@@ -51,18 +56,15 @@ namespace LiberPrimusAnalysisTool.Application.Commands.Image
 
                 while (!returnToMenu)
                 {
-                    Console.Clear();
-                    AnsiConsole.Write(new FigletText("Winnow By Bytes").Centered().Color(Color.Green));
-
                     var pageSelection = new string[0]; //await _mediator.Send(new GetImageSelection.Query());
 
-                    var includeControlCharacters = AnsiConsole.Confirm("Include control characters?", false);
-                    var reverseBytes = AnsiConsole.Confirm("Reverse Bytes?", false);
-                    var shiftSequence = AnsiConsole.Confirm("Shift sequence down by one?", false);
-                    var minBitOfInsignificance = AnsiConsole.Ask<int>("Min bits of insignificance?", 1);
-                    var maxBitOfInsignificance = AnsiConsole.Ask<int>("Max bits of insignificance?", 3);
-                    var discardRemainder = AnsiConsole.Confirm("Discard remainder bits?", true);
-                    var binaryOnlyMode = AnsiConsole.Confirm("Binary only mode?", false);
+                    var includeControlCharacters = false;
+                    var reverseBytes = false;
+                    var shiftSequence = false;
+                    var minBitOfInsignificance = 1;
+                    var maxBitOfInsignificance = 3;
+                    var discardRemainder = true;
+                    var binaryOnlyMode = false;
 
                     Assembly asm = Assembly.GetAssembly(typeof(CalculateSequence));
                     List<Tuple<Type, string>> mathTypes = new List<Tuple<Type, string>>();
@@ -89,7 +91,7 @@ namespace LiberPrimusAnalysisTool.Application.Commands.Image
                         foreach (var name in mathTypes.Select(x => x.Item2))
                         {
                             string seqtext = string.Empty;
-                            var seq = await _mediator.Send(new CalculateSequence.Query(false, false, liberPage.Bytes.Count, name));
+                            var seq = await _mediator.Send(new CalculateSequence.Query(liberPage.Bytes.Count, name));
                             var sequence = seq.Sequence;
                             seqtext = reverseBytes ? $"ReversedBytes-{seq.Name}" : $"{seq.Name}";
 
@@ -99,9 +101,6 @@ namespace LiberPrimusAnalysisTool.Application.Commands.Image
                             }
 
                             // Getting the pixels from the sequence
-                            AnsiConsole.WriteLine($"Getting bytes from sequence {seqtext}");
-
-                            AnsiConsole.WriteLine($"Sequencing {liberPage.PageName}");
                             List<byte> tmpPixelList = new List<byte>();
                             List<byte> fileBytes = liberPage.Bytes;
 
@@ -130,8 +129,6 @@ namespace LiberPrimusAnalysisTool.Application.Commands.Image
                             }
 
                             Tuple<LiberPage, List<byte>> pixelData = new Tuple<LiberPage, List<byte>>(liberPage, tmpPixelList);
-
-                            AnsiConsole.WriteLine($"Sequenced {liberPage.PageName}");
 
                             GC.Collect();
 
@@ -166,7 +163,7 @@ namespace LiberPrimusAnalysisTool.Application.Commands.Image
                         }
                     });
 
-                    returnToMenu = AnsiConsole.Confirm("Return to main menu?");
+                    returnToMenu = true;
                 }
             }
         }

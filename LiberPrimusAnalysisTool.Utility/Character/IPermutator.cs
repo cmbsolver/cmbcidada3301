@@ -1,4 +1,6 @@
-﻿namespace LiberPrimusAnalysisTool.Utility.Character
+﻿using System.Collections.Generic;
+
+namespace LiberPrimusAnalysisTool.Utility.Character
 {
     /// <summary>
     /// ICharacterRepo

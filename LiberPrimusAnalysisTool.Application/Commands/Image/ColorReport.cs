@@ -1,9 +1,14 @@
-﻿using LiberPrimusAnalysisTool.Application.Queries;
+﻿using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.IO;
+using LiberPrimusAnalysisTool.Application.Queries;
 using LiberPrimusAnalysisTool.Application.Queries.Page;
 using LiberPrimusAnalysisTool.Entity;
 using MediatR;
-using Spectre.Console;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace LiberPrimusAnalysisTool.Application.Commands.Image
 {
@@ -50,9 +55,6 @@ namespace LiberPrimusAnalysisTool.Application.Commands.Image
 
                 while (!returnToMenu)
                 {
-                    Console.Clear();
-                    AnsiConsole.Write(new FigletText("Color Report").Centered().Color(Color.Green));
-
                     // Getting the pages we want
                     List<LiberPage> liberPages = new List<LiberPage>();
                     var pageSelection = new string[0]; //var pageSelection = await _mediator.Send(new GetImageSelection.Query());
@@ -93,7 +95,7 @@ namespace LiberPrimusAnalysisTool.Application.Commands.Image
                         await File.WriteAllTextAsync(reportFile, report.ToString());
                     });
 
-                    returnToMenu = AnsiConsole.Confirm("Return to main menu?");
+                    returnToMenu = true;
                 }
             }
         }

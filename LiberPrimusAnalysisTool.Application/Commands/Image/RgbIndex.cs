@@ -1,9 +1,12 @@
-﻿using LiberPrimusAnalysisTool.Application.Queries;
+﻿using System;
+using LiberPrimusAnalysisTool.Application.Queries;
 using LiberPrimusAnalysisTool.Entity;
 using LiberPrimusAnalysisTool.Utility.Character;
 using MediatR;
-using Spectre.Console;
 using System.Drawing;
+using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace LiberPrimusAnalysisTool.Application.Commands.Image
 {
@@ -23,7 +26,7 @@ namespace LiberPrimusAnalysisTool.Application.Commands.Image
         /// <summary>
         ///Handler
         /// </summary>
-        /// <seealso cref="IRequestHandler&lt;LiberPrimusAnalysisTool.Analyzers.ColorReport.Command&gt;" />
+        /// <seealso cref="ColorReport.Command&gt;" />
         public class Handler : INotificationHandler<Command>
         {
             /// <summary>
@@ -55,21 +58,17 @@ namespace LiberPrimusAnalysisTool.Application.Commands.Image
             public async Task Handle(Command request, CancellationToken cancellationToken)
             {
                 Console.Clear();
-                AnsiConsole.Write(new FigletText("RGB Index").Centered().Color(Spectre.Console.Color.Green));
+                var invertPixels = false;
 
-                var invertPixels = AnsiConsole.Confirm("Invert Pixels?", false);
-
-                var includeControlCharacters = AnsiConsole.Confirm("Include control characters?", false);
+                var includeControlCharacters = false;
 
                 var files = new string[0]; //var files = await _mediator.Send(new GetImageSelection.Query());
 
                 Parallel.ForEach(files, async ifile =>
                 {
                     var file = await _mediator.Send(new GetPageData.Query(ifile, true, invertPixels));
-                    AnsiConsole.WriteLine($"Processing {file}");
                     var rgbIndex = new RgbCharacters(file.PageName);
 
-                    AnsiConsole.WriteLine($"Document: {file} - RGB Breakdown");
                     foreach (var pixel in file.Pixels)
                     {
                         System.Drawing.Color color = ColorTranslator.FromHtml(pixel.Hex);
@@ -78,11 +77,6 @@ namespace LiberPrimusAnalysisTool.Application.Commands.Image
                         rgbIndex.AddB(_characterRepo.GetASCIICharFromDec(color.B, includeControlCharacters));
                     }
 
-                    AnsiConsole.WriteLine($"Red Text: {rgbIndex.R}");
-                    AnsiConsole.WriteLine($"Green Text: {rgbIndex.G}");
-                    AnsiConsole.WriteLine($"Blue Text: {rgbIndex.B}");
-
-                    AnsiConsole.WriteLine($"Writing: ./output/imagep/RgbIndex_{file.PageName}.txt");
                     File.AppendAllText($"./output/imagep/RgbIndex_{file.PageName}.txt", "Red Text:" + rgbIndex.R + Environment.NewLine + Environment.NewLine);
                     File.AppendAllText($"./output/imagep/RgbIndex_{file.PageName}.txt", "Green Text: " + rgbIndex.G + Environment.NewLine + Environment.NewLine);
                     File.AppendAllText($"./output/imagep/RgbIndex_{file.PageName}.txt", "Blue Text: " + rgbIndex.B + Environment.NewLine + Environment.NewLine);

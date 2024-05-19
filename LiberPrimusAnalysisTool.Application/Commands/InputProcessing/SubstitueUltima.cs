@@ -1,7 +1,12 @@
-﻿using LiberPrimusAnalysisTool.Utility.Character;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using LiberPrimusAnalysisTool.Utility.Character;
 using MediatR;
-using Spectre.Console;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace LiberPrimusAnalysisTool.Application.Commands.InputProcessing
 {
@@ -53,7 +58,7 @@ namespace LiberPrimusAnalysisTool.Application.Commands.InputProcessing
             {
                 HashSet<string> englishDictionary = new HashSet<string>();
 
-                var isGpStrict = AnsiConsole.Confirm("Use GP spellings?", true);
+                var isGpStrict = true;
 
                 var allFiles = new string[0]; //var allFiles = await _mediator.Send(new GetTextSelection.Query(false));
 
@@ -73,131 +78,115 @@ namespace LiberPrimusAnalysisTool.Application.Commands.InputProcessing
                     filesContents.Add(new Tuple<string, string[]>($"{fileInfo.Name}", flines));
                 }
 
-                AnsiConsole.Status()
-                    .AutoRefresh(true)
-                    .Spinner(Spinner.Known.Circle)
-                    .SpinnerStyle(Style.Parse("green bold"))
-                    .Start("Processing files...", ctx =>
+                using (var file = File.OpenText("words.txt"))
+                {
+                    string line;
+                    while ((line = file.ReadLine()) != null)
                     {
-                        ctx.Status("Reading dictionary...");
-                        ctx.Refresh();
-                        using (var file = File.OpenText("words.txt"))
+                        if (isGpStrict)
                         {
-                            string line;
-                            while ((line = file.ReadLine()) != null)
-                            {
-                                if (isGpStrict)
-                                {
-                                    englishDictionary.Add(line.ToUpper().Trim().Replace("QU", "CW").Replace("Q", "C")
-                                        .Replace("K", "C").Replace("V", "U").Replace("Z", "S"));
-                                }
-                                else
-                                {
-                                    englishDictionary.Add(line.ToUpper().Trim());
-                                }
-                            }
+                            englishDictionary.Add(line.ToUpper().Trim().Replace("QU", "CW").Replace("Q", "C")
+                                .Replace("K", "C").Replace("V", "U").Replace("Z", "S"));
+                        }
+                        else
+                        {
+                            englishDictionary.Add(line.ToUpper().Trim());
+                        }
+                    }
 
-                            file.Close();
-                            file.Dispose();
+                    file.Close();
+                    file.Dispose();
+                }
+
+                long counterWrite = 0;
+                long runNumber = 0;
+                long lastRunNumber = 0;
+                long lastWrite = 0;
+
+                if (File.Exists("lastrun.txt"))
+                {
+                    string lastRun = File.ReadAllText("lastrun.txt");
+                    string[] lastRunSplit = lastRun.Split(":");
+                    lastRunNumber = long.Parse(lastRunSplit[0]);
+                    lastWrite = long.Parse(lastRunSplit[1]);
+                }
+
+                foreach (var permutation in _characterRepo.GetPermutations(permuteRunes))
+                {
+                    counterWrite++;
+                    if (counterWrite >= (long.MaxValue - 1))
+                    {
+                        counterWrite = 0;
+                        runNumber++;
+                        File.WriteAllText("lastrun.txt", $"{runNumber}:{counterWrite}");
+                    }
+                    else if (counterWrite % 3301 == 0)
+                    {
+                        File.WriteAllText("lastrun.txt", $"{runNumber}:{counterWrite}");
+                    }
+
+                    if (runNumber >= lastRunNumber && counterWrite >= lastWrite)
+                    {
+                        HashSet<Tuple<string, string>> transcriptions = new HashSet<Tuple<string, string>>();
+
+                        for (int i = 0; i < permutation.Length; i++)
+                        {
+                            transcriptions.Add(new Tuple<string, string>(runes[i], permutation[i]));
                         }
 
-                        ctx.Status("Processing");
-                        ctx.Refresh();
-
-                        long counterWrite = 0;
-                        long runNumber = 0;
-                        long lastRunNumber = 0;
-                        long lastWrite = 0;
-
-                        if (File.Exists("lastrun.txt"))
+                        foreach (var file in filesContents)
                         {
-                            string lastRun = File.ReadAllText("lastrun.txt");
-                            string[] lastRunSplit = lastRun.Split(":");
-                            lastRunNumber = long.Parse(lastRunSplit[0]);
-                            lastWrite = long.Parse(lastRunSplit[1]);
-                        }
-
-                        foreach (var permutation in _characterRepo.GetPermutations(permuteRunes))
-                        {
-                            counterWrite++;
-                            if (counterWrite >= (long.MaxValue - 1))
+                            var lineScore = file.Item2.AsParallel().Select(x =>
                             {
-                                counterWrite = 0;
-                                runNumber++;
-                                File.WriteAllText("lastrun.txt", $"{runNumber}:{counterWrite}");
+                                int lineNumber = Array.IndexOf(file.Item2, x);
+                                var scoreAndWordCount = CalculateScoreAndWordCount(x, lineNumber, transcriptions,
+                                    englishDictionary);
+                                return scoreAndWordCount;
+                            });
+
+                            var wordCount = lineScore.Sum(x => x.Item1);
+                            var score = lineScore.Sum(x => x.Item2);
+                            var tlines = lineScore.OrderBy(x => x.Item4).Select(x => x.Item3);
+
+                            // This is if the dictionary matches the word count.
+                            var percentage = ((double)score / (double)wordCount) * 100;
+                            if (score == wordCount || percentage > 80)
+                            {
+                                string filename =
+                                    $"output/POSSIBLE-MATCH{DateTime.Now.ToBinary()}-{file.Item1}";
+                                File.AppendAllText(filename, $"PERCENTAGE: {percentage}\r\n");
+                                File.AppendAllText(filename, $"ORIGINAL: {string.Join(",", runes)}\r\n");
+                                File.AppendAllText(filename, $"REPLACE : {string.Join(",", permutation)}\r\n");
+                                File.AppendAllLines(filename, tlines);
                             }
-                            else if (counterWrite % 3301 == 0)
+                            else
                             {
-                                AnsiConsole.Write($"Processed: {runNumber}:{counterWrite} run permutations - {DateTime.Now}");
-                                File.WriteAllText("lastrun.txt", $"{runNumber}:{counterWrite}");
-                            }
-
-                            if (runNumber >= lastRunNumber && counterWrite >= lastWrite)
-                            {
-                                HashSet<Tuple<string, string>> transcriptions = new HashSet<Tuple<string, string>>();
-
-                                for (int i = 0; i < permutation.Length; i++)
+                                if (fileLeader.ContainsKey(file.Item1))
                                 {
-                                    transcriptions.Add(new Tuple<string, string>(runes[i], permutation[i]));
-                                }
-
-                                foreach (var file in filesContents)
-                                {
-                                    var lineScore = file.Item2.AsParallel().Select(x =>
+                                    if (percentage > fileLeader[file.Item1])
                                     {
-                                        int lineNumber = Array.IndexOf(file.Item2, x);
-                                        var scoreAndWordCount = CalculateScoreAndWordCount(x, lineNumber, transcriptions,
-                                            englishDictionary);
-                                        return scoreAndWordCount;
-                                    });
-                                    
-                                    var wordCount = lineScore.Sum(x => x.Item1);
-                                    var score = lineScore.Sum(x => x.Item2);
-                                    var tlines = lineScore.OrderBy(x => x.Item4).Select(x => x.Item3);
+                                        fileLeader[file.Item1] = percentage;
+                                        fileContents[file.Item1] = tlines.ToArray();
 
-                                    // This is if the dictionary matches the word count.
-                                    var percentage = ((double)score / (double)wordCount) * 100;
-                                    if (score == wordCount || percentage > 80)
-                                    {
-                                        AnsiConsole.WriteLine($"File: {file.Item1} - {DateTime.Now}");
                                         string filename =
                                             $"output/POSSIBLE-MATCH{DateTime.Now.ToBinary()}-{file.Item1}";
                                         File.AppendAllText(filename, $"PERCENTAGE: {percentage}\r\n");
-                                        File.AppendAllText(filename, $"ORIGINAL: {string.Join(",", runes)}\r\n");
-                                        File.AppendAllText(filename, $"REPLACE : {string.Join(",", permutation)}\r\n");
+                                        File.AppendAllText(filename,
+                                            $"ORIGINAL: {string.Join(",", runes)}\r\n");
+                                        File.AppendAllText(filename,
+                                            $"REPLACE : {string.Join(",", permutation)}\r\n");
                                         File.AppendAllLines(filename, tlines);
                                     }
-                                    else
-                                    {
-                                        if (fileLeader.ContainsKey(file.Item1))
-                                        {
-                                            if (percentage > fileLeader[file.Item1])
-                                            {
-                                                AnsiConsole.WriteLine(
-                                                    $"File: {file.Item1} - Highest Percentage: {percentage}");
-                                                fileLeader[file.Item1] = percentage;
-                                                fileContents[file.Item1] = tlines.ToArray();
-
-                                                string filename =
-                                                    $"output/POSSIBLE-MATCH{DateTime.Now.ToBinary()}-{file.Item1}";
-                                                File.AppendAllText(filename, $"PERCENTAGE: {percentage}\r\n");
-                                                File.AppendAllText(filename,
-                                                    $"ORIGINAL: {string.Join(",", runes)}\r\n");
-                                                File.AppendAllText(filename,
-                                                    $"REPLACE : {string.Join(",", permutation)}\r\n");
-                                                File.AppendAllLines(filename, tlines);
-                                            }
-                                        }
-                                        else
-                                        {
-                                            fileLeader.Add(file.Item1, percentage);
-                                            fileContents.Add(file.Item1, tlines.ToArray());
-                                        }
-                                    }
+                                }
+                                else
+                                {
+                                    fileLeader.Add(file.Item1, percentage);
+                                    fileContents.Add(file.Item1, tlines.ToArray());
                                 }
                             }
                         }
-                    });
+                    }
+                }
             }
 
             private Tuple<int, int, string, int> CalculateScoreAndWordCount(string line, int lineNumber,

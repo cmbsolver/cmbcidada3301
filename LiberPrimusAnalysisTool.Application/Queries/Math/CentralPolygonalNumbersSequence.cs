@@ -7,9 +7,9 @@ using MediatR;
 namespace LiberPrimusAnalysisTool.Application.Queries.Math
 {
     /// <summary>
-    /// Get Totient Sequence
+    /// Get Fibonacci Sequence
     /// </summary>
-    public class GetTotientSequence : ISequence
+    public class CentralPolygonalNumbersSequence : ISequence
     {
         /// <summary>
         /// Gets the name.
@@ -17,7 +17,7 @@ namespace LiberPrimusAnalysisTool.Application.Queries.Math
         /// <value>
         /// The name.
         /// </value>
-        public static string Name => "Totient";
+        public static string Name => "CentralPolygonalNumbers";
 
         /// <summary>
         /// Builds the command.
@@ -26,23 +26,17 @@ namespace LiberPrimusAnalysisTool.Application.Queries.Math
         /// <returns></returns>
         public static object BuildCommand(long number)
         {
-            var query = new Query() { Number = number };
+            var fibonacciSequence = new CentralPolygonalNumbersSequence.Query() { MaxNumber = number };
 
-            return query;
+            return fibonacciSequence;
         }
 
         /// <summary>
-        /// Query
+        /// Command
         /// </summary>
         public class Query : IRequest<NumericSequence>
         {
-            /// <summary>
-            /// Gets or sets the number.
-            /// </summary>
-            /// <value>
-            /// The number.
-            /// </value>
-            public long Number { get; set; }
+            public long MaxNumber { get; set; }
         }
 
         /// <summary>
@@ -50,6 +44,17 @@ namespace LiberPrimusAnalysisTool.Application.Queries.Math
         /// </summary>
         public class Handler : IRequestHandler<Query, NumericSequence>
         {
+            private IMediator _mediator;
+
+            /// <summary>
+            /// Initializes a new instance of the <see cref="Handler" /> class.
+            /// </summary>
+            /// <param name="mediator">The mediator.</param>
+            public Handler(IMediator mediator)
+            {
+                _mediator = mediator;
+            }
+
             /// <summary>
             /// Handles a request
             /// </summary>
@@ -60,39 +65,23 @@ namespace LiberPrimusAnalysisTool.Application.Queries.Math
             /// </returns>
             public Task<NumericSequence> Handle(Query request, CancellationToken cancellationToken)
             {
-                var totient = new NumericSequence(Name);
-                totient.Number = request.Number;
-                var n = request.Number;
+                NumericSequence result = new NumericSequence(Name);
+                result.Number = request.MaxNumber;
 
-                for (long i = 1; i <= n; i++)
+                for (long n = 0; n < request.MaxNumber; n++)
                 {
-                    if (GCD(i, n) == 1)
+                    try
                     {
-                        totient.Sequence.Add(i);
+                        var item = n * (n + 1) / 2 + 1;
+                        result.Sequence.Add(item);
+                    }
+                    catch
+                    {
+                        break;   
                     }
                 }
 
-                totient.Result = totient.Sequence.Count;
-
-                return Task.FromResult(totient);
-            }
-
-            /// <summary>
-            /// GCDs the specified a.
-            /// </summary>
-            /// <param name="a">a.</param>
-            /// <param name="b">The b.</param>
-            /// <returns></returns>
-            private long GCD(long a, long b)
-            {
-                while (b != 0)
-                {
-                    var t = b;
-                    b = a % b;
-                    a = t;
-                }
-
-                return a;
+                return Task.FromResult(result);
             }
         }
     }

@@ -37,8 +37,10 @@ public partial class GenerateSequenceViewModel : ViewModelBase
     [RelayCommand]
     private async Task CalculateSequence()
     {
-        var result = await _mediator.Send(new CalculateSequence.Query(false, false, Convert.ToInt64(NumberToCheck),
-            (string)SelectedSequenceType));
+        var result = await _mediator.Send(new CalculateSequence.Query(
+            Convert.ToInt64(NumberToCheck), 
+            (string)SelectedSequenceType)
+        );
 
         StringBuilder sb = new StringBuilder();
         if (result.Result != null)

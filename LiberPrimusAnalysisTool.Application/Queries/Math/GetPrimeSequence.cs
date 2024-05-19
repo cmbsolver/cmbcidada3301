@@ -1,7 +1,8 @@
-﻿using LiberPrimusAnalysisTool.Application.Interfaces;
+﻿using System.Threading;
+using System.Threading.Tasks;
+using LiberPrimusAnalysisTool.Application.Interfaces;
 using LiberPrimusAnalysisTool.Entity;
 using MediatR;
-using Spectre.Console;
 
 namespace LiberPrimusAnalysisTool.Application.Queries.Math
 {
@@ -25,22 +26,6 @@ namespace LiberPrimusAnalysisTool.Application.Queries.Math
         /// <returns></returns>
         public static object BuildCommand(long number)
         {
-            var primeSequence = new GetPrimeSequence.Query() { Number = number };
-
-            return primeSequence;
-        }
-
-        /// <summary>
-        /// Prompts the command.
-        /// </summary>
-        /// <returns></returns>
-        /// <exception cref="System.NotImplementedException"></exception>
-        public static object PromptCommand()
-        {
-            Console.Clear();
-            AnsiConsole.Write(new FigletText("Output Prime Sequence").Centered().Color(Color.Green));
-
-            var number = AnsiConsole.Ask<int>("What is the max number?");
             var primeSequence = new GetPrimeSequence.Query() { Number = number };
 
             return primeSequence;

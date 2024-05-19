@@ -1,7 +1,9 @@
-﻿using LiberPrimusAnalysisTool.Application.Interfaces;
+﻿using System;
+using System.Threading;
+using System.Threading.Tasks;
+using LiberPrimusAnalysisTool.Application.Interfaces;
 using LiberPrimusAnalysisTool.Entity;
 using MediatR;
-using Spectre.Console;
 
 namespace LiberPrimusAnalysisTool.Application.Queries.Math
 {
@@ -26,23 +28,6 @@ namespace LiberPrimusAnalysisTool.Application.Queries.Math
         public static object BuildCommand(long number)
         {
             var result = new GetNaturalSequence.Query { MaxNumber = number };
-
-            return result;
-        }
-
-        /// <summary>
-        /// Prompts the command.
-        /// </summary>
-        /// <returns></returns>
-        /// <exception cref="System.NotImplementedException"></exception>
-        public static object PromptCommand()
-        {
-            Console.Clear();
-            AnsiConsole.Write(new FigletText("Output Natural Sequence").Centered().Color(Color.Green));
-
-            var nnumber = AnsiConsole.Ask<long>("What is the max number?");
-
-            var result = new GetNaturalSequence.Query { MaxNumber = nnumber };
 
             return result;
         }

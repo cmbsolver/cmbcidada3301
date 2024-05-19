@@ -1,7 +1,8 @@
-﻿using LiberPrimusAnalysisTool.Application.Interfaces;
+﻿using System.Threading;
+using System.Threading.Tasks;
+using LiberPrimusAnalysisTool.Application.Interfaces;
 using LiberPrimusAnalysisTool.Entity;
 using MediatR;
-using Spectre.Console;
 
 namespace LiberPrimusAnalysisTool.Application.Queries.Math
 {
@@ -26,22 +27,6 @@ namespace LiberPrimusAnalysisTool.Application.Queries.Math
         public static object BuildCommand(long number)
         {
             var fibonacciSequence = new GetFibonacciPrimeSequence.Query() { MaxNumber = number };
-
-            return fibonacciSequence;
-        }
-
-        /// <summary>
-        /// Prompts the command.
-        /// </summary>
-        /// <returns></returns>
-        /// <exception cref="System.NotImplementedException"></exception>
-        public static object PromptCommand()
-        {
-            Console.Clear();
-            AnsiConsole.Write(new FigletText("Output Fib Sequence").Centered().Color(Color.Green));
-
-            var number = AnsiConsole.Ask<int>("What is the max number?");
-            var fibonacciSequence = new GetFibonacciSequence.Query() { MaxNumber = number };
 
             return fibonacciSequence;
         }

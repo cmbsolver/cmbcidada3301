@@ -1,8 +1,12 @@
-﻿using ImageMagick;
+﻿using System;
+using ImageMagick;
 using LiberPrimusAnalysisTool.Entity;
 using MediatR;
-using Spectre.Console;
 using System.Drawing;
+using System.IO;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace LiberPrimusAnalysisTool.Application.Queries
 {
@@ -78,7 +82,6 @@ namespace LiberPrimusAnalysisTool.Application.Queries
             public Task<LiberPage> Handle(Query request, CancellationToken cancellationToken)
             {
                 LiberPage page;
-                AnsiConsole.WriteLine($"Getting page info for {request.FileName}");
 
                 using (var imageFromFile = new MagickImage(request.FileName))
                 using (var pixels = imageFromFile.GetPixels())

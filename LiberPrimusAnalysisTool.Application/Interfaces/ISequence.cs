@@ -14,11 +14,6 @@
         static abstract string Name { get; }
 
         /// <summary>
-        /// Prompts the command.
-        /// </summary>
-        static abstract object PromptCommand();
-
-        /// <summary>
         /// Builds the command.
         /// </summary>
         /// <param name="number">The number.</param>

@@ -1,4 +1,4 @@
-﻿using Spectre.Console;
+﻿using System.Collections.Generic;
 
 namespace LiberPrimusAnalysisTool.Utility.Character
 {

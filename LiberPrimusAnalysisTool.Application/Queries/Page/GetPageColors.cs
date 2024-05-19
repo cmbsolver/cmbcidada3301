@@ -1,7 +1,11 @@
-﻿using ImageMagick;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using ImageMagick;
 using LiberPrimusAnalysisTool.Entity;
 using MediatR;
-using Spectre.Console;
 
 namespace LiberPrimusAnalysisTool.Application.Queries.Page
 {
@@ -64,8 +68,6 @@ namespace LiberPrimusAnalysisTool.Application.Queries.Page
 
                 var page = await _mediator.Send(new GetPageData.Query(request.FileName, false, false));
 
-                AnsiConsole.WriteLine($"Getting colors for {page.FileName}");
-
                 using (var imageFromFile = new MagickImage(page.FileName))
                 using (var pixels = imageFromFile.GetPixels())
                 {
@@ -80,7 +82,6 @@ namespace LiberPrimusAnalysisTool.Application.Queries.Page
 
                         colors.Add(liberColor);
 
-                        AnsiConsole.WriteLine($"Processing: {page} - Getting: {liberColor}");
                         pixels.Dispose();
                     }
                 }

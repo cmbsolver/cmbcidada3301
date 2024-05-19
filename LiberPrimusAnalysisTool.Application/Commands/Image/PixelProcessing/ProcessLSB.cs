@@ -1,8 +1,13 @@
-﻿using LiberPrimusAnalysisTool.Entity;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using LiberPrimusAnalysisTool.Entity;
 using LiberPrimusAnalysisTool.Utility.Character;
 using MediatR;
-using Spectre.Console;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace LiberPrimusAnalysisTool.Application.Commands.Image.PixelProcessing
 {
@@ -98,7 +103,7 @@ namespace LiberPrimusAnalysisTool.Application.Commands.Image.PixelProcessing
         /// <summary>
         ///Handler
         /// </summary>
-        /// <seealso cref="IRequestHandler&lt;LiberPrimusAnalysisTool.Analyzers.ColorReport.Command&gt;" />
+        /// <seealso cref="ColorReport.Command&gt;" />
         public class Handler : INotificationHandler<Command>
         {
             /// <summary>
@@ -129,7 +134,6 @@ namespace LiberPrimusAnalysisTool.Application.Commands.Image.PixelProcessing
             /// <param name="cancellationToken">Cancellation token</param>
             public Task Handle(Command request, CancellationToken cancellationToken)
             {
-                AnsiConsole.WriteLine($"ProcessLSB-{request.Method}: Getting bits from {request.PixelData.Item1.PageName}");
                 List<char> bits = new List<char>();
                 List<char> builderBits = new List<char>();
                 bool skipRemainingBits = false;
@@ -232,7 +236,6 @@ namespace LiberPrimusAnalysisTool.Application.Commands.Image.PixelProcessing
                     }
                 }
 
-                AnsiConsole.WriteLine($"ProcessLSB-{request.Method}: Building bytes for bits for {request.PixelData.Item1.PageName}");
                 List<string> charBinList = new List<string>();
                 StringBuilder ascii = new StringBuilder();
                 foreach (var character in bits)
@@ -245,11 +248,8 @@ namespace LiberPrimusAnalysisTool.Application.Commands.Image.PixelProcessing
                     }
                 }
 
-                AnsiConsole.WriteLine($"ProcessLSB-{request.Method}: Filtering out nibbles for {request.PixelData.Item1.PageName}");
                 charBinList = charBinList.Where(x => x.Length == bitBreak).ToList();
 
-                AnsiConsole.WriteLine($"ProcessLSB-{request.Method}: Building character string for {request.PixelData.Item1.PageName}");
-                AnsiConsole.WriteLine($"ProcessLSB-{request.Method}: Outputting file for {request.PixelData.Item1.PageName}");
                 using (var file = File.CreateText($"./output/imagep/IMG-{request.PixelData.Item1.PageName}-LSB-{request.Method}-{request.ColorOrder}-{request.AsciiProcessing}-{request.BitsOfSig}.txt"))
                 {
                     foreach (var charBin in charBinList)
@@ -272,7 +272,6 @@ namespace LiberPrimusAnalysisTool.Application.Commands.Image.PixelProcessing
                                 catch (Exception e)
                                 {
                                     file.Write(string.Empty);
-                                    AnsiConsole.WriteLine($"Error: {e.Message}");
                                 }
                                 break;
 

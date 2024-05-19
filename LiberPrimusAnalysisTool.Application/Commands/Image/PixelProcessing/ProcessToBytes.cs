@@ -1,8 +1,12 @@
-﻿using LiberPrimusAnalysisTool.Entity;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using LiberPrimusAnalysisTool.Entity;
 using LiberPrimusAnalysisTool.Utility.Character;
 using MediatR;
-using Spectre.Console;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace LiberPrimusAnalysisTool.Application.Commands.Image.PixelProcessing
 {
@@ -78,7 +82,7 @@ namespace LiberPrimusAnalysisTool.Application.Commands.Image.PixelProcessing
         /// <summary>
         ///Handler
         /// </summary>
-        /// <seealso cref="IRequestHandler&lt;LiberPrimusAnalysisTool.Analyzers.ColorReport.Command&gt;" />
+        /// <seealso cref="ColorReport.Command&gt;" />
         public class Handler : INotificationHandler<Command>
         {
             /// <summary>
@@ -109,7 +113,6 @@ namespace LiberPrimusAnalysisTool.Application.Commands.Image.PixelProcessing
             /// <param name="cancellationToken">Cancellation token</param>
             public Task Handle(Command request, CancellationToken cancellationToken)
             {
-                AnsiConsole.WriteLine($"ProcessToBytes-{request.Method}: Getting bits from {request.PixelData.Item1.PageName}");
                 List<char> bits = new List<char>();
                 List<char> builderBits = new List<char>();
                 bool skipRemainingBits = false;
@@ -210,7 +213,6 @@ namespace LiberPrimusAnalysisTool.Application.Commands.Image.PixelProcessing
                     }
                 }
 
-                AnsiConsole.WriteLine($"ProcessToBytes-{request.Method}: Building bytes for bits for {request.PixelData.Item1.PageName}");
                 List<byte> bytes = new List<byte>();
                 StringBuilder ascii = new StringBuilder();
                 foreach (var character in bits)
@@ -223,7 +225,6 @@ namespace LiberPrimusAnalysisTool.Application.Commands.Image.PixelProcessing
                     }
                 }
 
-                AnsiConsole.WriteLine($"ProcessToBytes-{request.Method}: Outputting bin file for {request.PixelData.Item1.PageName}");
                 File.WriteAllBytes($"./output/imagep/IMG-{request.PixelData.Item1.PageName}-LSB-{request.Method}-{request.ColorOrder}-{request.BitsOfSig}.bin", bytes.ToArray());
 
                 return Task.CompletedTask;

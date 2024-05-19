@@ -1,4 +1,6 @@
-﻿using Spectre.Console;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace LiberPrimusAnalysisTool.Entity
 {
@@ -67,8 +69,6 @@ namespace LiberPrimusAnalysisTool.Entity
                     }
                 }
             }
-
-            AnsiConsole.MarkupLine($"Scored {fileName}");
         }
 
         /// <summary>
@@ -78,7 +78,7 @@ namespace LiberPrimusAnalysisTool.Entity
         /// <param name="lines">The lines.</param>
         /// <param name="englishDictionary">The english dictionary.</param>
         /// <returns></returns>
-        public static IEnumerable<string> GetDictionaryWords(string filename, string[] lines, IEnumerable<string> englishDictionary, StatusContext? statusContext)
+        public static IEnumerable<string> GetDictionaryWords(string filename, string[] lines, IEnumerable<string> englishDictionary)
         {
             List<string> words = new List<string>();
             var lineCount = lines.Length;
@@ -87,11 +87,6 @@ namespace LiberPrimusAnalysisTool.Entity
             {
                 words.AddRange(englishDictionary.AsParallel().Where(x => line.Contains(x)));
                 lineCount--;
-
-                if (statusContext is null) continue;
-
-                statusContext.Status($"{filename} - line: {lineCount}");
-                statusContext.Refresh();
             }
             return words;
         }

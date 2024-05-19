@@ -1,7 +1,11 @@
-﻿using LiberPrimusAnalysisTool.Application.Queries;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
+using LiberPrimusAnalysisTool.Application.Queries;
 using LiberPrimusAnalysisTool.Utility.Character;
 using MediatR;
-using Spectre.Console;
 
 namespace LiberPrimusAnalysisTool.Application.Commands.Image
 {
@@ -51,10 +55,7 @@ namespace LiberPrimusAnalysisTool.Application.Commands.Image
             /// <param name="cancellationToken">Cancellation token</param>
             public async Task Handle(Command request, CancellationToken cancellationToken)
             {
-                Console.Clear();
-                AnsiConsole.Write(new FigletText("Color Count to Bytes").Centered().Color(Spectre.Console.Color.Green));
-
-                var invertPixels = AnsiConsole.Confirm("Reverse Pixels?", false);
+                var invertPixels = false;
 
                 var tag = invertPixels ? "Reversed" : "Normal";
 
@@ -64,7 +65,6 @@ namespace LiberPrimusAnalysisTool.Application.Commands.Image
                 {
                     var fileInfo = new FileInfo(ifile);
                     var file = await _mediator.Send(new GetPageData.Query(ifile, true, invertPixels));
-                    AnsiConsole.WriteLine($"Processing {file}");
 
                     string currentColor = string.Empty;
                     int currentColorCount = 0;

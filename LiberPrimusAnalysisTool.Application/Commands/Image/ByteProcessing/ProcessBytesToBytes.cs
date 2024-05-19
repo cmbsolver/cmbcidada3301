@@ -1,7 +1,11 @@
-﻿using LiberPrimusAnalysisTool.Entity;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using LiberPrimusAnalysisTool.Entity;
 using MediatR;
-using Spectre.Console;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace LiberPrimusAnalysisTool.Application.Commands.Image.ByteProcessing
 {
@@ -82,7 +86,6 @@ namespace LiberPrimusAnalysisTool.Application.Commands.Image.ByteProcessing
             /// <param name="cancellationToken">Cancellation token</param>
             public Task Handle(Command request, CancellationToken cancellationToken)
             {
-                AnsiConsole.WriteLine($"ProcessBytesToBytes-{request.Method}: Getting bits from {request.ByteData.Item1.PageName}");
                 List<char> bits = new List<char>();
                 List<char> builderBits = new List<char>();
                 bool skipRemainingBits = false;
@@ -117,7 +120,6 @@ namespace LiberPrimusAnalysisTool.Application.Commands.Image.ByteProcessing
                     }
                 }
 
-                AnsiConsole.WriteLine($"ProcessBytesToBytes-{request.Method}: Building bytes for bits for {request.ByteData.Item1.PageName}");
                 List<byte> bytes = new List<byte>();
                 StringBuilder ascii = new StringBuilder();
                 foreach (var character in bits)
@@ -130,7 +132,6 @@ namespace LiberPrimusAnalysisTool.Application.Commands.Image.ByteProcessing
                     }
                 }
 
-                AnsiConsole.WriteLine($"ProcessBytesToBytes-{request.Method}: Outputting bin file for {request.ByteData.Item1.PageName}");
                 File.WriteAllBytes($"./output/bytep/BYTE-{request.ByteData.Item1.PageName}-LSB-{request.Method}-{request.BitsOfSig}.bin", bytes.ToArray());
 
                 return Task.CompletedTask;

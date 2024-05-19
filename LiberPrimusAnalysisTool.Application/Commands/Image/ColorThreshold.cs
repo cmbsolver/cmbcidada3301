@@ -1,9 +1,15 @@
-﻿using ImageMagick;
+﻿using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.IO;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using ImageMagick;
 using LiberPrimusAnalysisTool.Application.Queries;
 using LiberPrimusAnalysisTool.Application.Queries.Page;
 using LiberPrimusAnalysisTool.Entity;
 using MediatR;
-using Spectre.Console;
 
 namespace LiberPrimusAnalysisTool.Application.Commands.Image
 {
@@ -50,9 +56,6 @@ namespace LiberPrimusAnalysisTool.Application.Commands.Image
 
                 while (!returnToMenu)
                 {
-                    Console.Clear();
-                    AnsiConsole.Write(new FigletText("Color Threshold").Centered().Color(Color.Green));
-
                     // Getting the pages we want
                     List<LiberPage> liberPages = new List<LiberPage>();
                     var pageSelection = new string[0]; //var pageSelection = await _mediator.Send(new GetImageSelection.Query());
@@ -126,7 +129,6 @@ namespace LiberPrimusAnalysisTool.Application.Commands.Image
                         {
                             string fileName = $"{test.Item2}/{page.PageName}-{test.Item1.LiberColorHashless}.jpg";
                             File.Copy(page.FileName, fileName, true);
-                            AnsiConsole.WriteLine($"Thresholding colors through {test.Item1.LiberColorHex} on {fileName}");
                             using (var image = new MagickImage(fileName))
                             using (var pixels = image.GetPixels())
                             {
@@ -172,7 +174,7 @@ namespace LiberPrimusAnalysisTool.Application.Commands.Image
                         });
                     });
 
-                    returnToMenu = AnsiConsole.Confirm("Return to main menu?");
+                    returnToMenu = true;
                 }
             }
         }

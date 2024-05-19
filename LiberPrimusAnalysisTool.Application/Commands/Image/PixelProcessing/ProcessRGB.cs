@@ -1,7 +1,11 @@
-﻿using LiberPrimusAnalysisTool.Entity;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
+using LiberPrimusAnalysisTool.Entity;
 using LiberPrimusAnalysisTool.Utility.Character;
 using MediatR;
-using Spectre.Console;
 
 namespace LiberPrimusAnalysisTool.Application.Commands.Image.PixelProcessing
 {
@@ -67,7 +71,7 @@ namespace LiberPrimusAnalysisTool.Application.Commands.Image.PixelProcessing
         /// <summary>
         ///Handler
         /// </summary>
-        /// <seealso cref="IRequestHandler&lt;LiberPrimusAnalysisTool.Analyzers.ColorReport.Command&gt;" />
+        /// <seealso cref="ColorReport.Command&gt;" />
         public class Handler : INotificationHandler<Command>
         {
             /// <summary>
@@ -98,10 +102,8 @@ namespace LiberPrimusAnalysisTool.Application.Commands.Image.PixelProcessing
             /// <param name="cancellationToken">Cancellation token</param>
             public Task Handle(Command request, CancellationToken cancellationToken)
             {
-                AnsiConsole.WriteLine($"ProcessRGB-{request.Method}: Processing {request.PixelData.Item1.PageName}");
                 var rgbIndex = new RgbCharacters(request.PixelData.Item1.PageName);
 
-                AnsiConsole.WriteLine($"ProcessRGB-{request.Method}: Document: {request.PixelData.Item1.PageName} - RGB Breakdown");
                 foreach (var pixel in request.PixelData.Item2)
                 {
                     rgbIndex.AddR(_characterRepo.GetASCIICharFromDec(pixel.R, request.IncludeControlCharacters));
@@ -109,11 +111,6 @@ namespace LiberPrimusAnalysisTool.Application.Commands.Image.PixelProcessing
                     rgbIndex.AddB(_characterRepo.GetASCIICharFromDec(pixel.B, request.IncludeControlCharacters));
                 }
 
-                AnsiConsole.WriteLine($"ProcessRGB-{request.Method}: Red Text: {rgbIndex.R}");
-                AnsiConsole.WriteLine($"ProcessRGB-{request.Method}: Green Text: {rgbIndex.G}");
-                AnsiConsole.WriteLine($"ProcessRGB-{request.Method}: Blue Text: {rgbIndex.B}");
-
-                AnsiConsole.WriteLine($"ProcessRGB-{request.Method}: Writing: ./output/imagep/IMG-{request.PixelData.Item1.PageName}-RGB.txt");
                 File.AppendAllText($"./output/imagep/IMG-{request.PixelData.Item1.PageName}-{request.Method}-RGB-red.txt", rgbIndex.R);
                 File.AppendAllText($"./output/imagep/IMG-{request.PixelData.Item1.PageName}-{request.Method}-RGB-green.txt", rgbIndex.G);
                 File.AppendAllText($"./output/imagep/IMG-{request.PixelData.Item1.PageName}-{request.Method}-RGB-blue.txt", rgbIndex.B);

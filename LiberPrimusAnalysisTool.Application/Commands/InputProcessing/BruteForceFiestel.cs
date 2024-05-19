@@ -1,7 +1,11 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using LiberPrimusAnalysisTool.Utility.Character;
 using MediatR;
-using Spectre.Console;
 
 namespace LiberPrimusAnalysisTool.Application.Commands.InputProcessing
 {
@@ -73,47 +77,36 @@ namespace LiberPrimusAnalysisTool.Application.Commands.InputProcessing
                     filesContents.Add(new Tuple<string, string[]>($"{fileInfo.Name}", flines));
                 }
 
-                AnsiConsole.Status()
-                    .AutoRefresh(true)
-                    .Spinner(Spinner.Known.Circle)
-                    .SpinnerStyle(Style.Parse("green bold"))
-                    .Start("Processing files...", ctx =>
+                Parallel.ForEach(filesContents, file =>
+                {
+                    List<string> tlines = new List<string>();
+
+                    for (int i = 0; i < file.Item2.Length; i++)
                     {
-                        ctx.Status("Processing");
-                        ctx.Refresh();
+                        StringBuilder tmpLine = new StringBuilder();
 
-                        Parallel.ForEach(filesContents, file =>
+                        for (int j = 0; j < file.Item2[i].Length; j++)
                         {
-                            List<string> tlines = new List<string>();
+                            tmpLine.Append(_characterRepo.GetCharFromRune(file.Item2[i][j].ToString()));
+                        }
 
-                            for (int i = 0; i < file.Item2.Length; i++)
+                        tlines.Add(tmpLine.ToString());
+                    }
+
+                    for (int i = 0; i < tlines.Count; i++)
+                    {
+                        string tline = tlines[i];
+                        foreach (var dint in _decryptionInts)
+                        {
+                            while (tline.Length % 16 != 0)
                             {
-                                StringBuilder tmpLine = new StringBuilder();
-
-                                for (int j = 0; j < file.Item2[i].Length; j++)
-                                {
-                                    tmpLine.Append(_characterRepo.GetCharFromRune(file.Item2[i][j].ToString()));
-                                }
-
-                                tlines.Add(tmpLine.ToString());
+                                tline += " ";
                             }
 
-                            for (int i = 0; i < tlines.Count; i++)
-                            {
-                                string tline = tlines[i];
-                                foreach (var dint in _decryptionInts)
-                                {
-                                    while (tline.Length % 16 != 0)
-                                    {
-                                        tline += " ";
-                                    }
-                                    
-                                    var decodedString = Decode(tline, dint);
-                                    AnsiConsole.WriteLine($"{dint}: {decodedString}");
-                                }
-                            }
-                        });
-                    });
+                            var decodedString = Decode(tline, dint);
+                        }
+                    }
+                });
             }
 
             /// <summary>

@@ -1,8 +1,13 @@
-﻿using LiberPrimusAnalysisTool.Entity;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using LiberPrimusAnalysisTool.Entity;
 using LiberPrimusAnalysisTool.Utility.Character;
 using MediatR;
-using Spectre.Console;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace LiberPrimusAnalysisTool.Application.Commands.Image.ByteProcessing
 {
@@ -87,7 +92,7 @@ namespace LiberPrimusAnalysisTool.Application.Commands.Image.ByteProcessing
         /// <summary>
         ///Handler
         /// </summary>
-        /// <seealso cref="IRequestHandler&lt;LiberPrimusAnalysisTool.Analyzers.ColorReport.Command&gt;" />
+        /// <seealso cref="ColorReport.Command&gt;" />
         public class Handler : INotificationHandler<Command>
         {
             /// <summary>
@@ -111,7 +116,6 @@ namespace LiberPrimusAnalysisTool.Application.Commands.Image.ByteProcessing
             /// <param name="cancellationToken">Cancellation token</param>
             public Task Handle(Command request, CancellationToken cancellationToken)
             {
-                AnsiConsole.WriteLine($"ProcessBytesLSB-{request.Method}: Getting bits from {request.ByteData.Item1.PageName}");
                 List<char> bits = new List<char>();
                 List<char> builderBits = new List<char>();
                 bool skipRemainingBits = false;
@@ -148,7 +152,6 @@ namespace LiberPrimusAnalysisTool.Application.Commands.Image.ByteProcessing
                     }
                 }
 
-                AnsiConsole.WriteLine($"ProcessBytesLSB-{request.Method}: Building bytes for bits for {request.ByteData.Item1.PageName}");
                 List<string> charBinList = new List<string>();
                 StringBuilder ascii = new StringBuilder();
                 foreach (var character in bits)
@@ -161,11 +164,8 @@ namespace LiberPrimusAnalysisTool.Application.Commands.Image.ByteProcessing
                     }
                 }
 
-                AnsiConsole.WriteLine($"ProcessBytesLSB-{request.Method}: Filtering out nibbles for {request.ByteData.Item1.PageName}");
                 charBinList = charBinList.Where(x => x.Length == bitBreak).ToList();
 
-                AnsiConsole.WriteLine($"ProcessBytesLSB-{request.Method}: Building character string for {request.ByteData.Item1.PageName}");
-                AnsiConsole.WriteLine($"ProcessBytesLSB-{request.Method}: Outputting file for {request.ByteData.Item1.PageName}");
                 using (var file = File.CreateText($"./output/bytep/BYTE-{request.ByteData.Item1.PageName}-LSB-{request.Method}-{request.AsciiProcessing}-{request.BitsOfSig}.txt"))
                 {
                     foreach (var charBin in charBinList)
@@ -188,7 +188,6 @@ namespace LiberPrimusAnalysisTool.Application.Commands.Image.ByteProcessing
                                 catch (Exception e)
                                 {
                                     file.Write(string.Empty);
-                                    AnsiConsole.WriteLine($"Error: {e.Message}");
                                 }
                                 break;
 

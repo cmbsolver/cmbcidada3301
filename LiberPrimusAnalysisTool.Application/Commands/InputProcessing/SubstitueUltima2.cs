@@ -1,7 +1,12 @@
-﻿using LiberPrimusAnalysisTool.Utility.Character;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using LiberPrimusAnalysisTool.Utility.Character;
 using MediatR;
-using Spectre.Console;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace LiberPrimusAnalysisTool.Application.Commands.InputProcessing
 {
@@ -60,71 +65,58 @@ namespace LiberPrimusAnalysisTool.Application.Commands.InputProcessing
             {
                 HashSet<string> englishDictionary = new HashSet<string>();
 
-                var isGpStrict = AnsiConsole.Confirm("Use GP spellings?", true);
+                var isGpStrict = true;
 
                 var allFiles2 = new string[0]; //var allFiles2 = await _mediator.Send(new GetTextSelection.Query(true));
-                var file = allFiles2.FirstOrDefault();
+                var afile = allFiles2.FirstOrDefault();
 
                 string[] runes = _characterRepo.GetGematriaRunes();
                 string[] permuteRunes = _characterRepo.GetGematriaRunes().Reverse().ToArray();
 
                 Tuple<string, string[]> filesContents = null;
 
-                FileInfo fileInfo = new FileInfo(file);
-                var flines = File.ReadAllLines(file);
+                FileInfo fileInfo = new FileInfo(afile);
+                var flines = File.ReadAllLines(afile);
                 filesContents = new Tuple<string, string[]>($"{fileInfo.Name}", flines);
 
-                AnsiConsole.Status()
-                    .AutoRefresh(true)
-                    .Spinner(Spinner.Known.Circle)
-                    .SpinnerStyle(Style.Parse("green bold"))
-                    .Start("Processing files...", ctx =>
+                using (var file = File.OpenText("words.txt"))
+                {
+                    string line;
+                    while ((line = file.ReadLine()) != null)
                     {
-                        ctx.Status("Reading dictionary...");
-                        ctx.Refresh();
-                        using (var file = File.OpenText("words.txt"))
+                        if (isGpStrict)
                         {
-                            string line;
-                            while ((line = file.ReadLine()) != null)
-                            {
-                                if (isGpStrict)
-                                {
-                                    englishDictionary.Add(line.ToUpper().Trim().Replace("QU", "CW").Replace("Q", "C")
-                                        .Replace("K", "C").Replace("V", "U").Replace("Z", "S"));
-                                }
-                                else
-                                {
-                                    englishDictionary.Add(line.ToUpper().Trim());
-                                }
-                            }
-
-                            file.Close();
-                            file.Dispose();
+                            englishDictionary.Add(line.ToUpper().Trim().Replace("QU", "CW").Replace("Q", "C")
+                                .Replace("K", "C").Replace("V", "U").Replace("Z", "S"));
                         }
-
-                        ctx.Status("Processing");
-                        ctx.Refresh();
-
-                        var lineScore = filesContents.Item2.AsParallel().Select(x =>
+                        else
                         {
-                            int lineNumber = Array.IndexOf(filesContents.Item2, x);
-                            var scoreAndWordCount = CalculateScoreAndWordCount(
-                                x,
-                                lineNumber,
-                                englishDictionary,
-                                runes,
-                                permuteRunes,
-                                filesContents.Item1);
-                            return scoreAndWordCount;
-                        });
+                            englishDictionary.Add(line.ToUpper().Trim());
+                        }
+                    }
 
-                        var tlines = lineScore.OrderBy(x => x.Item4).Select(x => x.Item3);
+                    file.Close();
+                    file.Dispose();
+                }
 
-                        AnsiConsole.WriteLine($"File: {filesContents.Item1} - {DateTime.Now}");
-                        string filename =
-                            $"output/POSSIBLE-MATCH{DateTime.Now.ToBinary()}-{filesContents.Item1}";
-                        File.AppendAllLines(filename, tlines);
-                    });
+                var lineScore = filesContents.Item2.AsParallel().Select(x =>
+                {
+                    int lineNumber = Array.IndexOf(filesContents.Item2, x);
+                    var scoreAndWordCount = CalculateScoreAndWordCount(
+                        x,
+                        lineNumber,
+                        englishDictionary,
+                        runes,
+                        permuteRunes,
+                        filesContents.Item1);
+                    return scoreAndWordCount;
+                });
+
+                var tlines = lineScore.OrderBy(x => x.Item4).Select(x => x.Item3);
+
+                string filename =
+                    $"output/POSSIBLE-MATCH{DateTime.Now.ToBinary()}-{filesContents.Item1}";
+                File.AppendAllLines(filename, tlines);
             }
 
             /// <summary>
@@ -165,7 +157,6 @@ namespace LiberPrimusAnalysisTool.Application.Commands.InputProcessing
                     {
                         counter = 0;
                         runCounter++;
-                        AnsiConsole.WriteLine($"Processed: {runCounter} runs for {fileName}:{lineNumber}. Restarting counter.");
                     }
                     
                     if (runCounter >= long.MaxValue - 1)
@@ -210,8 +201,6 @@ namespace LiberPrimusAnalysisTool.Application.Commands.InputProcessing
                     if (percentage > highestPercentage)
                     {
                         highestPercentage = percentage;
-                        AnsiConsole.WriteLine($"File: {fileName}:{lineNumber}-{runCounter}:{counter}");
-                        AnsiConsole.WriteLine($"File: {fileName}:{lineNumber}-{percentage}");
                         string filename =
                             $"output/BEST-POSSIBLE-MATCH-LINE-{lineNumber}-{percentage}-{fileName}";
                         File.AppendAllText(filename, $"PERCENTAGE: {percentage}\r\n");
@@ -233,7 +222,6 @@ namespace LiberPrimusAnalysisTool.Application.Commands.InputProcessing
                     
                     if (percentage > 80)
                     {
-                        AnsiConsole.WriteLine($"File: {fileName}:{lineNumber}-{percentage}");
                         string filename =
                             $"output/BEST-POSSIBLE-MATCH-LINE-{lineNumber}-{percentage}-{fileName}";
                         File.AppendAllText(filename, $"PERCENTAGE: {percentage}\r\n");

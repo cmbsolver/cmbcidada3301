@@ -1,7 +1,11 @@
-﻿using LiberPrimusAnalysisTool.Utility.Character;
+﻿using System;
+using System.IO;
+using LiberPrimusAnalysisTool.Utility.Character;
 using MediatR;
-using Spectre.Console;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Linq;
 
 namespace LiberPrimusAnalysisTool.Application.Commands.Image
 {
@@ -51,12 +55,7 @@ namespace LiberPrimusAnalysisTool.Application.Commands.Image
             /// <param name="cancellationToken">Cancellation token</param>
             public async Task Handle(Command request, CancellationToken cancellationToken)
             {
-                Console.Clear();
-                AnsiConsole.Write(new FigletText("Reverse Bytes And Compare").Centered().Color(Color.Green));
-
                 var files = new string[0]; //var files = await _mediator.Send(new GetImageSelection.Query());
-
-                AnsiConsole.WriteLine($"Processing {string.Join(",", files)}");
 
                 foreach (var file in files)
                 {
@@ -65,13 +64,7 @@ namespace LiberPrimusAnalysisTool.Application.Commands.Image
 
                     StringBuilder reverseBuilder = new StringBuilder();
 
-                    AnsiConsole.WriteLine($"Reversed byte array for {file}");
-
                     File.WriteAllBytes($"./output/{Path.GetFileName(file).Split(".")[0]}-reversed.jpg", reversedByteArray);
-
-                    AnsiConsole.WriteLine($"Saved {Path.GetFileName(file).Split(".")[0]}-reversed.jpg");
-
-                    AnsiConsole.WriteLine("Comparing Bytes");
 
                     for (int i = 0; i < byteArray.Length; i++)
                     {
@@ -80,15 +73,11 @@ namespace LiberPrimusAnalysisTool.Application.Commands.Image
                             var reversedBin = Convert.ToString(Convert.ToInt32(reversedByteArray[i].ToString()), 2).PadLeft(7, '0');
                             var character = _characterRepo.GetASCIICharFromBin(reversedBin, false);
                             reverseBuilder.Append(character);
-                            AnsiConsole.WriteLine($"Byte {i} is different - rev value is {reversedByteArray[i]}");
-                            AnsiConsole.WriteLine($"ASCII Character is {character}.");
                         }
                     }
 
                     File.AppendAllLines($"./output/{Path.GetFileName(file).Split(".")[0]}-reversed.txt", new string[] { reverseBuilder.ToString() });
 
-                    AnsiConsole.MarkupLine("[yellow]CHECK OUTPUT DIRECTORY.[/]");
-                    AnsiConsole.MarkupLine("[yellow]Press any key to continue.[/]");
                     Console.ReadLine();
                 }
             }

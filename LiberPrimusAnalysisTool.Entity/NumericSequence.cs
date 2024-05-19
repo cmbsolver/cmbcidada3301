@@ -1,4 +1,6 @@
-﻿namespace LiberPrimusAnalysisTool.Entity
+﻿using System.Collections.Generic;
+
+namespace LiberPrimusAnalysisTool.Entity
 {
     /// <summary>
     /// Numeric Sequence object

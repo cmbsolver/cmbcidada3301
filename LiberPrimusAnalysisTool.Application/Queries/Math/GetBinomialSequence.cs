@@ -1,7 +1,11 @@
-﻿using LiberPrimusAnalysisTool.Application.Interfaces;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using LiberPrimusAnalysisTool.Application.Interfaces;
 using LiberPrimusAnalysisTool.Entity;
 using MediatR;
-using Spectre.Console;
 
 namespace LiberPrimusAnalysisTool.Application.Queries.Math
 {
@@ -29,23 +33,7 @@ namespace LiberPrimusAnalysisTool.Application.Queries.Math
 
             return binomialSequence;
         }
-
-        /// <summary>
-        /// Prompts the command.
-        /// </summary>
-        /// <returns></returns>
-        /// <exception cref="System.NotImplementedException"></exception>
-        public static object PromptCommand()
-        {
-            Console.Clear();
-            AnsiConsole.Write(new FigletText("Output Binomial Sequence").Centered().Color(Color.Green));
-
-            var nnumber = AnsiConsole.Ask<long>("What is the max N number?");
-            var binomialSequence = new GetBinomialSequence.Query() { MaxNumber = nnumber };
-
-            return binomialSequence;
-        }
-
+        
         /// <summary>
         /// Request
         /// </summary>
@@ -91,7 +79,6 @@ namespace LiberPrimusAnalysisTool.Application.Queries.Math
 
                 foreach (var n in nnumbers)
                 {
-                    AnsiConsole.WriteLine($"Calculating binomial sequence for N={n}");
                     List<long> binomialSequence = new List<long>();
                     var k = 0;
                     while (k <= n)
@@ -102,13 +89,11 @@ namespace LiberPrimusAnalysisTool.Application.Queries.Math
 
                     if (binomialSequence.Any(x => x > request.MaxNumber))
                     {
-                        AnsiConsole.WriteLine($"Calculated binomial sequence for N={n}");
                         break;
                     }
                     else
                     {
                         binomialSequences.Add(new Tuple<long, List<long>>(n, binomialSequence));
-                        AnsiConsole.WriteLine($"Calculated binomial sequence for N={n}");
                     }
                 }
 
@@ -141,7 +126,6 @@ namespace LiberPrimusAnalysisTool.Application.Queries.Math
                 }
                 catch (Exception ex)
                 {
-                    AnsiConsole.WriteLine(ex.Message);
                     return 0;
                 }
             }

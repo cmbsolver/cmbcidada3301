@@ -1,10 +1,15 @@
-﻿using LiberPrimusAnalysisTool.Application.Commands.Image.PixelProcessing;
+﻿using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
+using LiberPrimusAnalysisTool.Application.Commands.Image.PixelProcessing;
 using LiberPrimusAnalysisTool.Application.Commands.Math;
 using LiberPrimusAnalysisTool.Application.Queries;
 using LiberPrimusAnalysisTool.Entity;
 using MediatR;
-using Spectre.Console;
 using System.Reflection;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace LiberPrimusAnalysisTool.Application.Commands.Image
 {
@@ -51,18 +56,15 @@ namespace LiberPrimusAnalysisTool.Application.Commands.Image
 
                 while (!returnToMenu)
                 {
-                    Console.Clear();
-                    AnsiConsole.Write(new FigletText("Winnow By Pixels").Centered().Color(Color.Green));
-
                     var pageSelection = new string[0]; //var pageSelection = await _mediator.Send(new GetImageSelection.Query());
 
-                    var includeControlCharacters = AnsiConsole.Confirm("Include control characters?", false);
-                    var reversePixels = AnsiConsole.Confirm("Reverse Pixels?", false);
-                    var shiftSequence = AnsiConsole.Confirm("Shift sequence down by one?", false);
-                    var minBitOfInsignificance = AnsiConsole.Ask<int>("Min bits of insignificance?", 1);
-                    var maxBitOfInsignificance = AnsiConsole.Ask<int>("Max bits of insignificance?", 3);
-                    var discardRemainder = AnsiConsole.Confirm("Discard remainder bits?", true);
-                    var binaryOnlyMode = AnsiConsole.Confirm("Binary only mode?", false);
+                    var includeControlCharacters = false;
+                    var reversePixels = false;
+                    var shiftSequence = false;
+                    var minBitOfInsignificance = 1;
+                    var maxBitOfInsignificance = 3;
+                    var discardRemainder = true;
+                    var binaryOnlyMode = false;
 
                     ParallelOptions parallelOptions = new ParallelOptions();
                     parallelOptions.MaxDegreeOfParallelism = 4;
@@ -93,7 +95,7 @@ namespace LiberPrimusAnalysisTool.Application.Commands.Image
                         foreach (var name in mathTypes.Select(x => x.Item2))
                         {
                             string seqtext = string.Empty;
-                            var seq = await _mediator.Send(new CalculateSequence.Query(false, false, liberPage.PixelCount, name));
+                            var seq = await _mediator.Send(new CalculateSequence.Query(liberPage.PixelCount, name));
                             var sequence = seq.Sequence;
                             seqtext = reversePixels ? $"ReversedPixels-{seq.Name}" : $"{seq.Name}";
 
@@ -103,10 +105,8 @@ namespace LiberPrimusAnalysisTool.Application.Commands.Image
                             }
 
                             // Getting the pixels from the sequence
-                            AnsiConsole.WriteLine($"Getting pixels from sequence {seqtext}");
                             Tuple<LiberPage, List<Entity.Pixel>> pixelData;
 
-                            AnsiConsole.WriteLine($"Sequencing {liberPage.PageName}");
                             List<Entity.Pixel> tmpPixelList = new List<Entity.Pixel>();
                             foreach (var seqNumer in sequence)
                             {
@@ -127,8 +127,6 @@ namespace LiberPrimusAnalysisTool.Application.Commands.Image
                                 }
                             }
                             pixelData = new Tuple<LiberPage, List<Entity.Pixel>>(liberPage, tmpPixelList);
-
-                            AnsiConsole.WriteLine($"Sequenced {liberPage.PageName}");
 
                             GC.Collect();
 
@@ -200,7 +198,7 @@ namespace LiberPrimusAnalysisTool.Application.Commands.Image
                         }
                     });
 
-                    returnToMenu = AnsiConsole.Confirm("Return to main menu?");
+                    returnToMenu = true;
                 }
             }
         }
