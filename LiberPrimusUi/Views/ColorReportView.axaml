@@ -14,8 +14,9 @@
         </StackPanel>
         <StackPanel Orientation="Horizontal" Spacing="5">
             <Button Command="{Binding GetColorReportCommand}" IsEnabled="{Binding Processing}">Get Report</Button>
+            <Button Click="Save_OnClick" IsEnabled="{Binding Processing}">Save File</Button>
         </StackPanel>
-        <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Height="500">
+        <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Height="600">
             <TextBlock Text="{Binding Result}" Background="White" Foreground="Black"></TextBlock>
         </ScrollViewer>
     </StackPanel>
