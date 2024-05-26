@@ -1,5 +1,6 @@
 using LiberPrimusAnalysisTool.Application.Queries;
 using LiberPrimusAnalysisTool.Utility.Character;
+using LiberPrimusAnalysisTool.Utility.Message;
 using LiberPrimusUi.ViewModels;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -10,6 +11,7 @@ public static class ServiceCollectionExtensions {
         // Mediatr
         collection.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(GetPageData).Assembly));
         collection.AddSingleton<ICharacterRepo, CharacterRepo>();
+        collection.AddSingleton<IMessageBus, MessageBus>();
         collection.AddTransient<IPermutator, Permutator>();
         collection.AddTransient<MainWindowViewModel>();
     }

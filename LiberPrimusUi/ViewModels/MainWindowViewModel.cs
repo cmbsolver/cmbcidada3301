@@ -5,6 +5,7 @@ using System.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using LiberPrimusAnalysisTool.Utility.Character;
+using LiberPrimusAnalysisTool.Utility.Message;
 using LiberPrimusUi.Models;
 using MediatR;
 
@@ -12,11 +13,12 @@ namespace LiberPrimusUi.ViewModels;
 
 public partial class MainWindowViewModel : ViewModelBase
 {
-    public MainWindowViewModel(ICharacterRepo characterRepo, IPermutator permutator, IMediator mediator)
+    public MainWindowViewModel(ICharacterRepo characterRepo, IPermutator permutator, IMediator mediator, IMessageBus messageBus)
     {
         _characterRepo = characterRepo;
         _permutator = permutator;
         _mediator = mediator;
+        _messageBus = messageBus;
 
         Items = new ObservableCollection<ListItemTemplate>(_templates);
 
@@ -31,6 +33,7 @@ public partial class MainWindowViewModel : ViewModelBase
         new ListItemTemplate(typeof(Base64DecodeViewModel), "Wrench", "Base64 Decode"),
         new ListItemTemplate(typeof(BinaryDecodeViewModel), "Wrench", "Binary Decode"),
         new ListItemTemplate(typeof(ColorReportViewModel), "ImageIcon", "Color Report"),
+        new ListItemTemplate(typeof(InvertColorsViewModel), "ImageIcon", "Invert Colors"),
         new ListItemTemplate(typeof(CreditsViewModel), "ListIcon", "Credits"),
     ];
 
@@ -48,6 +51,7 @@ public partial class MainWindowViewModel : ViewModelBase
     private readonly ICharacterRepo _characterRepo;
     private readonly IPermutator _permutator;
     private readonly IMediator _mediator;
+    private readonly IMessageBus _messageBus;
 
     partial void OnSelectedListItemChanged(ListItemTemplate? value)
     {
@@ -93,6 +97,12 @@ public partial class MainWindowViewModel : ViewModelBase
                 if (!_windows.Any(w => w.Item1 == value.Label))
                     _windows.Add(new Tuple<string, object>(value.Label, new ColorReportViewModel(_mediator)));
                 CurrentPage = _windows.FirstOrDefault(w => w.Item1 == value.Label)?.Item2 as ColorReportViewModel;
+                break;
+            
+            case Type t when t == typeof(InvertColorsViewModel):
+                if (!_windows.Any(w => w.Item1 == value.Label))
+                    _windows.Add(new Tuple<string, object>(value.Label, new InvertColorsViewModel(_mediator, _messageBus)));
+                CurrentPage = _windows.FirstOrDefault(w => w.Item1 == value.Label)?.Item2 as InvertColorsViewModel;
                 break;
         }
     }
