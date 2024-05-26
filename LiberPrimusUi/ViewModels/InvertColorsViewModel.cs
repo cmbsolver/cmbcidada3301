@@ -52,4 +52,10 @@ public partial class InvertColorsViewModel: ViewModelBase
             _mediator.Publish(new InvertPageColor.Command(selectedLiberPage));
         }
     }
+    
+    [RelayCommand]
+    public void ClearMessages()
+    {
+        Messages.Clear();
+    }
 }
