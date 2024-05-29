@@ -659,6 +659,140 @@ namespace LiberPrimusAnalysisTool.Utility.Character
 
             return retval;
         }
+        
+        /// <summary>
+        /// Gets the value from rune.
+        /// </summary>
+        /// <param name="rune"></param>
+        /// <returns></returns>
+        public int GetValueFromRune(string rune)
+        {
+            int retval = 0;
+            switch (rune)
+            {
+                case "ᛝ":
+                    retval = 79;
+                    break;
+
+                case "ᛟ":
+                    retval = 83;
+                    break;
+
+                case "ᛇ":
+                    retval = 41;
+                    break;
+
+                case "ᛡ":
+                    retval = 107;
+                    break;
+
+                case "ᛠ":
+                    retval = 109;
+                    break;
+
+                case "ᚫ":
+                    retval = 101;
+                    break;
+
+                case "ᚦ":
+                    retval = 5;
+                    break;
+
+                case "ᚠ":
+                    retval = 2;
+                    break;
+
+                case "ᚢ":
+                    retval = 3;
+                    break;
+
+                case "ᚩ":
+                    retval = 7;
+                    break;
+
+                case "ᚱ":
+                    retval = 11;
+                    break;
+
+                case "ᚳ":
+                    retval = 13;
+                    break;
+
+                case "ᚷ":
+                    retval = 17;
+                    break;
+
+                case "ᚹ":
+                    retval = 19;
+                    break;
+
+                case "ᚻ":
+                    retval = 23;
+                    break;
+
+                case "ᚾ":
+                    retval = 29;
+                    break;
+
+                case "ᛁ":
+                    retval = 31;
+                    break;
+
+                case "ᛄ":
+                    retval = 37;
+                    break;
+
+                case "ᛈ":
+                    retval = 43;
+                    break;
+
+                case "ᛉ":
+                    retval = 47;
+                    break;
+
+                case "ᛋ":
+                    retval = 53;
+                    break;
+
+                case "ᛏ":
+                    retval = 59;
+                    break;
+
+                case "ᛒ":
+                    retval = 61;
+                    break;
+
+                case "ᛖ":
+                    retval = 67;
+                    break;
+
+                case "ᛗ":
+                    retval = 71;
+                    break;
+
+                case "ᛚ":
+                    retval = 73;
+                    break;
+
+                case "ᛞ":
+                    retval = 89;
+                    break;
+
+                case "ᚪ":
+                    retval = 97;
+                    break;
+
+                case "ᚣ":
+                    retval = 103;
+                    break;
+
+                default:
+                    retval = 0;
+                    break;
+            }
+
+            return retval;
+        }
 
         /// <summary>
         /// Gets the rune from value.

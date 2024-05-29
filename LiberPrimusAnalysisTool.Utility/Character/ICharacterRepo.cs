@@ -56,6 +56,13 @@ namespace LiberPrimusAnalysisTool.Utility.Character
         string GetRuneFromValue(int value);
 
         /// <summary>
+        /// Gets the value from rune.
+        /// </summary>
+        /// <param name="rune"></param>
+        /// <returns></returns>
+        int GetValueFromRune(string rune);
+
+        /// <summary>
         /// Gets the permutations.
         /// </summary>
         /// <param name="array">The array.</param>

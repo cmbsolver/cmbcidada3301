@@ -32,6 +32,7 @@ public partial class MainWindowViewModel : ViewModelBase
         new ListItemTemplate(typeof(GenerateSequenceViewModel), "NumberList", "Generate Sequence"),
         new ListItemTemplate(typeof(Base64DecodeViewModel), "Wrench", "Base64 Decode"),
         new ListItemTemplate(typeof(BinaryDecodeViewModel), "Wrench", "Binary Decode"),
+        new ListItemTemplate(typeof(CalculateSectionSumsViewModel), "Wrench", "Calculate Section Sums"),
         new ListItemTemplate(typeof(ColorReportViewModel), "ImageIcon", "Color Report"),
         new ListItemTemplate(typeof(InvertColorsViewModel), "ImageIcon", "Invert Colors"),
         new ListItemTemplate(typeof(CreditsViewModel), "ListIcon", "Credits"),
@@ -103,6 +104,12 @@ public partial class MainWindowViewModel : ViewModelBase
                 if (!_windows.Any(w => w.Item1 == value.Label))
                     _windows.Add(new Tuple<string, object>(value.Label, new InvertColorsViewModel(_mediator, _messageBus)));
                 CurrentPage = _windows.FirstOrDefault(w => w.Item1 == value.Label)?.Item2 as InvertColorsViewModel;
+                break;
+            
+            case Type t when t == typeof(CalculateSectionSumsViewModel):
+                if (!_windows.Any(w => w.Item1 == value.Label))
+                    _windows.Add(new Tuple<string, object>(value.Label, new CalculateSectionSumsViewModel(_mediator)));
+                CurrentPage = _windows.FirstOrDefault(w => w.Item1 == value.Label)?.Item2 as CalculateSectionSumsViewModel;
                 break;
         }
     }
