@@ -34,6 +34,8 @@ public partial class DeScytaleViewModel: ViewModelBase
     
     [ObservableProperty] private string _cols = "";
     
+    [ObservableProperty] private bool _reversed = false;
+    
     [ObservableProperty] private string _result = "";
     
     [RelayCommand]
@@ -42,7 +44,7 @@ public partial class DeScytaleViewModel: ViewModelBase
         if (FileToDecode is string)
         {
             var text = File.ReadAllText(FileToDecode);
-            Result = await _mediator.Send(new DeScytaleText.Command(text, int.Parse(Cols)));
+            Result = await _mediator.Send(new DeScytaleText.Command(text, int.Parse(Cols), Reversed));
         }
     }
     
@@ -56,17 +58,24 @@ public partial class DeScytaleViewModel: ViewModelBase
         {
             Directory.CreateDirectory(outputDirectory);
         }
-        
+
         foreach (var page in Pages)
         {
             var counter = 1;
             FileInfo fileInfo = new FileInfo(page);
             var text = File.ReadAllText(page);
 
-            while (counter < 100)
+            while (counter < 250)
             {
-                var tempResult = await _mediator.Send(new DeScytaleText.Command(text, counter));
-                File.WriteAllText($"{outputDirectory}/{fileInfo.Name.Replace(".txt", string.Empty)}_{counter}.txt", tempResult);
+                if (!Directory.Exists($"{outputDirectory}/{fileInfo.Name.Replace(".txt", string.Empty)}"))
+                {
+                    Directory.CreateDirectory($"{outputDirectory}/{fileInfo.Name.Replace(".txt", string.Empty)}");
+                }
+
+                var tempResult = await _mediator.Send(new DeScytaleText.Command(text, counter, Reversed));
+                File.WriteAllText(
+                    $"{outputDirectory}/{fileInfo.Name.Replace(".txt", string.Empty)}/{fileInfo.Name.Replace(".txt", string.Empty)}_{counter}.txt",
+                    tempResult);
                 counter++;
             }
         }

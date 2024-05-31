@@ -8,9 +8,17 @@ public class DeScytaleText
 {
     public class Command : IRequest<string>
     {
-        public Command(string text, int columnCount)
+        public Command(string text, int columnCount, bool reversed = false)
         {
-            Text = text;
+            if (reversed)
+            {
+                Text = new string(text.Reverse().ToArray());
+            }
+            else
+            {
+                Text = text;
+            }
+
             ColumnCount = columnCount;
         }
         

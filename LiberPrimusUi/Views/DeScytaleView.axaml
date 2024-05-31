@@ -16,6 +16,9 @@
             <TextBox Text="{Binding Cols}"></TextBox>
         </StackPanel>
         <StackPanel Orientation="Horizontal" Spacing="5">
+            <CheckBox IsChecked="{Binding Reversed}">Reverse Text?</CheckBox>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" Spacing="5">
             <Button Command="{Binding DeScytaleTextCommand}">Process</Button>
             <Button Command="{Binding BulkDeScytaleTextCommand}">Bulk Process</Button>
         </StackPanel>
