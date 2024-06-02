@@ -182,11 +182,6 @@ namespace LiberPrimusAnalysisTool.Application.Commands.InputProcessing
                         runCounter = 0;
                     }
                     
-                    if (runCounter % 3301 == 0)
-                    {
-                        _messageBus.SendMessage($"{counter}:{runCounter} Permutations", "SubstituteUltima");
-                    }
-                    
                     HashSet<Tuple<string, string>> transcriptions = new HashSet<Tuple<string, string>>();
 
                     for (int i = 0; i < permutation.Length; i++)

@@ -137,7 +137,6 @@ namespace LiberPrimusAnalysisTool.Application.Commands.InputProcessing
                     else if (counterWrite % 3301 == 0)
                     {
                         File.WriteAllText("lastrun.txt", $"{runNumber}:{counterWrite}");
-                        _messageBus.SendMessage($"{runNumber}:{counterWrite}", "SubstituteUltima");
                     }
 
                     if (runNumber >= lastRunNumber && counterWrite >= lastWrite)
