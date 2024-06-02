@@ -16,6 +16,10 @@
             <ComboBox ItemsSource="{Binding Versions}" SelectedItem="{Binding SelectedVersion}"></ComboBox>
         </StackPanel>
         <StackPanel Orientation="Horizontal" Spacing="5">
+            <TextBlock VerticalAlignment="Center">Progress</TextBlock>
+            <TextBlock Text="{Binding LastRun}"></TextBlock>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" Spacing="5">
             <Button Command="{Binding ProcessCommand}">Process</Button>
             <Button Command="{Binding ClearMessagesCommand}">Clear Output</Button>
         </StackPanel>

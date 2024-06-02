@@ -132,11 +132,12 @@ namespace LiberPrimusAnalysisTool.Application.Commands.InputProcessing
                         counterWrite = 0;
                         runNumber++;
                         File.WriteAllText("lastrun.txt", $"{runNumber}:{counterWrite}");
-                        _messageBus.SendMessage($"{runNumber}:{counterWrite}", "SubstituteUltima");
+                        _messageBus.SendMessage($"{runNumber}:{counterWrite}", "SubstituteUltima:lastrun");
                     }
                     else if (counterWrite % 3301 == 0)
                     {
                         File.WriteAllText("lastrun.txt", $"{runNumber}:{counterWrite}");
+                        _messageBus.SendMessage($"{runNumber}:{counterWrite}", "SubstituteUltima:lastrun");
                     }
 
                     if (runNumber >= lastRunNumber && counterWrite >= lastWrite)

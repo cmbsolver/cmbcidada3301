@@ -44,6 +44,10 @@ public partial class SubstituteUltimaViewModel: ViewModelBase
         {
             Messages.Add(e.Message);
         }
+        else if (e.Screen == "SubstituteUltima:lastrun")
+        {
+            LastRun = e.Message;
+        }
     }
 
     public ObservableCollection<string> Pages { get; set; } = new ObservableCollection<string>();
@@ -53,6 +57,8 @@ public partial class SubstituteUltimaViewModel: ViewModelBase
     public ObservableCollection<string> Versions { get; set; } = new ObservableCollection<string>();
     
     [ObservableProperty] private string _selectedVersion;
+    
+    [ObservableProperty] private string _lastRun;
     
     public ObservableCollection<string> Messages { get; set; } = new ObservableCollection<string>();
     
