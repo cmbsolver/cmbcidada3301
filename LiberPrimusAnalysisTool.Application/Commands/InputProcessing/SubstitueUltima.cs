@@ -173,7 +173,7 @@ namespace LiberPrimusAnalysisTool.Application.Commands.InputProcessing
                                 File.AppendAllText(filename, $"REPLACE : {string.Join(",", permutation)}\r\n");
                                 File.AppendAllLines(filename, tlines);
                                 
-                                _messageBus.SendMessage($"PERCENTAGE: {percentage}", "SubstituteUltima");
+                                _messageBus.SendMessage($"HIGHEST PERCENTAGE: {percentage}", "SubstituteUltima");
                             }
                             else
                             {
@@ -193,7 +193,7 @@ namespace LiberPrimusAnalysisTool.Application.Commands.InputProcessing
                                             $"REPLACE : {string.Join(",", permutation)}\r\n");
                                         File.AppendAllLines(filename, tlines);
                                         
-                                        _messageBus.SendMessage($"PERCENTAGE: {percentage}", "SubstituteUltima");
+                                        _messageBus.SendMessage($"HIGHEST PERCENTAGE: {percentage}", "SubstituteUltima");
                                     }
                                 }
                                 else

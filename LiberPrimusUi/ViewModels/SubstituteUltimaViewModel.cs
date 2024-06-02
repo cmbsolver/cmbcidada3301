@@ -1,6 +1,7 @@
 using System;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using LiberPrimusAnalysisTool.Application.Commands.Image;
@@ -61,10 +62,10 @@ public partial class SubstituteUltimaViewModel: ViewModelBase
         switch (SelectedVersion)
         {
             case "Version 1":
-                _mediator.Publish(new SubstituteUltima.Command(SelectedLiberPage));
+                Task.Run(() => _mediator.Publish(new SubstituteUltima.Command(SelectedLiberPage)));
                 break;
             case "Version 2":
-                _mediator.Publish(new SubstituteUltima2.Command(SelectedLiberPage));
+                Task.Run(() => _mediator.Publish(new SubstituteUltima2.Command(SelectedLiberPage)));
                 break;
         }
     }
