@@ -7,6 +7,8 @@ using MediatR;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using LiberPrimusAnalysisTool.Application.Commands.TextUtilies;
+using LiberPrimusAnalysisTool.Utility.Message;
 
 namespace LiberPrimusAnalysisTool.Application.Commands.InputProcessing
 {
@@ -21,6 +23,12 @@ namespace LiberPrimusAnalysisTool.Application.Commands.InputProcessing
         /// <seealso cref="IRequest" />
         public class Command : INotification
         {
+            public Command(string fileToProcess)
+            {
+                FileToProcess = fileToProcess;
+            }
+
+            public string FileToProcess { get; set; }
         }
 
         /// <summary>
@@ -42,6 +50,11 @@ namespace LiberPrimusAnalysisTool.Application.Commands.InputProcessing
             /// The mediator
             /// </summary>
             private readonly IMediator _mediator;
+            
+            /// <summary>
+            /// The message bus
+            /// </summary>
+            private readonly IMessageBus _messageBus;
 
             /// <summary>
             /// Initializes a new instance of the <see cref="Handler" /> class.
@@ -67,17 +80,19 @@ namespace LiberPrimusAnalysisTool.Application.Commands.InputProcessing
 
                 var isGpStrict = true;
 
-                var allFiles2 = new string[0]; //var allFiles2 = await _mediator.Send(new GetTextSelection.Query(true));
-                var afile = allFiles2.FirstOrDefault();
-
                 string[] runes = _characterRepo.GetGematriaRunes();
                 string[] permuteRunes = _characterRepo.GetGematriaRunes().Reverse().ToArray();
 
                 Tuple<string, string[]> filesContents = null;
 
-                FileInfo fileInfo = new FileInfo(afile);
-                var flines = File.ReadAllLines(afile);
+                FileInfo fileInfo = new FileInfo(request.FileToProcess);
+                var flines = File.ReadAllLines(request.FileToProcess);
                 filesContents = new Tuple<string, string[]>($"{fileInfo.Name}", flines);
+                
+                if (!Directory.Exists($"output/text/{fileInfo.Name.Replace(".txt", string.Empty)}"))
+                {
+                    Directory.CreateDirectory($"output/text/{fileInfo.Name.Replace(".txt", string.Empty)}");
+                }
 
                 using (var file = File.OpenText("words.txt"))
                 {
@@ -108,7 +123,8 @@ namespace LiberPrimusAnalysisTool.Application.Commands.InputProcessing
                         englishDictionary,
                         runes,
                         permuteRunes,
-                        filesContents.Item1);
+                        filesContents.Item1,
+                        fileInfo);
                     return scoreAndWordCount;
                 });
 
@@ -128,6 +144,7 @@ namespace LiberPrimusAnalysisTool.Application.Commands.InputProcessing
             /// <param name="runes"></param>
             /// <param name="permuteRunes"></param>
             /// <param name="fileName"></param>
+            /// <param name="fileInfo"></param>
             /// <returns>The final score.</returns>
             private Tuple<string, string, string, int> CalculateScoreAndWordCount(
                 string line, 
@@ -135,7 +152,8 @@ namespace LiberPrimusAnalysisTool.Application.Commands.InputProcessing
                 HashSet<string> englishDictionary, 
                 string[] runes, 
                 string[] permuteRunes,
-                string fileName)
+                string fileName,
+                FileInfo fileInfo)
             {
                 if (line.Trim().Length <= 0)
                 {
@@ -164,6 +182,11 @@ namespace LiberPrimusAnalysisTool.Application.Commands.InputProcessing
                         runCounter = 0;
                     }
                     
+                    if (runCounter % 3301 == 0)
+                    {
+                        _messageBus.SendMessage($"{counter}:{runCounter} Permutations", "SubstituteUltima");
+                    }
+                    
                     HashSet<Tuple<string, string>> transcriptions = new HashSet<Tuple<string, string>>();
 
                     for (int i = 0; i < permutation.Length; i++)
@@ -186,8 +209,10 @@ namespace LiberPrimusAnalysisTool.Application.Commands.InputProcessing
                             tmpLine.Append(line[j]);
                         }
                     }
+                    
+                    var text = _mediator.Send(new FixUpControlChars.Command(tmpLine.ToString())).Result;
 
-                    var wordList = tmpLine.ToString().Trim().Split(" ");
+                    var wordList = text.Split(" ");
                     wordCount += wordList.Length;
                     foreach (var word in wordList)
                     {
@@ -202,11 +227,13 @@ namespace LiberPrimusAnalysisTool.Application.Commands.InputProcessing
                     {
                         highestPercentage = percentage;
                         string filename =
-                            $"output/BEST-POSSIBLE-MATCH-LINE-{lineNumber}-{percentage}-{fileName}";
+                            $"output/text/{fileInfo.Name.Replace(".txt", string.Empty)}/BEST-POSSIBLE-MATCH-LINE-{lineNumber}-{percentage}-{fileName}";
                         File.AppendAllText(filename, $"PERCENTAGE: {percentage}\r\n");
                         File.AppendAllText(filename, $"ORIGINAL: {string.Join(",", runes)}\r\n");
                         File.AppendAllText(filename, $"REPLACE : {string.Join(",", permutation)}\r\n");
                         File.AppendAllText(filename, tmpLine.ToString());
+                        
+                        _messageBus.SendMessage($"PERCENTAGE: {percentage}", "SubstituteUltima");
                         
                         retval = new Tuple<string, string, string, int>(
                             string.Join(",", runes), 
@@ -223,11 +250,13 @@ namespace LiberPrimusAnalysisTool.Application.Commands.InputProcessing
                     if (percentage > 80)
                     {
                         string filename =
-                            $"output/BEST-POSSIBLE-MATCH-LINE-{lineNumber}-{percentage}-{fileName}";
+                            $"output/text/{fileInfo.Name.Replace(".txt", string.Empty)}/POSSIBLE-MATCH-LINE-{lineNumber}-{percentage}-{fileName}";
                         File.AppendAllText(filename, $"PERCENTAGE: {percentage}\r\n");
                         File.AppendAllText(filename, $"ORIGINAL: {string.Join(",", runes)}\r\n");
                         File.AppendAllText(filename, $"REPLACE : {string.Join(",", permutation)}\r\n");
                         File.AppendAllText(filename, tmpLine.ToString());
+                        
+                        _messageBus.SendMessage($"PERCENTAGE: {percentage}", "SubstituteUltima");
                     }
                 }
 

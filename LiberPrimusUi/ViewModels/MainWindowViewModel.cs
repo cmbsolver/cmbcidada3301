@@ -35,6 +35,7 @@ public partial class MainWindowViewModel : ViewModelBase
         new ListItemTemplate(typeof(CalculateSectionSumsViewModel), "Wrench", "Calculate Section Sums"),
         new ListItemTemplate(typeof(DeScytaleViewModel), "Wrench", "DeScytale Text"),
         new ListItemTemplate(typeof(TextSequenceReducerViewModel), "Wrench", "Text Sequence Reducer"),
+        new ListItemTemplate(typeof(SubstituteUltimaViewModel), "Wrench", "Substitute Ultima"),
         new ListItemTemplate(typeof(ColorReportViewModel), "ImageIcon", "Color Report"),
         new ListItemTemplate(typeof(InvertColorsViewModel), "ImageIcon", "Invert Colors"),
         new ListItemTemplate(typeof(CreditsViewModel), "ListIcon", "Credits"),
@@ -124,6 +125,12 @@ public partial class MainWindowViewModel : ViewModelBase
                 if (!_windows.Any(w => w.Item1 == value.Label))
                     _windows.Add(new Tuple<string, object>(value.Label, new TextSequenceReducerViewModel(_mediator)));
                 CurrentPage = _windows.FirstOrDefault(w => w.Item1 == value.Label)?.Item2 as TextSequenceReducerViewModel;
+                break; 
+            
+            case Type t when t == typeof(SubstituteUltimaViewModel):
+                if (!_windows.Any(w => w.Item1 == value.Label))
+                    _windows.Add(new Tuple<string, object>(value.Label, new SubstituteUltimaViewModel(_mediator, _messageBus)));
+                CurrentPage = _windows.FirstOrDefault(w => w.Item1 == value.Label)?.Item2 as SubstituteUltimaViewModel;
                 break; 
         }
     }
