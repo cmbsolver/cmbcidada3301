@@ -32,10 +32,6 @@ public partial class SubstituteUltimaViewModel: ViewModelBase
         {
             Pages.Add(page);
         }
-        
-        // Adding the versions to the list
-        Versions.Add("Version 1");
-        Versions.Add("Version 2");
     }
 
     private void OnMessageReceived(object sender, MessageSentEventArgs e)
@@ -48,34 +44,30 @@ public partial class SubstituteUltimaViewModel: ViewModelBase
         {
             LastRun = e.Message;
         }
+        else if (e.Screen == "SubstituteUltima:complete")
+        {
+            LastRun = e.Message;
+            IsButtonEnabled = true;
+        }
     }
 
     public ObservableCollection<string> Pages { get; set; } = new ObservableCollection<string>();
     
     [ObservableProperty] private string _selectedLiberPage;
     
-    public ObservableCollection<string> Versions { get; set; } = new ObservableCollection<string>();
-    
-    [ObservableProperty] private string _selectedVersion;
-    
     [ObservableProperty] private string _lastRun;
     
-    public ObservableCollection<string> Messages { get; set; } = new ObservableCollection<string>();
+    [ObservableProperty] private bool _isButtonEnabled = true;
     
+    public ObservableCollection<string> Messages { get; set; } = new ObservableCollection<string>();
+
     [RelayCommand]
     public async void Process()
     {
-        switch (SelectedVersion)
-        {
-            case "Version 1":
-                Task.Run(() => _mediator.Publish(new SubstituteUltima.Command(SelectedLiberPage)));
-                break;
-            case "Version 2":
-                Task.Run(() => _mediator.Publish(new SubstituteUltima2.Command(SelectedLiberPage)));
-                break;
-        }
+        IsButtonEnabled = false;
+        Task.Run(() => _mediator.Publish(new SubstituteUltima.Command(SelectedLiberPage)));
     }
-    
+
     [RelayCommand]
     public void ClearMessages()
     {

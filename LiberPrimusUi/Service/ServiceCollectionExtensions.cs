@@ -12,7 +12,7 @@ public static class ServiceCollectionExtensions {
         collection.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(GetPageData).Assembly));
         collection.AddSingleton<ICharacterRepo, CharacterRepo>();
         collection.AddSingleton<IMessageBus, MessageBus>();
-        collection.AddTransient<IPermutator, Permutator>();
+        collection.AddScoped<IPermutator, Permutator>();
         collection.AddTransient<MainWindowViewModel>();
     }
 }

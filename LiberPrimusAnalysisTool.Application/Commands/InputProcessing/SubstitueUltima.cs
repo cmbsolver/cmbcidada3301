@@ -1,7 +1,11 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Numerics;
+using System.Reflection.Metadata.Ecma335;
 using LiberPrimusAnalysisTool.Utility.Character;
 using MediatR;
 using System.Text;
@@ -79,13 +83,12 @@ namespace LiberPrimusAnalysisTool.Application.Commands.InputProcessing
 
                 HashSet<Tuple<string, string[]>> filesContents = new HashSet<Tuple<string, string[]>>();
 
-                Dictionary<string, double> fileLeader = new Dictionary<string, double>();
-                Dictionary<string, string[]> fileContents = new Dictionary<string, string[]>();
+                double highestPercentage = 0;
 
                 FileInfo fileInfo = new FileInfo(request.FileToProcess);
                 var flines = File.ReadAllLines(request.FileToProcess);
                 filesContents.Add(new Tuple<string, string[]>($"{fileInfo.Name}", flines));
-                
+
                 if (!Directory.Exists($"output/text/{fileInfo.Name.Replace(".txt", string.Empty)}"))
                 {
                     Directory.CreateDirectory($"output/text/{fileInfo.Name.Replace(".txt", string.Empty)}");
@@ -111,36 +114,31 @@ namespace LiberPrimusAnalysisTool.Application.Commands.InputProcessing
                     file.Dispose();
                 }
 
+                ParallelOptions parallelOptions = new ParallelOptions();
+                parallelOptions.MaxDegreeOfParallelism = Environment.ProcessorCount / 2;
+
                 long counterWrite = 0;
                 long runNumber = 0;
-                long lastRunNumber = 0;
-                long lastWrite = 0;
 
-                if (File.Exists("lastrun.txt"))
+                foreach (var permutationSet in StartGetPurmutations(permuteRunes))
                 {
-                    string lastRun = File.ReadAllText("lastrun.txt");
-                    string[] lastRunSplit = lastRun.Split(":");
-                    lastRunNumber = long.Parse(lastRunSplit[0]);
-                    lastWrite = long.Parse(lastRunSplit[1]);
-                }
-
-                foreach (var permutation in _characterRepo.GetPermutations(permuteRunes))
-                {
-                    counterWrite++;
-                    if (counterWrite >= (long.MaxValue - 1))
+                    counterWrite += permutationSet.Count;
+                    if (counterWrite >= (long.MaxValue - 1000))
                     {
                         counterWrite = 0;
                         runNumber++;
-                        File.WriteAllText("lastrun.txt", $"{runNumber}:{counterWrite}");
-                        _messageBus.SendMessage($"{runNumber}:{counterWrite}", "SubstituteUltima:lastrun");
+                        _messageBus.SendMessage(
+                            $"Progress {runNumber}:{counterWrite} - Concurrent Processes: {permutationSet.Count}",
+                            "SubstituteUltima:lastrun");
                     }
-                    else if (counterWrite % 3301 == 0)
+                    else if (counterWrite % 65536 == 0)
                     {
-                        File.WriteAllText("lastrun.txt", $"{runNumber}:{counterWrite}");
-                        _messageBus.SendMessage($"{runNumber}:{counterWrite}", "SubstituteUltima:lastrun");
+                        _messageBus.SendMessage(
+                            $"Progress {runNumber}:{counterWrite} - Concurrent Processes: {permutationSet.Count}",
+                            "SubstituteUltima:lastrun");
                     }
 
-                    if (runNumber >= lastRunNumber && counterWrite >= lastWrite)
+                    Parallel.ForEach(permutationSet, parallelOptions, async permutation =>
                     {
                         HashSet<Tuple<string, string>> transcriptions = new HashSet<Tuple<string, string>>();
 
@@ -173,37 +171,47 @@ namespace LiberPrimusAnalysisTool.Application.Commands.InputProcessing
                                 File.AppendAllText(filename, $"ORIGINAL: {string.Join(",", runes)}\r\n");
                                 File.AppendAllText(filename, $"REPLACE : {string.Join(",", permutation)}\r\n");
                                 File.AppendAllLines(filename, tlines);
-                                
+
                                 _messageBus.SendMessage($"HIGHEST PERCENTAGE: {percentage}", "SubstituteUltima");
                             }
                             else
                             {
-                                if (fileLeader.ContainsKey(file.Item1))
+                                if (percentage > highestPercentage)
                                 {
-                                    if (percentage > fileLeader[file.Item1])
-                                    {
-                                        fileLeader[file.Item1] = percentage;
-                                        fileContents[file.Item1] = tlines.ToArray();
+                                    highestPercentage = percentage;
 
-                                        string filename =
-                                            $"output/text/{fileInfo.Name.Replace(".txt", string.Empty)}/POSSIBLE-MATCH{percentage}-{fileInfo.Name.Replace(".txt", string.Empty)}";
-                                        File.AppendAllText(filename, $"PERCENTAGE: {percentage}\r\n");
-                                        File.AppendAllText(filename,
-                                            $"ORIGINAL: {string.Join(",", runes)}\r\n");
-                                        File.AppendAllText(filename,
-                                            $"REPLACE : {string.Join(",", permutation)}\r\n");
-                                        File.AppendAllLines(filename, tlines);
-                                        
-                                        _messageBus.SendMessage($"HIGHEST PERCENTAGE: {percentage}", "SubstituteUltima");
-                                    }
-                                }
-                                else
-                                {
-                                    fileLeader.Add(file.Item1, percentage);
-                                    fileContents.Add(file.Item1, tlines.ToArray());
+                                    string filename =
+                                        $"output/text/{fileInfo.Name.Replace(".txt", string.Empty)}/POSSIBLE-MATCH{percentage}-{fileInfo.Name.Replace(".txt", string.Empty)}";
+                                    File.AppendAllText(filename, $"PERCENTAGE: {percentage}\r\n");
+                                    File.AppendAllText(filename,
+                                        $"ORIGINAL: {string.Join(",", runes)}\r\n");
+                                    File.AppendAllText(filename,
+                                        $"REPLACE : {string.Join(",", permutation)}\r\n");
+                                    File.AppendAllLines(filename, tlines);
+
+                                    _messageBus.SendMessage($"HIGHEST PERCENTAGE: {percentage}",
+                                        "SubstituteUltima");
                                 }
                             }
                         }
+                    });
+                }
+                
+                _messageBus.SendMessage("Complete", "SubstituteUltima:complete");
+            }
+
+            private IEnumerable<List<string[]>> StartGetPurmutations(string[] permuteRunes)
+            {
+                List<string[]> permutations = new List<string[]>();
+                int processCount = Environment.ProcessorCount / 2;
+                foreach (var permutation in _characterRepo.GetPermutations(permuteRunes))
+                {
+                    permutations.Add(permutation);
+                    
+                    if (permutations.Count >= processCount)
+                    {
+                        yield return permutations.ToList();
+                        permutations.Clear();
                     }
                 }
             }
