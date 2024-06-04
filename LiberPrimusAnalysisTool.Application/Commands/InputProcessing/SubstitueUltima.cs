@@ -188,6 +188,7 @@ namespace LiberPrimusAnalysisTool.Application.Commands.InputProcessing
                                 File.AppendAllText(filename, $"PERCENTAGE: {percentage}\r\n");
                                 File.AppendAllText(filename, $"ORIGINAL: {string.Join(",", runes)}\r\n");
                                 File.AppendAllText(filename, $"REPLACE : {string.Join(",", permutation)}\r\n");
+                                File.AppendAllText(filename, $"RUN: {runNumber}:{counterWrite}\r\n");
                                 File.AppendAllLines(filename, tlines);
 
                                 _messageBus.SendMessage($"HIGHEST PERCENTAGE: {percentage}", "SubstituteUltima");
@@ -210,6 +211,7 @@ namespace LiberPrimusAnalysisTool.Application.Commands.InputProcessing
                                         $"ORIGINAL: {string.Join(",", runes)}\r\n");
                                     File.AppendAllText(filename,
                                         $"REPLACE : {string.Join(",", permutation)}\r\n");
+                                    File.AppendAllText(filename, $"RUN: {runNumber}:{counterWrite}\r\n");
                                     File.AppendAllLines(filename, tlines);
 
                                     _messageBus.SendMessage($"HIGHEST PERCENTAGE: {percentage}",
