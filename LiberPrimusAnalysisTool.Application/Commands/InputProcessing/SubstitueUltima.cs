@@ -119,6 +119,16 @@ namespace LiberPrimusAnalysisTool.Application.Commands.InputProcessing
 
                 long counterWrite = 0;
                 long runNumber = 0;
+                long lastCounterWrite = 0;
+                long lastRunNumber = 0;
+
+                if (File.Exists("output/lastRun.txt"))
+                {
+                    string lastRun = File.ReadAllText("output/lastRun.txt");
+                    var lastRunSplit = lastRun.Split(':');
+                    lastRunNumber = long.Parse(lastRunSplit[0]);
+                    lastCounterWrite = long.Parse(lastRunSplit[1]);
+                }
 
                 foreach (var permutationSet in StartGetPurmutations(permuteRunes))
                 {
@@ -127,15 +137,23 @@ namespace LiberPrimusAnalysisTool.Application.Commands.InputProcessing
                     {
                         counterWrite = 0;
                         runNumber++;
+                        
+                        WriteLastRun($"{runNumber}:{counterWrite}");
                         _messageBus.SendMessage(
                             $"Progress {runNumber}:{counterWrite} - Concurrent Processes: {permutationSet.Count}",
                             "SubstituteUltima:lastrun");
                     }
-                    else if (counterWrite % 65536 == 0)
+                    else if (counterWrite % 8192 == 0)
                     {
+                        WriteLastRun($"{runNumber}:{counterWrite}");
                         _messageBus.SendMessage(
                             $"Progress {runNumber}:{counterWrite} - Concurrent Processes: {permutationSet.Count}",
                             "SubstituteUltima:lastrun");
+                    }
+                    
+                    if (runNumber <= lastRunNumber && counterWrite <= lastCounterWrite)
+                    {
+                        continue;
                     }
 
                     Parallel.ForEach(permutationSet, parallelOptions, async permutation =>
@@ -173,6 +191,11 @@ namespace LiberPrimusAnalysisTool.Application.Commands.InputProcessing
                                 File.AppendAllLines(filename, tlines);
 
                                 _messageBus.SendMessage($"HIGHEST PERCENTAGE: {percentage}", "SubstituteUltima");
+                                
+                                WriteLastRun($"{runNumber}:{counterWrite}");
+                                _messageBus.SendMessage(
+                                    $"Progress {runNumber}:{counterWrite} - Concurrent Processes: {permutationSet.Count}",
+                                    "SubstituteUltima:lastrun");
                             }
                             else
                             {
@@ -191,6 +214,11 @@ namespace LiberPrimusAnalysisTool.Application.Commands.InputProcessing
 
                                     _messageBus.SendMessage($"HIGHEST PERCENTAGE: {percentage}",
                                         "SubstituteUltima");
+
+                                    WriteLastRun($"{runNumber}:{counterWrite}");
+                                    _messageBus.SendMessage(
+                                        $"Progress {runNumber}:{counterWrite} - Concurrent Processes: {permutationSet.Count}",
+                                        "SubstituteUltima:lastrun");
                                 }
                             }
                         }
@@ -198,6 +226,18 @@ namespace LiberPrimusAnalysisTool.Application.Commands.InputProcessing
                 }
                 
                 _messageBus.SendMessage("Complete", "SubstituteUltima:complete");
+            }
+            
+            private void WriteLastRun(string message)
+            {
+                try
+                {
+                    File.WriteAllText("output/lastRun.txt", message);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                }
             }
 
             private IEnumerable<List<string[]>> StartGetPurmutations(string[] permuteRunes)
