@@ -79,7 +79,7 @@ namespace LiberPrimusAnalysisTool.Application.Commands.InputProcessing
                 var isGpStrict = true;
 
                 string[] runes = _characterRepo.GetGematriaRunes();
-                string[] permuteRunes = _characterRepo.GetGematriaRunes().Reverse().ToArray();
+                string[] permuteRunes = ShuffleArray(_characterRepo.GetGematriaRunes());
 
                 HashSet<Tuple<string, string[]>> filesContents = new HashSet<Tuple<string, string[]>>();
 
@@ -244,6 +244,21 @@ namespace LiberPrimusAnalysisTool.Application.Commands.InputProcessing
                 }
                 
                 _messageBus.SendMessage("Complete", "SubstituteUltima:complete");
+            }
+            
+            public static string[] ShuffleArray(string[] array)
+            {
+                Random rng = new Random();
+                int n = array.Length;
+                while (n > 1)
+                {
+                    n--;
+                    int k = rng.Next(n + 1);
+                    string value = array[k];
+                    array[k] = array[n];
+                    array[n] = value;
+                }
+                return array;
             }
             
             private void WriteLastRun(string message)
