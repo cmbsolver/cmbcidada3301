@@ -183,20 +183,28 @@ namespace LiberPrimusAnalysisTool.Application.Commands.InputProcessing
                             var percentage = ((double)score / (double)wordCount) * 100;
                             if (score == wordCount || percentage > 80)
                             {
-                                string filename =
-                                    $"output/text/{fileInfo.Name.Replace(".txt", string.Empty)}/POSSIBLE-MATCH{percentage}-{fileInfo.Name.Replace(".txt", string.Empty)}";
-                                File.AppendAllText(filename, $"PERCENTAGE: {percentage}\r\n");
-                                File.AppendAllText(filename, $"ORIGINAL: {string.Join(",", runes)}\r\n");
-                                File.AppendAllText(filename, $"REPLACE : {string.Join(",", permutation)}\r\n");
-                                File.AppendAllText(filename, $"RUN: {runNumber}:{counterWrite}\r\n");
-                                File.AppendAllLines(filename, tlines);
+                                try
+                                {
+                                    string filename =
+                                        $"output/text/{fileInfo.Name.Replace(".txt", string.Empty)}/POSSIBLE-MATCH{percentage}-{DateTime.Now.ToBinary()}-{fileInfo.Name.Replace(".txt", string.Empty)}";
+                                    File.AppendAllText(filename, $"PERCENTAGE: {percentage}\r\n");
+                                    File.AppendAllText(filename, $"ORIGINAL: {string.Join(",", runes)}\r\n");
+                                    File.AppendAllText(filename, $"REPLACE : {string.Join(",", permutation)}\r\n");
+                                    File.AppendAllText(filename, $"RUN: {runNumber}:{counterWrite}\r\n");
+                                    File.AppendAllLines(filename, tlines);
 
-                                _messageBus.SendMessage($"HIGHEST PERCENTAGE: {percentage}", "SubstituteUltima");
+                                    _messageBus.SendMessage($"HIGHEST PERCENTAGE: {percentage}", "SubstituteUltima");
                                 
-                                WriteLastRun($"{runNumber}:{counterWrite}");
-                                _messageBus.SendMessage(
-                                    $"Progress {runNumber}:{counterWrite} - Concurrent Processes: {permutationSet.Count}",
-                                    "SubstituteUltima:lastrun");
+                                    WriteLastRun($"{runNumber}:{counterWrite}");
+                                    _messageBus.SendMessage(
+                                        $"Progress {runNumber}:{counterWrite} - Concurrent Processes: {permutationSet.Count}",
+                                        "SubstituteUltima:lastrun");
+                                }
+                                catch (Exception e)
+                                {
+                                    Console.WriteLine(e);
+                                }
+                                
                             }
                             else
                             {
@@ -204,23 +212,31 @@ namespace LiberPrimusAnalysisTool.Application.Commands.InputProcessing
                                 {
                                     highestPercentage = percentage;
 
-                                    string filename =
-                                        $"output/text/{fileInfo.Name.Replace(".txt", string.Empty)}/POSSIBLE-MATCH{percentage}-{fileInfo.Name.Replace(".txt", string.Empty)}";
-                                    File.AppendAllText(filename, $"PERCENTAGE: {percentage}\r\n");
-                                    File.AppendAllText(filename,
-                                        $"ORIGINAL: {string.Join(",", runes)}\r\n");
-                                    File.AppendAllText(filename,
-                                        $"REPLACE : {string.Join(",", permutation)}\r\n");
-                                    File.AppendAllText(filename, $"RUN: {runNumber}:{counterWrite}\r\n");
-                                    File.AppendAllLines(filename, tlines);
+                                    try
+                                    {
+                                        string filename =
+                                            $"output/text/{fileInfo.Name.Replace(".txt", string.Empty)}/POSSIBLE-MATCH{percentage}-{DateTime.Now.ToBinary()}-{fileInfo.Name.Replace(".txt", string.Empty)}";
+                                        File.AppendAllText(filename, $"PERCENTAGE: {percentage}\r\n");
+                                        File.AppendAllText(filename,
+                                            $"ORIGINAL: {string.Join(",", runes)}\r\n");
+                                        File.AppendAllText(filename,
+                                            $"REPLACE : {string.Join(",", permutation)}\r\n");
+                                        File.AppendAllText(filename, $"RUN: {runNumber}:{counterWrite}\r\n");
+                                        File.AppendAllLines(filename, tlines);
 
-                                    _messageBus.SendMessage($"HIGHEST PERCENTAGE: {percentage}",
-                                        "SubstituteUltima");
+                                        _messageBus.SendMessage($"HIGHEST PERCENTAGE: {percentage}",
+                                            "SubstituteUltima");
 
-                                    WriteLastRun($"{runNumber}:{counterWrite}");
-                                    _messageBus.SendMessage(
-                                        $"Progress {runNumber}:{counterWrite} - Concurrent Processes: {permutationSet.Count}",
-                                        "SubstituteUltima:lastrun");
+                                        WriteLastRun($"{runNumber}:{counterWrite}");
+                                        _messageBus.SendMessage(
+                                            $"Progress {runNumber}:{counterWrite} - Concurrent Processes: {permutationSet.Count}",
+                                            "SubstituteUltima:lastrun");
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        Console.WriteLine(e);
+                                    }
+                                    
                                 }
                             }
                         }
