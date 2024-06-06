@@ -9,7 +9,7 @@
     <StackPanel Margin="20" Spacing="10">
         <Button Command="{Binding CalculateStringCommand}">Calculate</Button>
         <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Height="500">
-            <TextBlock Text="{Binding ReportString}" Background="White" Foreground="Black"></TextBlock>
+            <TextBox Text="{Binding ReportString}"></TextBox>
         </ScrollViewer>
     </StackPanel>
 </UserControl>

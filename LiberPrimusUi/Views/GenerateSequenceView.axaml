@@ -20,7 +20,7 @@
             <Button Click="Button_OnClick">Save to File</Button>
         </StackPanel>
         <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Height="500">
-            <TextBlock Text="{Binding Result}" Background="White" Foreground="Black"></TextBlock>
+            <TextBox Text="{Binding Result}"></TextBox>
         </ScrollViewer>
     </StackPanel>
 </UserControl>

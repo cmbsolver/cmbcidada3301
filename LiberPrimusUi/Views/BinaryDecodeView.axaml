@@ -21,7 +21,7 @@
             <Button Command="{Binding DecodeBinaryStringCommand}">Decode</Button>
         </StackPanel>
         <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Height="500">
-            <TextBlock Text="{Binding BinDecodedString}" Background="White" Foreground="Black"></TextBlock>
+            <TextBox Text="{Binding BinDecodedString}"></TextBox>
         </ScrollViewer>
     </StackPanel>
 </UserControl>
