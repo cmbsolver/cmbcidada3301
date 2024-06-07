@@ -38,6 +38,7 @@ public partial class MainWindowViewModel : ViewModelBase
         new ListItemTemplate(typeof(SubstituteUltimaViewModel), "Wrench", "Substitute Ultima"),
         new ListItemTemplate(typeof(ColorReportViewModel), "ImageIcon", "Color Report"),
         new ListItemTemplate(typeof(InvertColorsViewModel), "ImageIcon", "Invert Colors"),
+        new ListItemTemplate(typeof(BulkByteWinnowPagesViewModel), "ImageIcon", "Byte Winnow Pages"),
         new ListItemTemplate(typeof(CreditsViewModel), "ListIcon", "Credits"),
     ];
 
@@ -132,6 +133,12 @@ public partial class MainWindowViewModel : ViewModelBase
                     _windows.Add(new Tuple<string, object>(value.Label, new SubstituteUltimaViewModel(_mediator, _messageBus)));
                 CurrentPage = _windows.FirstOrDefault(w => w.Item1 == value.Label)?.Item2 as SubstituteUltimaViewModel;
                 break; 
+            
+            case Type t when t == typeof(BulkByteWinnowPagesViewModel):
+                if (!_windows.Any(w => w.Item1 == value.Label))
+                    _windows.Add(new Tuple<string, object>(value.Label, new BulkByteWinnowPagesViewModel(_mediator, _messageBus)));
+                CurrentPage = _windows.FirstOrDefault(w => w.Item1 == value.Label)?.Item2 as BulkByteWinnowPagesViewModel;
+                break;  
         }
     }
 

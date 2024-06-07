@@ -8,6 +8,7 @@ using MediatR;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using LiberPrimusAnalysisTool.Utility.Message;
 
 namespace LiberPrimusAnalysisTool.Application.Commands.Image.ByteProcessing
 {
@@ -101,12 +102,18 @@ namespace LiberPrimusAnalysisTool.Application.Commands.Image.ByteProcessing
             private readonly ICharacterRepo _characterRepo;
 
             /// <summary>
+            /// The message bus
+            /// </summary>
+            private readonly IMessageBus _messageBus;
+
+            /// <summary>
             /// Initializes a new instance of the <see cref="Handler" /> class.
             /// </summary>
             /// <param name="characterRepo">The character repo.</param>
-            public Handler(ICharacterRepo characterRepo)
+            public Handler(ICharacterRepo characterRepo, IMessageBus messageBus)
             {
                 _characterRepo = characterRepo;
+                _messageBus = messageBus;
             }
 
             /// <summary>
@@ -165,6 +172,11 @@ namespace LiberPrimusAnalysisTool.Application.Commands.Image.ByteProcessing
                 }
 
                 charBinList = charBinList.Where(x => x.Length == bitBreak).ToList();
+                
+                if (!Directory.Exists("./output/bytep"))
+                {
+                    Directory.CreateDirectory("./output/bytep");
+                }
 
                 using (var file = File.CreateText($"./output/bytep/BYTE-{request.ByteData.Item1.PageName}-LSB-{request.Method}-{request.AsciiProcessing}-{request.BitsOfSig}.txt"))
                 {

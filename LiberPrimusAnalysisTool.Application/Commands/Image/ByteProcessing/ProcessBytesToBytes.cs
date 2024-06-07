@@ -6,6 +6,7 @@ using MediatR;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using LiberPrimusAnalysisTool.Utility.Message;
 
 namespace LiberPrimusAnalysisTool.Application.Commands.Image.ByteProcessing
 {
@@ -73,10 +74,16 @@ namespace LiberPrimusAnalysisTool.Application.Commands.Image.ByteProcessing
         public class Handler : INotificationHandler<Command>
         {
             /// <summary>
+            /// The message bus
+            /// </summary>
+            private readonly IMessageBus _messageBus;
+            
+            /// <summary>
             /// Initializes a new instance of the <see cref="Handler" /> class.
             /// </summary>
-            public Handler()
+            public Handler(IMessageBus messageBus)
             {
+                _messageBus = messageBus;
             }
 
             /// <summary>
@@ -130,6 +137,11 @@ namespace LiberPrimusAnalysisTool.Application.Commands.Image.ByteProcessing
                         bytes.Add(Convert.ToByte(ascii.ToString(), 2));
                         ascii.Clear();
                     }
+                }
+                
+                if (!Directory.Exists("./output/bytep"))
+                {
+                    Directory.CreateDirectory("./output/bytep");
                 }
 
                 File.WriteAllBytes($"./output/bytep/BYTE-{request.ByteData.Item1.PageName}-LSB-{request.Method}-{request.BitsOfSig}.bin", bytes.ToArray());
