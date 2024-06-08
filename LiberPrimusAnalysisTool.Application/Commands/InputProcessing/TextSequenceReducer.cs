@@ -40,36 +40,46 @@ public class TextSequenceReducer
             
             StringBuilder sb = new StringBuilder();
 
-            int counter = 0;
-            while(counter < int.MaxValue / 2 && text.Count > 0)
+            if (request.SequenceName != "Natural")
             {
-                if (text.Count <= 2)
+                int counter = 0;
+                while (counter < int.MaxValue / 2 && text.Count > 0)
+                {
+                    if (text.Count <= 2)
+                    {
+                        sb.Append(text.ToArray());
+                        break;
+                    }
+
+                    var sequence = await _mediator.Send(new CalculateSequence.Query(text.Count, request.SequenceName));
+
+                    var removeCount = request.SequenceName;
+
+                    foreach (var number in sequence.Sequence)
+                    {
+                        sb.Append(text[(int)number - 1]);
+                    }
+
+                    sequence.Sequence.Reverse();
+
+                    foreach (var number in sequence.Sequence)
+                    {
+                        text.RemoveAt((int)number - 1);
+                    }
+
+                    counter++;
+                }
+
+                if (text.Count > 0)
                 {
                     sb.Append(text.ToArray());
-                    break;
                 }
-                
-                var sequence = await _mediator.Send(new CalculateSequence.Query(text.Count, request.SequenceName));
-                
-                foreach (var number in sequence.Sequence)
-                {
-                    sb.Append(text[(int)number - 1]);
-                }
-                
-                sequence.Sequence.Reverse();
-                foreach (var number in sequence.Sequence)
-                {
-                    text.RemoveAt((int)number - 1);
-                }
-                
-                counter++;
             }
-            
-            if (text.Count > 0)
+            else
             {
                 sb.Append(text.ToArray());
             }
-            
+
             var retval = await _mediator.Send(new TransposeRuneToLatin.Command(sb.ToString()));
             retval = await _mediator.Send(new FixUpControlChars.Command(retval));
             
