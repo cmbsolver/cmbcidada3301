@@ -8,9 +8,8 @@
              x:DataType="vm:ColorReportViewModel">
     <StackPanel Margin="20" Spacing="10">
         <StackPanel Orientation="Horizontal" Spacing="5">
-            <TextBlock VerticalAlignment="Center">File Name</TextBlock>
-            <TextBlock VerticalAlignment="Center" Text="{Binding FileName}"></TextBlock>
-            <Button VerticalAlignment="Center" Click="GetFile_OnClick">Open File</Button>
+            <TextBlock VerticalAlignment="Center">Pages</TextBlock>
+            <ComboBox ItemsSource="{Binding LiberPages}" SelectedItem="{Binding SelectedLiberPage}"></ComboBox>
         </StackPanel>
         <StackPanel Orientation="Horizontal" Spacing="5">
             <Button Command="{Binding GetColorReportCommand}" IsEnabled="{Binding Processing}">Get Report</Button>
