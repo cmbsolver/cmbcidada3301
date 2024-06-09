@@ -17,6 +17,11 @@ namespace LiberPrimusAnalysisTool.Application.Commands.InputProcessing
         /// <seealso cref="IRequest" />
         public class Command : IRequest<string>
         {
+            public Command(string fileName)
+            {
+                FileName = fileName;
+            }
+
             public string FileName { get; set; }
         }
 
@@ -56,7 +61,6 @@ namespace LiberPrimusAnalysisTool.Application.Commands.InputProcessing
             private string DetectBinaryFile(string file)
             {
                 string fileType = string.Empty;
-                string justFileName = Path.GetFileName(file);
                 FileTypeInterrogator.IFileTypeInterrogator interrogator =
                     new FileTypeInterrogator.FileTypeInterrogator();
 
@@ -66,13 +70,14 @@ namespace LiberPrimusAnalysisTool.Application.Commands.InputProcessing
 
                 if (fileTypeInfo == null)
                 {
-                    fileType = $"Could not detect file type for {justFileName}.";
+                    fileType = $"Could not detect file type for {file}." + Environment.NewLine;
                 }
                 else
                 {
-                    fileType = "Name = " + fileTypeInfo.Name + Environment.NewLine;
-                    fileType = "Extension = " + fileTypeInfo.FileType + Environment.NewLine;
-                    fileType = "Mime Type = " + fileTypeInfo.MimeType + Environment.NewLine;
+                    fileType += $"File Name {file}" + Environment.NewLine;
+                    fileType += $"Type = {fileTypeInfo.Name}" + Environment.NewLine;
+                    fileType += $"Extension = {fileTypeInfo.FileType}" + Environment.NewLine;
+                    fileType += $"Mime Type = {fileTypeInfo.MimeType}" + Environment.NewLine;
                 }
                 
                 return fileType;

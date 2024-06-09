@@ -1,0 +1,24 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:LiberPrimusUi.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="LiberPrimusUi.Views.IdentifyBinFileView"
+             x:DataType="vm:IdentifyBinFileViewModel">
+    <StackPanel Margin="20" Spacing="10">
+        <StackPanel Orientation="Horizontal" Spacing="5">
+            <TextBlock VerticalAlignment="Center">Pages</TextBlock>
+            <ComboBox ItemsSource="{Binding BinFiles}" SelectedItem="{Binding SelectedBinFile}"></ComboBox>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" Spacing="5">
+            <Button Command="{Binding ProcessBinFileCommand}">Identify</Button>
+            <Button Command="{Binding BulkProcessBinFileCommand}">Bulk Identify</Button>
+            <Button Command="{Binding CleanUpUnidentifiedFilesCommand}">Remove Unidentified</Button>
+            <Button Command="{Binding ClearMessagesCommand}">Clear Output</Button>
+        </StackPanel>
+        <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Height="500">
+            <TextBox Text="{Binding Result}"></TextBox>
+        </ScrollViewer>
+    </StackPanel>
+</UserControl>

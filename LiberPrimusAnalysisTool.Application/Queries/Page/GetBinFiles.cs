@@ -5,7 +5,7 @@ namespace LiberPrimusAnalysisTool.Application.Queries.Page;
 /// <summary>
 /// The container for getting the pages.
 /// </summary>
-public class GetTextPages
+public class GetBinFiles
 {
     /// <summary>
     /// The command for getting the pages
@@ -55,9 +55,15 @@ public class GetTextPages
 
             foreach (var file in Directory.GetFiles(path))
             {
-                if (file.EndsWith(".txt"))
+                FileInfo fi = new FileInfo(file);
+                if (file.EndsWith(".bin") && fi.Length > 0)
                 {
                     pages.Add(file);
+                }
+                
+                if (file.EndsWith(".bin") && fi.Length == 0)
+                {
+                    File.Delete(file);
                 }
             }
         }

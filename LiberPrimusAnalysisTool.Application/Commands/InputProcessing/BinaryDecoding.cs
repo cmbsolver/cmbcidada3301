@@ -128,7 +128,7 @@ namespace LiberPrimusAnalysisTool.Application.Commands.InputProcessing
                             break;
                         case "FILE":
                             File.WriteAllBytes(request.File, bytes.ToArray());
-                            decoded = await _mediator.Send(new DetectBinFile.Command { FileName = request.File });
+                            decoded = await _mediator.Send(new DetectBinFile.Command(request.File));
                             break;
                         default:
                             decoded = Encoding.ASCII.GetString(bytes.ToArray());
