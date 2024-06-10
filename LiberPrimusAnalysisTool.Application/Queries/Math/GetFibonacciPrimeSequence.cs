@@ -24,7 +24,7 @@ namespace LiberPrimusAnalysisTool.Application.Queries.Math
         /// </summary>
         /// <param name="number">The number.</param>
         /// <returns></returns>
-        public static object BuildCommand(long number)
+        public static object BuildCommand(ulong number)
         {
             var fibonacciSequence = new GetFibonacciPrimeSequence.Query() { MaxNumber = number };
 
@@ -36,7 +36,7 @@ namespace LiberPrimusAnalysisTool.Application.Queries.Math
         /// </summary>
         public class Query : IRequest<NumericSequence>
         {
-            public long MaxNumber { get; set; }
+            public ulong MaxNumber { get; set; }
         }
 
         /// <summary>
@@ -68,9 +68,9 @@ namespace LiberPrimusAnalysisTool.Application.Queries.Math
                 NumericSequence result = new NumericSequence(Name);
                 result.Number = request.MaxNumber;
 
-                long a = 0;
-                long b = 1;
-                long c = 0;
+                ulong a = 0;
+                ulong b = 1;
+                ulong c = 0;
 
                 while (c <= request.MaxNumber)
                 {

@@ -25,7 +25,7 @@ namespace LiberPrimusAnalysisTool.Application.Queries.Math
         /// </summary>
         /// <param name="number">The number.</param>
         /// <returns></returns>
-        public static object BuildCommand(long number)
+        public static object BuildCommand(ulong number)
         {
             var result = new GetCatalanSequence.Query { MaxNumber = number };
 
@@ -43,7 +43,7 @@ namespace LiberPrimusAnalysisTool.Application.Queries.Math
             /// <value>
             /// The maximum number.
             /// </value>
-            public long MaxNumber { get; set; }
+            public ulong MaxNumber { get; set; }
         }
 
         /// <summary>
@@ -63,10 +63,10 @@ namespace LiberPrimusAnalysisTool.Application.Queries.Math
             {
                 NumericSequence retval = new NumericSequence(Name);
                 retval.Number = request.MaxNumber;
-                long n = 0;
+                ulong n = 0;
                 try
                 {
-                    long catalan = 1;
+                    ulong catalan = 1;
 
                     while (catalan <= request.MaxNumber)
                     {
@@ -79,7 +79,7 @@ namespace LiberPrimusAnalysisTool.Application.Queries.Math
                         }
                         else
                         {
-                            retval.Sequence.Add(Convert.ToInt64(catalan));
+                            retval.Sequence.Add(Convert.ToUInt64(catalan));
                         }
                     }
                 }

@@ -18,6 +18,6 @@
         /// </summary>
         /// <param name="number">The number.</param>
         /// <returns></returns>
-        static abstract object BuildCommand(long number);
+        static abstract object BuildCommand(ulong number);
     }
 }

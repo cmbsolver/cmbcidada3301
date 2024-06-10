@@ -13,7 +13,7 @@ namespace LiberPrimusAnalysisTool.Entity
         /// <param name="name">The name.</param>
         public NumericSequence(string name)
         {
-            Sequence = new List<long>();
+            Sequence = new List<ulong>();
             Number = null;
             Result = null;
             Name = name;
@@ -33,7 +33,7 @@ namespace LiberPrimusAnalysisTool.Entity
         /// <value>
         /// The number.
         /// </value>
-        public long? Number { get; set; }
+        public ulong? Number { get; set; }
 
         /// <summary>
         /// Gets or sets the result.
@@ -41,7 +41,7 @@ namespace LiberPrimusAnalysisTool.Entity
         /// <value>
         /// The result.
         /// </value>
-        public long? Result { get; set; }
+        public ulong? Result { get; set; }
 
         /// <summary>
         /// Gets or sets the sequence.
@@ -49,6 +49,6 @@ namespace LiberPrimusAnalysisTool.Entity
         /// <value>
         /// The sequence.
         /// </value>
-        public List<long> Sequence { get; set; }
+        public List<ulong> Sequence { get; set; }
     }
 }

@@ -24,7 +24,7 @@ namespace LiberPrimusAnalysisTool.Application.Queries.Math
         /// </summary>
         /// <param name="number">The number.</param>
         /// <returns></returns>
-        public static object BuildCommand(long number)
+        public static object BuildCommand(ulong number)
         {
             var query = new Query() { Number = number };
 
@@ -42,7 +42,7 @@ namespace LiberPrimusAnalysisTool.Application.Queries.Math
             /// <value>
             /// The number.
             /// </value>
-            public long Number { get; set; }
+            public ulong Number { get; set; }
         }
 
         /// <summary>
@@ -78,7 +78,7 @@ namespace LiberPrimusAnalysisTool.Application.Queries.Math
                 totient.Number = request.Number;
                 var n = request.Number;
 
-                for (long i = 1; i <= n; i++)
+                for (ulong i = 1; i <= n; i++)
                 {
                     if (GCD(i, n) == 1)
                     {
@@ -98,7 +98,7 @@ namespace LiberPrimusAnalysisTool.Application.Queries.Math
             /// <param name="a">a.</param>
             /// <param name="b">The b.</param>
             /// <returns></returns>
-            private long GCD(long a, long b)
+            private ulong GCD(ulong a, ulong b)
             {
                 while (b != 0)
                 {

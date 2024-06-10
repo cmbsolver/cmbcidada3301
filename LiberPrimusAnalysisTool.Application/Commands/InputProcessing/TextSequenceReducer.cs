@@ -51,7 +51,7 @@ public class TextSequenceReducer
                         break;
                     }
 
-                    var sequence = await _mediator.Send(new CalculateSequence.Query(text.Count, request.SequenceName));
+                    var sequence = await _mediator.Send(new CalculateSequence.Query(Convert.ToUInt64(text.Count), request.SequenceName));
 
                     var removeCount = request.SequenceName;
 

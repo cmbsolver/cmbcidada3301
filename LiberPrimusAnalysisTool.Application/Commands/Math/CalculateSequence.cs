@@ -25,7 +25,7 @@ namespace LiberPrimusAnalysisTool.Application.Commands.Math
             /// </summary>
             /// <param name="value">The value.</param>
             /// <param name="name">The name.</param>
-            public Query(long value, string name)
+            public Query(ulong value, string name)
             {
                 Value = value;
                 NameToRun = name;
@@ -45,7 +45,7 @@ namespace LiberPrimusAnalysisTool.Application.Commands.Math
             /// <value>
             /// The value.
             /// </value>
-            public long Value { get; set; }
+            public ulong Value { get; set; }
         }
 
         /// <summary>

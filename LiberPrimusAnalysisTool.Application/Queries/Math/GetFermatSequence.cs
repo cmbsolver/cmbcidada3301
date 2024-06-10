@@ -24,7 +24,7 @@ namespace LiberPrimusAnalysisTool.Application.Queries.Math
         /// </summary>
         /// <param name="number">The number.</param>
         /// <returns></returns>
-        public static object BuildCommand(long number)
+        public static object BuildCommand(ulong number)
         {
             var primeSequence = new GetFermatSequence.Query() { Number = number };
 
@@ -37,7 +37,7 @@ namespace LiberPrimusAnalysisTool.Application.Queries.Math
         /// <seealso cref="IRequest" />
         public class Query : IRequest<NumericSequence>
         {
-            public long Number { get; set; }
+            public ulong Number { get; set; }
         }
 
         /// <summary>
@@ -68,7 +68,7 @@ namespace LiberPrimusAnalysisTool.Application.Queries.Math
                 NumericSequence numericSequence = new NumericSequence(Name);
                 numericSequence.Number = request.Number;
 
-                long n = 2;
+                ulong n = 2;
 
                 while (true)
                 {

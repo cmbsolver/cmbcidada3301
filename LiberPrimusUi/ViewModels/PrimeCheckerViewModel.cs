@@ -25,7 +25,7 @@ public partial class PrimeCheckerViewModel: ViewModelBase
     [RelayCommand]
     private async Task CheckNumber()
     {
-        var result = await _mediator.Send(new GetIsPrime.Query() { Number = long.Parse(NumberToCheckIsPrime) });
+        var result = await _mediator.Send(new GetIsPrime.Query() { Number = ulong.Parse(NumberToCheckIsPrime) });
         
         if (result)
         {

@@ -27,7 +27,7 @@ namespace LiberPrimusAnalysisTool.Application.Queries.Math
         /// </summary>
         /// <param name="number">The number.</param>
         /// <returns></returns>
-        public static object BuildCommand(long number)
+        public static object BuildCommand(ulong number)
         {
             var binomialSequence = new GetBinomialSequence.Query() { MaxNumber = number };
 
@@ -45,7 +45,7 @@ namespace LiberPrimusAnalysisTool.Application.Queries.Math
             /// <value>
             /// The maximum n number.
             /// </value>
-            public long MaxNumber { get; set; }
+            public ulong MaxNumber { get; set; }
         }
 
         /// <summary>
@@ -66,8 +66,8 @@ namespace LiberPrimusAnalysisTool.Application.Queries.Math
                 NumericSequence numericSequence = new NumericSequence(Name);
                 numericSequence.Number = request.MaxNumber;
 
-                List<long> nnumbers = new List<long>();
-                for (long n = 0; n <= request.MaxNumber; n++)
+                List<ulong> nnumbers = new List<ulong>();
+                for (ulong n = 0; n <= request.MaxNumber; n++)
                 {
                     nnumbers.Add(n);
                 }
@@ -75,12 +75,12 @@ namespace LiberPrimusAnalysisTool.Application.Queries.Math
                 ParallelOptions parallelOptions = new ParallelOptions();
                 parallelOptions.MaxDegreeOfParallelism = Environment.ProcessorCount / 2;
 
-                List<Tuple<long, List<long>>> binomialSequences = new List<Tuple<long, List<long>>>();
+                List<Tuple<ulong, List<ulong>>> binomialSequences = new List<Tuple<ulong, List<ulong>>>();
 
                 foreach (var n in nnumbers)
                 {
-                    List<long> binomialSequence = new List<long>();
-                    var k = 0;
+                    List<ulong> binomialSequence = new List<ulong>();
+                    ulong k = 0;
                     while (k <= n)
                     {
                         binomialSequence.Add(BinomialCoefficient(n, k));
@@ -93,7 +93,7 @@ namespace LiberPrimusAnalysisTool.Application.Queries.Math
                     }
                     else
                     {
-                        binomialSequences.Add(new Tuple<long, List<long>>(n, binomialSequence));
+                        binomialSequences.Add(new Tuple<ulong, List<ulong>>(n, binomialSequence));
                     }
                 }
 
@@ -113,7 +113,7 @@ namespace LiberPrimusAnalysisTool.Application.Queries.Math
             /// <param name="n">The n.</param>
             /// <param name="k">The k.</param>
             /// <returns></returns>
-            private long BinomialCoefficient(long n, long k)
+            private ulong BinomialCoefficient(ulong n, ulong k)
             {
                 try
                 {

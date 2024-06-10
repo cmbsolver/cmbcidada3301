@@ -5,7 +5,7 @@ using MediatR;
 namespace LiberPrimusAnalysisTool.Application.Queries
 {
     /// <summary>
-    /// Indexes the liber primus pages longo the database.
+    /// Indexes the liber primus pages ulongo the database.
     /// </summary>
     public class GetIsPrime
     {
@@ -15,7 +15,7 @@ namespace LiberPrimusAnalysisTool.Application.Queries
         /// <seealso cref="IRequest" />
         public class Query : IRequest<bool>
         {
-            public long Number { get; set; }
+            public ulong Number { get; set; }
         }
 
         /// <summary>
@@ -44,9 +44,9 @@ namespace LiberPrimusAnalysisTool.Application.Queries
                 if (request.Number == 2) return Task.FromResult(true);
                 if (request.Number % 2 == 0) return Task.FromResult(false);
 
-                var boundary = (long)System.Math.Floor(System.Math.Sqrt(request.Number));
+                var boundary = (ulong)System.Math.Floor(System.Math.Sqrt(request.Number));
 
-                for (long i = 3; i <= boundary; i += 2)
+                for (ulong i = 3; i <= boundary; i += 2)
                 {
                     if (request.Number % i == 0)
                     {

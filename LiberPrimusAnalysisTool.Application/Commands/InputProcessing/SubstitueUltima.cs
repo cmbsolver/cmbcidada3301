@@ -117,23 +117,23 @@ namespace LiberPrimusAnalysisTool.Application.Commands.InputProcessing
                 ParallelOptions parallelOptions = new ParallelOptions();
                 parallelOptions.MaxDegreeOfParallelism = Environment.ProcessorCount / 2;
 
-                long counterWrite = 0;
-                long runNumber = 0;
-                long lastCounterWrite = 0;
-                long lastRunNumber = 0;
+                ulong counterWrite = 0;
+                ulong runNumber = 0;
+                ulong lastCounterWrite = 0;
+                ulong lastRunNumber = 0;
 
                 if (File.Exists("output/lastRun.txt"))
                 {
                     string lastRun = File.ReadAllText("output/lastRun.txt");
                     var lastRunSplit = lastRun.Split(':');
-                    lastRunNumber = long.Parse(lastRunSplit[0]);
-                    lastCounterWrite = long.Parse(lastRunSplit[1]);
+                    lastRunNumber = ulong.Parse(lastRunSplit[0]);
+                    lastCounterWrite = ulong.Parse(lastRunSplit[1]);
                 }
 
                 foreach (var permutationSet in StartGetPurmutations(permuteRunes))
                 {
-                    counterWrite += permutationSet.Count;
-                    if (counterWrite >= (long.MaxValue - 1000))
+                    counterWrite = counterWrite + Convert.ToUInt32(permutationSet.Count);
+                    if (counterWrite >= (ulong.MaxValue - 1000))
                     {
                         counterWrite = 0;
                         runNumber++;
