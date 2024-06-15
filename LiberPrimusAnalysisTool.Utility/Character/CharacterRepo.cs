@@ -659,6 +659,180 @@ namespace LiberPrimusAnalysisTool.Utility.Character
 
             return retval;
         }
+
+        public bool IsRune(string value)
+        {
+            bool retval = false;
+            switch (value)
+            {
+                case "ᛝ":
+                case "ᛟ":
+                case "ᛇ":
+                case "ᛡ":
+                case "ᛠ":
+                case "ᚫ":
+                case "ᚦ":
+                case "ᚠ":
+                case "ᚢ":
+                case "ᚩ":
+                case "ᚱ":
+                case "ᚳ":
+                case "ᚷ":
+                case "ᚹ":
+                case "ᚻ":
+                case "ᚾ":
+                case "ᛁ":
+                case "ᛄ":
+                case "ᛈ":
+                case "ᛉ":
+                case "ᛋ":
+                case "ᛏ":
+                case "ᛒ":
+                case "ᛖ":
+                case "ᛗ":
+                case "ᛚ":
+                case "ᛞ":
+                case "ᚪ":
+                case "ᚣ":
+                    retval = true;
+                    break;
+
+                default:
+                    retval = false;
+                    break;
+            }
+
+            return retval;
+        }
+        
+        public string GetHexValFromRune(string value)
+        {
+            string retval = string.Empty;
+            switch (value)
+            {
+                case "ᛝ":
+                    retval = "D";
+                    break;
+
+                case "ᛟ":
+                    retval = "F";
+                    break;
+
+                case "ᛇ":
+                    retval = "7";
+                    break;
+
+                case "ᛡ":
+                    retval = "C"; //C OR 1
+                    break;
+
+                case "ᛠ":
+                    retval = "0";
+                    break;
+
+                case "ᚫ":
+                    retval = "B"; //B OR 8
+                    break;
+
+                case "ᚦ":
+                    retval = "6";
+                    break;
+
+                case "ᚠ":
+                    retval = "3";
+                    break;
+
+                case "ᚢ":
+                    retval = "2";
+                    break;
+
+                case "ᚩ":
+                    retval = "9";
+                    break;
+
+                case "ᚱ":
+                    retval = "1";
+                    break;
+
+                case "ᚳ":
+                    retval = "3";
+                    break;
+
+                case "ᚷ":
+                    retval = "7";
+                    break;
+
+                case "ᚹ":
+                    retval = "9";
+                    break;
+
+                case "ᚻ":
+                    retval = "B";
+                    break;
+
+                case "ᚾ":
+                    retval = "E";
+                    break;
+
+                case "ᛁ":
+                    retval = "1";
+                    break;
+
+                case "ᛄ":
+                    retval = "4";
+                    break;
+
+                case "ᛈ":
+                    retval = "8";
+                    break;
+
+                case "ᛉ":
+                    retval = "8";
+                    break;
+
+                case "ᛋ":
+                    retval = "B";
+                    break;
+
+                case "ᛏ":
+                    retval = "F";
+                    break;
+
+                case "ᛒ":
+                    retval = "2";
+                    break;
+
+                case "ᛖ":
+                    retval = "6";
+                    break;
+
+                case "ᛗ":
+                    retval = "7";
+                    break;
+
+                case "ᛚ":
+                    retval = "A";
+                    break;
+
+                case "ᛞ":
+                    retval = "E";
+                    break;
+
+                case "ᚪ":
+                    retval = "A";
+                    break;
+
+                case "ᚣ":
+                    retval = "3";
+                    break;
+
+                default:
+                    retval = value;
+                    break;
+            }
+
+            return retval;
+        }
         
         /// <summary>
         /// Gets the value from rune.

@@ -40,6 +40,8 @@ namespace LiberPrimusAnalysisTool.Utility.Character
         /// </summary>
         /// <returns></returns>
         string[] GetGematriaRunes();
+        
+        bool IsRune(string value);
 
         /// <summary>
         /// Gets the character from rune.
@@ -47,6 +49,13 @@ namespace LiberPrimusAnalysisTool.Utility.Character
         /// <param name="value">The value.</param>
         /// <returns></returns>
         string GetCharFromRune(string value);
+
+        /// <summary>
+        /// Gets the hex val from the rune.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        string GetHexValFromRune(string value);
 
         /// <summary>
         /// Gets the rune from value.
