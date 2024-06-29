@@ -8,7 +8,7 @@
              x:DataType="vm:IdentifyBinFileViewModel">
     <StackPanel Margin="20" Spacing="10">
         <StackPanel Orientation="Horizontal" Spacing="5">
-            <TextBlock VerticalAlignment="Center">Pages</TextBlock>
+            <TextBlock VerticalAlignment="Center">Files</TextBlock>
             <ComboBox ItemsSource="{Binding BinFiles}" SelectedItem="{Binding SelectedBinFile}"></ComboBox>
         </StackPanel>
         <StackPanel Orientation="Horizontal" Spacing="5">
