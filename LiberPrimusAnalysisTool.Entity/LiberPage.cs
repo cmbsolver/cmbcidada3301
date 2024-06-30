@@ -49,16 +49,6 @@ namespace LiberPrimusAnalysisTool.Entity
         public string PageName { get; set; }
 
         /// <summary>
-        /// Gets or sets the page sig.
-        /// </summary>
-        /// <value>
-        /// The page sig.
-        /// </value>
-        [Required]
-        [Column("PAGE_SIG")]
-        public string PageSig { get; set; }
-
-        /// <summary>
         /// Gets or sets the total colors.
         /// </summary>
         /// <value>

@@ -70,7 +70,6 @@ namespace LiberPrimusAnalysisTool.Application.Commands.Image
                 report.AppendLine($"Height: {page.Height}");
                 report.AppendLine($"Width: {page.Width}");
                 report.AppendLine($"Total Pixels: {page.PixelCount}");
-                report.AppendLine($"Signature: {page.PageSig}");
                 report.AppendLine(string.Empty);
                 report.AppendLine($"Colors");
                 report.AppendLine($"---------------------------------");

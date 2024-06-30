@@ -1,12 +1,12 @@
 ﻿using System;
-using ImageMagick;
 using LiberPrimusAnalysisTool.Entity;
 using MediatR;
-using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.PixelFormats;
 
 namespace LiberPrimusAnalysisTool.Application.Queries
 {
@@ -83,38 +83,37 @@ namespace LiberPrimusAnalysisTool.Application.Queries
             {
                 LiberPage page;
 
-                using (var imageFromFile = new MagickImage(request.FileName))
-                using (var pixels = imageFromFile.GetPixels())
+                using (Image<Rgba32> image = Image.Load<Rgba32>(request.FileName))
                 {
+                    var metadata = image.Metadata.GetJpegMetadata();
+
                     page = new LiberPage
                     {
                         FileName = request.FileName,
                         PageName = Path.GetFileName(request.FileName).ToUpper().Split(".")[0],
-                        PageSig = imageFromFile.Signature,
-                        TotalColors = imageFromFile.TotalColors,
-                        Height = imageFromFile.Height,
-                        Width = imageFromFile.Width,
-                        PixelCount = pixels.Count()
+                        TotalColors = 256, //Revisit
+                        Height = image.Height,
+                        Width = image.Width,
+                        PixelCount = image.Height * image.Width,
                     };
 
-                    if (request.IncludePixels)
-                    {
-                        page.Pixels = pixels.Select(x => new Entity.Pixel(
-                            x.X,
-                            x.Y,
-                            ColorTranslator.FromHtml(x.ToColor().ToHexString().ToUpper()).R,
-                            ColorTranslator.FromHtml(x.ToColor().ToHexString().ToUpper()).G,
-                            ColorTranslator.FromHtml(x.ToColor().ToHexString().ToUpper()).B,
-                            x.ToColor().ToHexString(),
-                            page.PageName)).ToList();
+                    Rgba32[] pixelArray = new Rgba32[image.Width * image.Height];
+                    image.CopyPixelDataTo(pixelArray);
+                    page.Pixels = pixelArray.Select(x => new Entity.Pixel(
+                        x.R,
+                        x.G,
+                        x.B,
+                        x.ToHex(),
+                        page.PageName)).ToList();
 
-                        if (request.InvertPixels)
-                        {
-                            page.Pixels.Reverse();
-                        }
+                    if (request.InvertPixels)
+                    {
+                        page.Pixels.Reverse();
                     }
 
-                    pixels.Dispose();
+                    page.TotalColors = page.Pixels.Select(x => x.Hex).Distinct().Count();
+
+                    image.Dispose();
                 }
 
                 GC.Collect();

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using ImageMagick;
 using LiberPrimusAnalysisTool.Entity;
 using MediatR;
 
@@ -66,25 +65,11 @@ namespace LiberPrimusAnalysisTool.Application.Queries.Page
             {
                 List<LiberColor> colors = new List<LiberColor>();
 
-                var page = await _mediator.Send(new GetPageData.Query(request.FileName, false, false));
+                var page = await _mediator.Send(new GetPageData.Query(request.FileName, true, false));
 
-                using (var imageFromFile = new MagickImage(page.FileName))
-                using (var pixels = imageFromFile.GetPixels())
-                {
-                    var pixColors = pixels.Select(x => x.ToColor().ToHexString()).Distinct().ToList();
-
-                    foreach (var color in pixColors)
-                    {
-                        var liberColor = new LiberColor
-                        {
-                            LiberColorHex = color
-                        };
-
-                        colors.Add(liberColor);
-
-                        pixels.Dispose();
-                    }
-                }
+                var pixColors = page.Pixels.Select(x => x.Hex).Distinct().OrderBy(x => x).ToList();
+                
+                colors.AddRange(pixColors.Select(x => new LiberColor(x)));
 
                 GC.Collect();
 
