@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using LiberPrimusAnalysisTool.Application.Commands.Image.ByteProcessing;
 using LiberPrimusAnalysisTool.Application.Commands.Math;

@@ -3,7 +3,6 @@ using LiberPrimusAnalysisTool.Application.Queries;
 using LiberPrimusAnalysisTool.Entity;
 using LiberPrimusAnalysisTool.Utility.Character;
 using MediatR;
-using System.Drawing;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -71,10 +70,9 @@ namespace LiberPrimusAnalysisTool.Application.Commands.Image
 
                     foreach (var pixel in file.Pixels)
                     {
-                        System.Drawing.Color color = ColorTranslator.FromHtml(pixel.Hex);
-                        rgbIndex.AddR(_characterRepo.GetASCIICharFromDec(color.R, includeControlCharacters));
-                        rgbIndex.AddG(_characterRepo.GetASCIICharFromDec(color.G, includeControlCharacters));
-                        rgbIndex.AddB(_characterRepo.GetASCIICharFromDec(color.B, includeControlCharacters));
+                        rgbIndex.AddR(_characterRepo.GetASCIICharFromDec(pixel.R, includeControlCharacters));
+                        rgbIndex.AddG(_characterRepo.GetASCIICharFromDec(pixel.G, includeControlCharacters));
+                        rgbIndex.AddB(_characterRepo.GetASCIICharFromDec(pixel.B, includeControlCharacters));
                     }
 
                     File.AppendAllText($"./output/imagep/RgbIndex_{file.PageName}.txt", "Red Text:" + rgbIndex.R + Environment.NewLine + Environment.NewLine);
