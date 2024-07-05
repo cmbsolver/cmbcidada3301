@@ -56,7 +56,7 @@ namespace LiberPrimusAnalysisTool.Application.Commands.InputProcessing
             {
                 StringBuilder sb = new StringBuilder();
                 var processFileInfo = new FileInfo(Environment.ProcessPath);
-                var pages = await _mediator.Send(new GetTextPages.Command($"{processFileInfo.Directory}/input/text/acc"));
+                var pages = await _mediator.Send(new GetTextPages.Command($"{processFileInfo.Directory}/input/text"));
 
                 foreach (var page in pages)
                 {
