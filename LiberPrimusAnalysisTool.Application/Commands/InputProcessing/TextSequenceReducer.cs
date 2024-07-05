@@ -60,11 +60,9 @@ public class TextSequenceReducer
                         sb.Append(text[(int)number - 1]);
                     }
 
-                    sequence.Sequence.Reverse();
-
-                    foreach (var number in sequence.Sequence)
+                    for (int i = (int)sequence.Sequence.Count - 1; i >= 0; i--)
                     {
-                        text.RemoveAt((int)number - 1);
+                        text.RemoveAt((int)sequence.Sequence[i] - 1);
                     }
 
                     counter++;
