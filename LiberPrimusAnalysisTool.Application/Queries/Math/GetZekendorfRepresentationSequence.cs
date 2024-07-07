@@ -20,7 +20,7 @@ namespace LiberPrimusAnalysisTool.Application.Queries.Math
         /// <value>
         /// The name.
         /// </value>
-        public static string Name => "Zekenforf Representation";
+        public static string Name => "Zekendorf Representation";
 
         /// <summary>
         /// Builds the command.
