@@ -13,16 +13,13 @@ using MediatR;
 
 namespace LiberPrimusUi.ViewModels;
 
-public partial class BulkByteWinnowPagesViewModel : ViewModelBase
+public partial class BulkPixelWinnowPagesViewModel : ViewModelBase
 {
     private readonly IMediator _mediator;
 
-    private readonly IMessageBus _messageBus;
-    
-    public BulkByteWinnowPagesViewModel(IMediator mediator, IMessageBus messageBus)
+    public BulkPixelWinnowPagesViewModel(IMediator mediator)
     {
         _mediator = mediator;
-        _messageBus = messageBus;
         
         // Adding the sequence types to the list
         var pages = _mediator.Send(new GetPages.Command()).Result;
@@ -35,8 +32,6 @@ public partial class BulkByteWinnowPagesViewModel : ViewModelBase
         {
             BitsOfInsignificance.Add(i);
         }
-        
-        _messageBus.MessageEvent += OnMessageReceived;
     }
     
     public ObservableCollection<LiberPage> LiberPages { get; set; } = new ObservableCollection<LiberPage>();
@@ -62,33 +57,22 @@ public partial class BulkByteWinnowPagesViewModel : ViewModelBase
     [ObservableProperty] private bool _isEnabled = true;
     
     [ObservableProperty] private string _result = "";
-    
-    private void OnMessageReceived(object sender, MessageSentEventArgs e)
-    {
-        if (e.Screen == "BulkByteWinnowPages")
-        {
-            Result += e.Message + Environment.NewLine;
-        }
-        else if (e.Screen == "BulkByteWinnowPages:Complete")
-        {
-            IsEnabled = true;
-            Result += e.Message + Environment.NewLine;
-        }
-    }
 
     [RelayCommand]
     public async void ProcessImage()
     {
+        Result += SelectedLiberPage.FileName + Environment.NewLine;
         IsEnabled = false;
-        Task.Run(() => _mediator.Publish(new BulkByteWinnowPages.Command(
-            BinaryOnlyMode,
+        await _mediator.Publish(new BulkPixelWinnowPages.Command(
             SelectedLiberPage.FileName,
             IncludeControlCharacters,
             ReverseBytes,
             ShiftSequence,
             MinBitOfInsignificance,
             MaxBitOfInsignificance,
-            DiscardRemainder)));
+            DiscardRemainder,
+            BinaryOnlyMode));
+        IsEnabled = true;
     }
     
     [RelayCommand]
@@ -96,16 +80,17 @@ public partial class BulkByteWinnowPagesViewModel : ViewModelBase
     {
         foreach (var page in LiberPages)
         {
+            Result += page.FileName + Environment.NewLine;
             IsEnabled = false;
-            await _mediator.Publish(new BulkByteWinnowPages.Command(
-                BinaryOnlyMode,
+            await _mediator.Publish(new BulkPixelWinnowPages.Command(
                 page.FileName,
                 IncludeControlCharacters,
                 ReverseBytes,
                 ShiftSequence,
                 MinBitOfInsignificance,
                 MaxBitOfInsignificance,
-                DiscardRemainder));
+                DiscardRemainder,
+                BinaryOnlyMode));
         }
         
         IsEnabled = true;

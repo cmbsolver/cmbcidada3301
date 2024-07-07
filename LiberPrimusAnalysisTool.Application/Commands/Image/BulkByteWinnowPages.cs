@@ -129,7 +129,7 @@ namespace LiberPrimusAnalysisTool.Application.Commands.Image
                         seqtext = "ShiftedSeq-" + seqtext;
                     }
                     
-                    _messageBus.SendMessage($"Processing {seqtext}...", "BulkByteWinnowPages");
+                    _messageBus.SendMessage($"Processing {notification.PageSelection} {seqtext}...", "BulkByteWinnowPages");
 
                     // Getting the pixels from the sequence
                     List<byte> tmpPixelList = new List<byte>();

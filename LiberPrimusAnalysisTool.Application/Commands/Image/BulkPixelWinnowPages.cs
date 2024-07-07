@@ -23,6 +23,41 @@ namespace LiberPrimusAnalysisTool.Application.Commands.Image
         /// <seealso cref="MediatR.INotification" />
         public class Command : INotification
         {
+            public Command(
+                string pageSelection, 
+                bool includeControlCharacters, 
+                bool reverseBytes, 
+                bool shiftSequence, 
+                int minBitOfInsignificance, 
+                int maxBitOfInsignificance, 
+                bool discardRemainder, 
+                bool binaryOnlyMode)
+            {
+                PageSelection = pageSelection;
+                IncludeControlCharacters = includeControlCharacters;
+                ReverseBytes = reverseBytes;
+                ShiftSequence = shiftSequence;
+                MinBitOfInsignificance = minBitOfInsignificance;
+                MaxBitOfInsignificance = maxBitOfInsignificance;
+                DiscardRemainder = discardRemainder;
+                BinaryOnlyMode = binaryOnlyMode;
+            }
+
+            public string PageSelection { get; set; }
+            
+            public bool IncludeControlCharacters { get; set; }
+
+            public bool ReverseBytes { get; set; }
+
+            public bool ShiftSequence { get; set; }
+
+            public int MinBitOfInsignificance { get; set; }
+
+            public int MaxBitOfInsignificance { get; set; }
+
+            public bool DiscardRemainder { get; set; }
+
+            public bool BinaryOnlyMode { get; set; }
         }
 
         /// <summary>
@@ -51,153 +86,151 @@ namespace LiberPrimusAnalysisTool.Application.Commands.Image
             /// <param name="cancellationToken">Cancellation token</param>
             public async Task Handle(Command notification, CancellationToken cancellationToken)
             {
-                bool returnToMenu = false;
+                var pageSelection = notification.PageSelection;
 
-                while (!returnToMenu)
+                var liberPage = await _mediator.Send(new GetPageData.Query(pageSelection, true, notification.ReverseBytes));
+
+                Assembly asm = Assembly.GetAssembly(typeof(CalculateSequence));
+                List<Tuple<Type, string>> mathTypes = new List<Tuple<Type, string>>();
+                var counter = 1;
+
+                foreach (Type type in asm.GetTypes())
                 {
-                    var pageSelection = new string[0]; //var pageSelection = await _mediator.Send(new GetImageSelection.Query());
-
-                    var includeControlCharacters = false;
-                    var reversePixels = false;
-                    var shiftSequence = false;
-                    var minBitOfInsignificance = 1;
-                    var maxBitOfInsignificance = 3;
-                    var discardRemainder = true;
-                    var binaryOnlyMode = false;
-
-                    ParallelOptions parallelOptions = new ParallelOptions();
-                    parallelOptions.MaxDegreeOfParallelism = 4;
-
-                    List<LiberPage> pages = new List<LiberPage>();
-                    Parallel.ForEach(pageSelection, parallelOptions, async selection =>
+                    if (type.Namespace == "LiberPrimusAnalysisTool.Application.Queries.Math" &&
+                        type.GetInterfaces().Any(x => x.Name.Contains("ISequence")))
                     {
-                        var liberPage = await _mediator.Send(new GetPageData.Query(selection, true, reversePixels));
-                        pages.Add(liberPage);
-                    });
+                        var name = type.GetProperties().Where(p => p.Name == "Name").FirstOrDefault().GetValue(null);
+                        mathTypes.Add(new Tuple<Type, string>(type, $"{counter}: {name}"));
+                        counter++;
+                    }
+                }
 
-                    Assembly asm = Assembly.GetAssembly(typeof(CalculateSequence));
-                    List<Tuple<Type, string>> mathTypes = new List<Tuple<Type, string>>();
-                    var counter = 1;
+                foreach (var name in mathTypes.Select(x => x.Item2))
+                {
+                    string seqtext = string.Empty;
+                    var seq = await _mediator.Send(
+                        new CalculateSequence.Query(Convert.ToUInt64(liberPage.PixelCount), name));
+                    var sequence = seq.Sequence;
+                    seqtext = notification.ReverseBytes ? $"ReversedPixels-{seq.Name}" : $"{seq.Name}";
 
-                    foreach (Type type in asm.GetTypes())
+                    if (notification.ShiftSequence)
                     {
-                        if (type.Namespace == "LiberPrimusAnalysisTool.Application.Queries.Math" && type.GetInterfaces().Any(x => x.Name.Contains("ISequence")))
+                        seqtext = "ShiftedSeq-" + seqtext;
+                    }
+
+                    // Getting the pixels from the sequence
+                    Tuple<LiberPage, List<Entity.Pixel>> pixelData;
+
+                    List<Entity.Pixel> tmpPixelList = new List<Entity.Pixel>();
+                    foreach (var seqNumer in sequence)
+                    {
+                        try
                         {
-                            var name = type.GetProperties().Where(p => p.Name == "Name").FirstOrDefault().GetValue(null);
-                            mathTypes.Add(new Tuple<Type, string>(type, $"{counter}: {name}"));
-                            counter++;
+                            if (notification.ShiftSequence && !seqtext.Contains("Natural"))
+                            {
+                                tmpPixelList.Add(liberPage.Pixels.ElementAt((int)seqNumer - 1));
+                            }
+                            else
+                            {
+                                tmpPixelList.Add(liberPage.Pixels.ElementAt((int)seqNumer));
+                            }
+                        }
+                        catch
+                        {
+                            break;
                         }
                     }
 
-                    Parallel.ForEach(pages, parallelOptions, async liberPage =>
+                    pixelData = new Tuple<LiberPage, List<Entity.Pixel>>(liberPage, tmpPixelList);
+
+                    GC.Collect();
+
+                    for (int p = 0; p <= 5; p++)
                     {
-                        foreach (var name in mathTypes.Select(x => x.Item2))
+                        switch (p)
                         {
-                            string seqtext = string.Empty;
-                            var seq = await _mediator.Send(new CalculateSequence.Query(Convert.ToUInt64(liberPage.PixelCount), name));
-                            var sequence = seq.Sequence;
-                            seqtext = reversePixels ? $"ReversedPixels-{seq.Name}" : $"{seq.Name}";
+                            case 1:
+                                if (!notification.BinaryOnlyMode)
+                                    await _mediator.Publish(new ProcessRGB.Command(pixelData, seqtext,
+                                        notification.IncludeControlCharacters, notification.DiscardRemainder));
+                                break;
 
-                            if (shiftSequence)
-                            {
-                                seqtext = "ShiftedSeq-" + seqtext;
-                            }
-
-                            // Getting the pixels from the sequence
-                            Tuple<LiberPage, List<Entity.Pixel>> pixelData;
-
-                            List<Entity.Pixel> tmpPixelList = new List<Entity.Pixel>();
-                            foreach (var seqNumer in sequence)
-                            {
-                                try
+                            case 2:
+                                if (!notification.BinaryOnlyMode)
                                 {
-                                    if (shiftSequence && !seqtext.Contains("Natural"))
+                                    foreach (var asciiProcessing in new List<int>() { 7, 8, 9 })
                                     {
-                                        tmpPixelList.Add(liberPage.Pixels.ElementAt((int)seqNumer - 1));
-                                    }
-                                    else
-                                    {
-                                        tmpPixelList.Add(liberPage.Pixels.ElementAt((int)seqNumer));
+                                        for (var bitsOfSig = notification.MinBitOfInsignificance;
+                                             bitsOfSig <= notification.MaxBitOfInsignificance;
+                                             bitsOfSig++)
+                                        {
+                                            foreach (var colorOrder in new List<string>()
+                                                         { "RGB", "RBG", "GBR", "GRB", "BRG", "BGR" })
+                                            {
+                                                await _mediator.Publish(new ProcessLSB.Command(pixelData, seqtext,
+                                                    notification.IncludeControlCharacters, asciiProcessing, bitsOfSig,
+                                                    colorOrder, notification.DiscardRemainder));
+                                            }
+                                        }
                                     }
                                 }
-                                catch
+
+                                break;
+
+                            case 3:
+                                for (var bitsOfSig = notification.MinBitOfInsignificance;
+                                     bitsOfSig <= notification.MaxBitOfInsignificance;
+                                     bitsOfSig++)
                                 {
-                                    break;
+                                    foreach (var colorOrder in new List<string>()
+                                                 { "RGB", "RBG", "GBR", "GRB", "BRG", "BGR" })
+                                    {
+                                        await _mediator.Publish(new ProcessToBytes.Command(pixelData, seqtext,
+                                            bitsOfSig, colorOrder, notification.DiscardRemainder));
+                                    }
                                 }
-                            }
-                            pixelData = new Tuple<LiberPage, List<Entity.Pixel>>(liberPage, tmpPixelList);
 
-                            GC.Collect();
+                                break;
 
-                            for (int p = 0; p <= 4; p++)
-                            {
-                                switch (p)
+                            case 4:
+                                if (!notification.BinaryOnlyMode)
                                 {
-                                    case 1:
-                                        if (!binaryOnlyMode)
-                                            await _mediator.Publish(new ProcessRGB.Command(pixelData, seqtext, includeControlCharacters, discardRemainder));
-                                        break;
-
-                                    case 2:
-                                        if (!binaryOnlyMode)
-                                        {
-                                            foreach (var asciiProcessing in new List<int>() { 7, 8, 9 })
-                                            {
-                                                for (var bitsOfSig = minBitOfInsignificance; bitsOfSig <= maxBitOfInsignificance; bitsOfSig++)
-                                                {
-                                                    foreach (var colorOrder in new List<string>() { "RGB", "RBG", "GBR", "GRB", "BRG", "BGR" })
-                                                    {
-                                                        await _mediator.Publish(new ProcessLSB.Command(pixelData, seqtext, includeControlCharacters, asciiProcessing, bitsOfSig, colorOrder, discardRemainder));
-                                                    }
-                                                }
-                                            }
-                                        }
-                                        break;
-
-                                    case 3:
-                                        for (var bitsOfSig = minBitOfInsignificance; bitsOfSig <= maxBitOfInsignificance; bitsOfSig++)
-                                        {
-                                            foreach (var colorOrder in new List<string>() { "RGB", "RBG", "GBR", "GRB", "BRG", "BGR" })
-                                            {
-                                                await _mediator.Publish(new ProcessToBytes.Command(pixelData, seqtext, bitsOfSig, colorOrder, discardRemainder));
-                                            }
-                                        }
-                                        break;
-
-                                    case 4:
-                                        if (!binaryOnlyMode)
-                                        {
-                                            foreach (var asciiProcessing in new List<int>() { 7, 8, 9 })
-                                            {
-                                                for (var bitsOfSig = minBitOfInsignificance; bitsOfSig <= maxBitOfInsignificance; bitsOfSig++)
-                                                {
-                                                    foreach (var colorOrder in new List<char>() { 'R', 'G', 'B' })
-                                                    {
-                                                        await _mediator.Publish(new ProcessSingleLSB.Command(pixelData, seqtext, includeControlCharacters, asciiProcessing, bitsOfSig, colorOrder, discardRemainder));
-                                                    }
-                                                }
-                                            }
-                                        }
-                                        break;
-
-                                    case 5:
-                                        for (var bitsOfSig = minBitOfInsignificance; bitsOfSig <= maxBitOfInsignificance; bitsOfSig++)
+                                    foreach (var asciiProcessing in new List<int>() { 7, 8, 9 })
+                                    {
+                                        for (var bitsOfSig = notification.MinBitOfInsignificance;
+                                             bitsOfSig <= notification.MaxBitOfInsignificance;
+                                             bitsOfSig++)
                                         {
                                             foreach (var colorOrder in new List<char>() { 'R', 'G', 'B' })
                                             {
-                                                await _mediator.Publish(new ProcessSingleToBytes.Command(pixelData, seqtext, bitsOfSig, colorOrder, discardRemainder));
+                                                await _mediator.Publish(new ProcessSingleLSB.Command(pixelData,
+                                                    seqtext, notification.IncludeControlCharacters, asciiProcessing, bitsOfSig,
+                                                    colorOrder, notification.DiscardRemainder));
                                             }
                                         }
-                                        break;
-
-                                    default:
-                                        break;
+                                    }
                                 }
-                            }
-                        }
-                    });
 
-                    returnToMenu = true;
+                                break;
+
+                            case 5:
+                                for (var bitsOfSig = notification.MinBitOfInsignificance;
+                                     bitsOfSig <= notification.MaxBitOfInsignificance;
+                                     bitsOfSig++)
+                                {
+                                    foreach (var colorOrder in new List<char>() { 'R', 'G', 'B' })
+                                    {
+                                        await _mediator.Publish(new ProcessSingleToBytes.Command(pixelData, seqtext,
+                                            bitsOfSig, colorOrder, notification.DiscardRemainder));
+                                    }
+                                }
+
+                                break;
+
+                            default:
+                                break;
+                        }
+                    }
                 }
             }
         }

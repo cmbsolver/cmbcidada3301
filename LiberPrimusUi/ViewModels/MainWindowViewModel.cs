@@ -42,6 +42,7 @@ public partial class MainWindowViewModel : ViewModelBase
         new ListItemTemplate(typeof(ColorReportViewModel), "ImageIcon", "Color Report"),
         new ListItemTemplate(typeof(InvertColorsViewModel), "ImageIcon", "Invert Colors"),
         new ListItemTemplate(typeof(BulkByteWinnowPagesViewModel), "ImageIcon", "Byte Winnow Pages"),
+        new ListItemTemplate(typeof(BulkPixelWinnowPagesViewModel), "ImageIcon", "Pixel Winnow Pages"),
         new ListItemTemplate(typeof(CreditsViewModel), "ListIcon", "Credits"),
     ];
 
@@ -158,6 +159,12 @@ public partial class MainWindowViewModel : ViewModelBase
                 if (!_windows.Any(w => w.Item1 == value.Label))
                     _windows.Add(new Tuple<string, object>(value.Label, new BinaryInvertViewModel(_mediator)));
                 CurrentPage = _windows.FirstOrDefault(w => w.Item1 == value.Label)?.Item2 as BinaryInvertViewModel;
+                break;
+            
+            case Type t when t == typeof(BulkPixelWinnowPagesViewModel):
+                if (!_windows.Any(w => w.Item1 == value.Label))
+                    _windows.Add(new Tuple<string, object>(value.Label, new BulkPixelWinnowPagesViewModel(_mediator)));
+                CurrentPage = _windows.FirstOrDefault(w => w.Item1 == value.Label)?.Item2 as BulkPixelWinnowPagesViewModel;
                 break;
         }
     }
