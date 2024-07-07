@@ -127,6 +127,11 @@ namespace LiberPrimusAnalysisTool.Application.Commands.Image.PixelProcessing
             /// <param name="cancellationToken">Cancellation token</param>
             public Task Handle(Command request, CancellationToken cancellationToken)
             {
+                if (!Directory.Exists("./output/imagep"))
+                {
+                    Directory.CreateDirectory("./output/imagep");
+                }
+                
                 List<char> bits = new List<char>();
                 List<char> builderBits = new List<char>();
                 bool skipRemainingBits = false;

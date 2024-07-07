@@ -99,8 +99,9 @@ namespace LiberPrimusAnalysisTool.Application.Commands.Image
                     if (type.Namespace == "LiberPrimusAnalysisTool.Application.Queries.Math" &&
                         type.GetInterfaces().Any(x => x.Name.Contains("ISequence")))
                     {
-                        var name = type.GetProperties().Where(p => p.Name == "Name").FirstOrDefault().GetValue(null);
-                        mathTypes.Add(new Tuple<Type, string>(type, $"{counter}: {name}"));
+                        var name = type.GetProperties().Where(p => p.Name == "Name").FirstOrDefault()
+                            .GetValue(null);
+                        mathTypes.Add(new Tuple<Type, string>(type, $"{name}"));
                         counter++;
                     }
                 }

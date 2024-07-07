@@ -23,7 +23,6 @@ namespace LiberPrimusAnalysisTool.Application.Commands.Image.PixelProcessing
             /// <summary>
             /// Initializes a new instance of the <see cref="Command" /> class.
             /// </summary>
-            /// <param name="pixelData">The pixel data.</param>
             /// <param name="method">The method.</param>
             /// <param name="includeControlCharacters">if set to <c>true</c> [include control characters].</param>
             /// <param name="discardRemainingBits">if set to <c>true</c> [discard remaining bits].</param>
@@ -102,6 +101,11 @@ namespace LiberPrimusAnalysisTool.Application.Commands.Image.PixelProcessing
             /// <param name="cancellationToken">Cancellation token</param>
             public Task Handle(Command request, CancellationToken cancellationToken)
             {
+                if (!Directory.Exists("./output/imagep"))
+                {
+                    Directory.CreateDirectory("./output/imagep");
+                }
+                
                 var rgbIndex = new RgbCharacters(request.PixelData.Item1.PageName);
 
                 foreach (var pixel in request.PixelData.Item2)
@@ -111,9 +115,9 @@ namespace LiberPrimusAnalysisTool.Application.Commands.Image.PixelProcessing
                     rgbIndex.AddB(_characterRepo.GetASCIICharFromDec(pixel.B, request.IncludeControlCharacters));
                 }
 
-                File.AppendAllText($"./output/imagep/IMG-{request.PixelData.Item1.PageName}-{request.Method}-RGB-red.txt", rgbIndex.R);
-                File.AppendAllText($"./output/imagep/IMG-{request.PixelData.Item1.PageName}-{request.Method}-RGB-green.txt", rgbIndex.G);
-                File.AppendAllText($"./output/imagep/IMG-{request.PixelData.Item1.PageName}-{request.Method}-RGB-blue.txt", rgbIndex.B);
+                File.WriteAllText($"./output/imagep/IMG-{request.PixelData.Item1.PageName}-{request.Method}-RGB-red.txt", rgbIndex.R);
+                File.WriteAllText($"./output/imagep/IMG-{request.PixelData.Item1.PageName}-{request.Method}-RGB-green.txt", rgbIndex.G);
+                File.WriteAllText($"./output/imagep/IMG-{request.PixelData.Item1.PageName}-{request.Method}-RGB-blue.txt", rgbIndex.B);
 
                 return Task.CompletedTask;
             }

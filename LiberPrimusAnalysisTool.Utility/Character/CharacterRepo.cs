@@ -426,7 +426,7 @@ namespace LiberPrimusAnalysisTool.Utility.Character
                 {
                     return string.Empty;
                 }
-                return value;
+                return value ?? string.Empty;
             }
             else
             {
@@ -446,7 +446,7 @@ namespace LiberPrimusAnalysisTool.Utility.Character
             {
                 return string.Empty;
             }
-            return value;
+            return value ?? string.Empty;
         }
 
         /// <summary>
@@ -464,7 +464,7 @@ namespace LiberPrimusAnalysisTool.Utility.Character
                 {
                     return string.Empty;
                 }
-                return value;
+                return value ?? string.Empty;
             }
             else
             {
@@ -484,7 +484,7 @@ namespace LiberPrimusAnalysisTool.Utility.Character
             {
                 return string.Empty;
             }
-            return value;
+            return value ?? string.Empty;
         }
 
         /// <summary>
