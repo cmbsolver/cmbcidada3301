@@ -78,7 +78,12 @@ public partial class BulkPixelWinnowPagesViewModel : ViewModelBase
     [RelayCommand]
     public async void BulkProcessImage()
     {
-        foreach (var page in LiberPages)
+        ParallelOptions options = new ParallelOptions
+        {
+            MaxDegreeOfParallelism = 4
+        };
+        
+        Parallel.ForEach(LiberPages, options, async page =>
         {
             Result += page.FileName + Environment.NewLine;
             IsEnabled = false;
@@ -91,7 +96,7 @@ public partial class BulkPixelWinnowPagesViewModel : ViewModelBase
                 MaxBitOfInsignificance,
                 DiscardRemainder,
                 BinaryOnlyMode));
-        }
+        });
         
         IsEnabled = true;
     }
