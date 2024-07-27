@@ -78,6 +78,8 @@ namespace LiberPrimusAnalysisTool.Application.Commands.InputProcessing
                     fileType += $"Type = {fileTypeInfo.Name}" + Environment.NewLine;
                     fileType += $"Extension = {fileTypeInfo.FileType}" + Environment.NewLine;
                     fileType += $"Mime Type = {fileTypeInfo.MimeType}" + Environment.NewLine;
+                    
+                    File.Move(file, $"{file.Replace(".bin", string.Empty)}.{fileTypeInfo.FileType}");
                 }
                 
                 return fileType;
