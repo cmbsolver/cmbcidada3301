@@ -51,13 +51,13 @@ public class SkipAndTakeText
                 if (skipCounter > text.Length - 1)
                 {
                     skipCounter = 0;
-                    sb.Append(text.Substring(skipCounter, takeCounter));
+                    sb.Append(text.Substring(skipCounter + 1, takeCounter));
                     iterCounter++;
                     skipCounter = 0 + takeCounter;
                 }
                 else if (skipCounter + request.Take > text.Length - 1)
                 {
-                    var tmpLength = text.Length - skipCounter;
+                    var tmpLength = text.Length - skipCounter + 1;
                     sb.Append(text.Substring(skipCounter, tmpLength));
                     takeCounter = request.Take - tmpLength;
                     sb.Append(text.Substring(0, takeCounter));
