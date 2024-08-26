@@ -1,0 +1,42 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:LiberPrimusUi.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="LiberPrimusUi.Views.SkipAndTakeView"
+             x:DataType="vm:SkipAndTakeViewModel">
+    <StackPanel Margin="20" Spacing="10">
+        <StackPanel Orientation="Horizontal" Spacing="5">
+            <RadioButton GroupName="ProcessStyle" Content="Skip and Take" IsChecked="{Binding IsSkipAndTake}"></RadioButton>
+            <RadioButton GroupName="ProcessStyle" Content="Take and Skip" IsChecked="{Binding IsTakeAndSkip}"></RadioButton>
+            <RadioButton GroupName="ProcessStyle" Content="Bulk Skip and Take" IsChecked="{Binding IsBulkSkipAndTake}"></RadioButton>
+            <RadioButton GroupName="ProcessStyle" Content="Bulk Take and Skip" IsChecked="{Binding IsBulkTakeAndSkip}"></RadioButton>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" Spacing="5">
+            <TextBlock VerticalAlignment="Center">Pages</TextBlock>
+            <ComboBox ItemsSource="{Binding LiberPages}" 
+                      SelectedItem="{Binding SelectedLiberPage}"></ComboBox>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" Spacing="5">
+            <TextBlock VerticalAlignment="Center">Skip</TextBlock>
+            <TextBox Text="{Binding Skip}" ></TextBox>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" Spacing="5">
+            <TextBlock VerticalAlignment="Center">Take</TextBlock>
+            <TextBox Text="{Binding Take}" ></TextBox>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" Spacing="5">
+            <TextBlock VerticalAlignment="Center">Array Iterations</TextBlock>
+            <TextBox Text="{Binding ArrayIterations}" ></TextBox>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" Spacing="5">
+            <Button Command="{Binding ProcessFileCommand}" 
+                    IsEnabled="{Binding IsEnabled}">Process</Button>
+            <Button Command="{Binding ClearMessagesCommand}">Clear Output</Button>
+        </StackPanel>
+        <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Height="400">
+            <TextBox Text="{Binding Result}"></TextBox>
+        </ScrollViewer>
+    </StackPanel>
+</UserControl>
