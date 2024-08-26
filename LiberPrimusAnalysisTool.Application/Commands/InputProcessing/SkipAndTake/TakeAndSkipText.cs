@@ -60,7 +60,7 @@ public class TakeAndSkipText
                 }
                 else if (skipCounter + request.Take > text.Length - 1)
                 {
-                    var tmpLength = text.Length - skipCounter + 1;
+                    var tmpLength = text.Length - (skipCounter + 1);
                     sb.Append(text.Substring(skipCounter, tmpLength));
                     takeCounter = request.Take - tmpLength;
                     sb.Append(text.Substring(0, takeCounter));

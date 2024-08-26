@@ -30,7 +30,7 @@ public partial class SkipAndTakeViewModel : ViewModelBase
     
     [ObservableProperty] private bool _isTakeAndSkip = false;
     
-    [ObservableProperty] private bool _isBulkSkipAndTake = true;
+    [ObservableProperty] private bool _isBulkSkipAndTake = false;
     
     [ObservableProperty] private bool _isBulkTakeAndSkip = false;
     

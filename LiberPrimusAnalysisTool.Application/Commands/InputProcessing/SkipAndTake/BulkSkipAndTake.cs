@@ -77,7 +77,9 @@ public class BulkSkipAndTake
                 }
             }
             
-            return $"Processed: {info.Name} {request.Skip} {request.Take} {request.ArrayIterations}" + Environment.NewLine;
+            var skipTakeText = request.IsSkipAndTake ? "Skip And Take" : "Take And Skip";
+            
+            return $"Processed {skipTakeText}: {info.Name} {request.Skip} {request.Take} {request.ArrayIterations}" + Environment.NewLine;
         }
     }  
 }
