@@ -20,13 +20,17 @@ public class DictionaryCheckTextFiles
         /// </summary>
         public bool isGpStrict { get; set; }
         
+        public int numOfLetters { get; set; }
+        
         /// <summary>
         /// The summary
         /// </summary>
         /// <param name="isGpStrict"></param>
-        public Command(bool isGpStrict)
+        /// <param name="numOfLetters"></param>
+        public Command(bool isGpStrict, int numOfLetters)
         {
             this.isGpStrict = isGpStrict;
+            this.numOfLetters = numOfLetters;
         }
     }
     
@@ -83,12 +87,20 @@ public class DictionaryCheckTextFiles
                 {
                     if (notification.isGpStrict)
                     {
-                        englishDictionary.Add(line.ToUpper().Trim().Replace("QU", "CW").Replace("Q", "C")
-                            .Replace("K", "C").Replace("V", "U").Replace("Z", "S"));
+                        line = line.ToUpper().Trim().Replace("QU", "CW").Replace("Q", "C")
+                            .Replace("K", "C").Replace("V", "U").Replace("Z", "S");
+
+                        if (line.Length >= notification.numOfLetters)
+                        {
+                            englishDictionary.Add(line);
+                        }
                     }
                     else
                     {
-                        englishDictionary.Add(line.ToUpper().Trim());
+                        if (line.Length >= notification.numOfLetters)
+                        {
+                            englishDictionary.Add(line.ToUpper().Trim());
+                        }
                     }
                 }
 
@@ -103,23 +115,26 @@ public class DictionaryCheckTextFiles
             {
                 files.Add(page);
             }
-            
-            foreach(var file in files)
+
+            foreach (var file in files)
             {
                 var wordCount = 0;
                 var fileContent = File.ReadAllText(file);
-                
+
                 fileContent = fileContent.Replace("\r", "  ").Replace("\n", "  ");
                 while (fileContent.Contains("  "))
                 {
-                    fileContent = fileContent.Replace("  ", " ");    
+                    fileContent = fileContent.Replace("  ", " ");
                 }
 
-                foreach (var word in englishDictionary)
+                foreach (var content in file.Split(" "))
                 {
-                    if (fileContent.Contains(word))
+                    foreach (var word in englishDictionary)
                     {
-                        wordCount++;
+                        if (content.ToUpper() == word.ToUpper())
+                        {
+                            wordCount++;
+                        }
                     }
                 }
                 

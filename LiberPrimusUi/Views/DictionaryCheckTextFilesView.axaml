@@ -8,6 +8,8 @@
              x:DataType="vm:DictionaryCheckTextFilesViewModel">
     <StackPanel Margin="20" Spacing="10">
         <StackPanel Orientation="Horizontal" Spacing="5">
+            <TextBlock VerticalAlignment="Center">File</TextBlock>
+            <TextBox Text="{Binding NumOfLetters}"></TextBox>
             <CheckBox IsChecked="{Binding IsGpStrict}">Is GP Dictionary</CheckBox>
         </StackPanel>
         <StackPanel Orientation="Horizontal" Spacing="5">

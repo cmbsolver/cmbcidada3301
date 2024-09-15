@@ -49,6 +49,11 @@ public partial class DictionaryCheckTextFilesViewModel: ViewModelBase
     [ObservableProperty] private bool _isButtonEnabled = true;
     
     /// <summary>
+    /// Number of letter to check in dictionary
+    /// </summary>
+    [ObservableProperty] private string _numOfLetters = "3";
+    
+    /// <summary>
     /// The message list.
     /// </summary>
     public ObservableCollection<string> Messages { get; set; } = new ObservableCollection<string>();
@@ -82,7 +87,7 @@ public partial class DictionaryCheckTextFilesViewModel: ViewModelBase
     public async void Process()
     {
         IsButtonEnabled = false;
-        Task.Run(() => _mediator.Publish(new DictionaryCheckTextFiles.Command(IsGpStrict)));
+        Task.Run(() => _mediator.Publish(new DictionaryCheckTextFiles.Command(IsGpStrict, Convert.ToInt32(NumOfLetters))));
     }
 
     /// <summary>
