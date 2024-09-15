@@ -139,7 +139,11 @@ public class DictionaryCheckTextFiles
                 }
                 
                 _messageBus.SendMessage($"Word count of {file}: {wordCount}", "DictionaryCheckTextFiles:Status");
-                wordCountSet.Add(new Tuple<string, long>($"Word count of {file}: {wordCount}", wordCount));
+
+                if (wordCount > 0)
+                {
+                    wordCountSet.Add(new Tuple<string, long>($"Word count of {file}: {wordCount}", wordCount));
+                }
             }
             
             _messageBus.SendMessage(string.Empty, "DictionaryCheckTextFiles:Clear");
