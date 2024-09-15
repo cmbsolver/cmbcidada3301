@@ -41,6 +41,7 @@ public partial class MainWindowViewModel : ViewModelBase
         new ListItemTemplate(typeof(BinaryInvertViewModel), "Wrench", "Invert Binary Values"),
         new ListItemTemplate(typeof(RuneDecimalLsbViewModel), "Wrench", "Rune Decimal LSB"),
         new ListItemTemplate(typeof(SkipAndTakeViewModel), "Wrench", "Skip and Take"),
+        new ListItemTemplate(typeof(DictionaryCheckTextFilesViewModel), "Wrench", "Dictionary Check Text Files"),
         new ListItemTemplate(typeof(ColorReportViewModel), "ImageIcon", "Color Report"),
         new ListItemTemplate(typeof(InvertColorsViewModel), "ImageIcon", "Invert Colors"),
         new ListItemTemplate(typeof(BulkByteWinnowPagesViewModel), "ImageIcon", "Byte Winnow Pages"),
@@ -179,6 +180,12 @@ public partial class MainWindowViewModel : ViewModelBase
                 if (!_windows.Any(w => w.Item1 == value.Label))
                     _windows.Add(new Tuple<string, object>(value.Label, new SkipAndTakeViewModel(_mediator)));
                 CurrentPage = _windows.FirstOrDefault(w => w.Item1 == value.Label)?.Item2 as SkipAndTakeViewModel;
+                break;
+            
+            case Type t when t == typeof(DictionaryCheckTextFilesViewModel):
+                if (!_windows.Any(w => w.Item1 == value.Label))
+                    _windows.Add(new Tuple<string, object>(value.Label, new DictionaryCheckTextFilesViewModel(_mediator, _messageBus)));
+                CurrentPage = _windows.FirstOrDefault(w => w.Item1 == value.Label)?.Item2 as DictionaryCheckTextFilesViewModel;
                 break;
         }
     }
