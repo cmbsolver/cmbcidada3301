@@ -72,6 +72,7 @@ public partial class DictionaryCheckTextFilesViewModel: ViewModelBase
         }
         else if (e.Screen == "DictionaryCheckTextFiles:Clear")
         {
+            IsButtonEnabled = true;
             Messages.Clear();
         }
         else

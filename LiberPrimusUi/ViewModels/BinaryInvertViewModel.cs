@@ -1,3 +1,4 @@
+using System;
 using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -35,6 +36,23 @@ public partial class BinaryInvertViewModel: ViewModelBase
     {
         var message = await _mediator.Send(new BinaryInvert.Command(SelectedFile));
         Messages.Add(message);
+    }
+    
+    [RelayCommand]
+    public async void BulkInvertBinary()
+    {
+        foreach (var file in Files)
+        {
+            try
+            {
+                var message = await _mediator.Send(new BinaryInvert.Command(file));
+                Messages.Add(message);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
+        }
     }
 
     [RelayCommand]
