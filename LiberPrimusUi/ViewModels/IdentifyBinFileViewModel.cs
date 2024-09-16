@@ -1,6 +1,7 @@
 using System;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -54,9 +55,16 @@ public partial class IdentifyBinFileViewModel : ViewModelBase
     {
         foreach (var binFile in BinFiles)
         {
-            Result += await _mediator.Send(new DetectBinFile.Command(
-                binFile));
-            Result += Environment.NewLine;
+            try
+            {
+                Result += await _mediator.Send(new DetectBinFile.Command(
+                    binFile));
+                Result += Environment.NewLine;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
         }
     }
     
@@ -70,8 +78,15 @@ public partial class IdentifyBinFileViewModel : ViewModelBase
             
             if (result.StartsWith("Could not detect file type for"))
             {
-                File.Delete(binFile);
-                Result += $"Deleted {binFile}" + Environment.NewLine;
+                try
+                {
+                    File.Delete(binFile);
+                    Result += $"Deleted {binFile}" + Environment.NewLine;
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                }
             }
         }
         
