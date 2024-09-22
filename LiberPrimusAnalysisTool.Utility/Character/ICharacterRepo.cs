@@ -51,6 +51,13 @@ namespace LiberPrimusAnalysisTool.Utility.Character
         string GetCharFromRune(string value);
 
         /// <summary>
+        /// Gets the rune from char.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        string GetRuneFromChar(string value);
+
+        /// <summary>
         /// Gets the hex val from the rune.
         /// </summary>
         /// <param name="value"></param>

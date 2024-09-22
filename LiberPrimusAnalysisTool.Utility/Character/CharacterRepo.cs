@@ -651,6 +651,156 @@ namespace LiberPrimusAnalysisTool.Utility.Character
                 case "ᚣ":
                     retval = "Y";
                     break;
+                
+                case "•":
+                    retval = " ";
+                    break;
+                
+                case "⊹":
+                    retval = ".";
+                    break;
+
+                default:
+                    retval = value;
+                    break;
+            }
+
+            return retval;
+        }
+        
+        /// <summary>
+        /// Get the rune from the char
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public string GetRuneFromChar(string value)
+        {
+            string retval = string.Empty;
+            switch (value)
+            {
+                case "ING":
+                    retval = "ᛝ";
+                    break;
+
+                case "OE":
+                    retval = "ᛟ";
+                    break;
+
+                case "EO":
+                    retval = "ᛇ";
+                    break;
+
+                case "IO":
+                    retval = "ᛡ";
+                    break;
+
+                case "EA":
+                    retval = "ᛠ";
+                    break;
+
+                case "AE":
+                    retval = "ᚫ";
+                    break;
+
+                case "TH":
+                    retval = "ᚦ";
+                    break;
+
+                case "F":
+                    retval = "ᚠ";
+                    break;
+
+                case "U":
+                    retval = "ᚢ";
+                    break;
+
+                case "O":
+                    retval = "ᚩ";
+                    break;
+
+                case "R":
+                    retval = "ᚱ";
+                    break;
+
+                case "C":
+                    retval = "ᚳ";
+                    break;
+
+                case "G":
+                    retval = "ᚷ";
+                    break;
+
+                case "W":
+                    retval = "ᚹ";
+                    break;
+
+                case "H":
+                    retval = "ᚻ";
+                    break;
+
+                case "N":
+                    retval = "ᚾ";
+                    break;
+
+                case "I":
+                    retval = "ᛁ";
+                    break;
+
+                case "J":
+                    retval = "ᛄ";
+                    break;
+
+                case "P":
+                    retval = "ᛈ";
+                    break;
+
+                case "X":
+                    retval = "ᛉ";
+                    break;
+
+                case "S":
+                    retval = "ᛋ";
+                    break;
+
+                case "T":
+                    retval = "ᛏ";
+                    break;
+
+                case "B":
+                    retval = "ᛒ";
+                    break;
+
+                case "E":
+                    retval = "ᛖ";
+                    break;
+
+                case "M":
+                    retval = "ᛗ";
+                    break;
+
+                case "L":
+                    retval = "ᛚ";
+                    break;
+
+                case "D":
+                    retval = "ᛞ";
+                    break;
+
+                case "A":
+                    retval = "ᚪ";
+                    break;
+
+                case "Y":
+                    retval = "ᚣ";
+                    break;
+                
+                case " ":
+                    retval = "•";
+                    break;
+                
+                case ".":
+                    retval = "⊹";
+                    break;
 
                 default:
                     retval = value;
@@ -694,6 +844,8 @@ namespace LiberPrimusAnalysisTool.Utility.Character
                 case "ᛞ":
                 case "ᚪ":
                 case "ᚣ":
+                case "•":
+                case "⊹":
                     retval = true;
                     break;
 
@@ -824,6 +976,10 @@ namespace LiberPrimusAnalysisTool.Utility.Character
 
                 case "ᚣ":
                     retval = "3";
+                    break;
+                
+                case "•":
+                    retval = "0";
                     break;
 
                 default:
