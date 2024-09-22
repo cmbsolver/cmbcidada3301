@@ -12,7 +12,11 @@
             <ComboBox ItemsSource="{Binding SequenceTypes}" SelectedItem="{Binding SelectedSequenceType}"></ComboBox>
         </StackPanel>
         <StackPanel Orientation="Horizontal" Spacing="5">
-            <TextBlock VerticalAlignment="Center">Max Number</TextBlock>
+            <TextBlock VerticalAlignment="Center">Mode</TextBlock>
+            <ComboBox ItemsSource="{Binding SequenceModes}" SelectedItem="{Binding SelectedSequenceModeType}"></ComboBox>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" Spacing="5">
+            <TextBlock VerticalAlignment="Center" Text="{Binding SelectedSequenceModeType}"></TextBlock>
             <TextBox Text="{Binding NumberToCheck}"></TextBox>
         </StackPanel>
         <StackPanel Orientation="Horizontal" Spacing="5">

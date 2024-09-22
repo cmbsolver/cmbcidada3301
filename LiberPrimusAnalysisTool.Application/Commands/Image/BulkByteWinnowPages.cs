@@ -120,7 +120,7 @@ namespace LiberPrimusAnalysisTool.Application.Commands.Image
                 foreach (var name in mathTypes.Select(x => x.Item2))
                 {
                     string seqtext = string.Empty;
-                    var seq = await _mediator.Send(new CalculateSequence.Query(Convert.ToUInt64(liberPage.Bytes.Count), name));
+                    var seq = await _mediator.Send(new CalculateSequence.Query(Convert.ToUInt64(liberPage.Bytes.Count), name, false));
                     var sequence = seq.Sequence;
                     seqtext = notification.ReverseBytes ? $"ReversedBytes-{seq.Name}" : $"{seq.Name}";
 

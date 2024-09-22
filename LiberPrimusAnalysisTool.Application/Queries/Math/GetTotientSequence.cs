@@ -18,15 +18,21 @@ namespace LiberPrimusAnalysisTool.Application.Queries.Math
         /// The name.
         /// </value>
         public static string Name => "Totient";
+        
+        // <summary>
+        /// Get whether the sequence is positional.
+        /// </summary>
+        public static bool IsPositional { get; set; }
 
         /// <summary>
         /// Builds the command.
         /// </summary>
         /// <param name="number">The number.</param>
         /// <returns></returns>
-        public static object BuildCommand(ulong number)
+        public static object BuildCommand(ulong number, bool isPostional)
         {
-            var query = new Query() { Number = number };
+            var query = new Query(number, isPostional);
+            IsPositional = isPostional;
 
             return query;
         }
@@ -36,13 +42,24 @@ namespace LiberPrimusAnalysisTool.Application.Queries.Math
         /// </summary>
         public class Query : IRequest<NumericSequence>
         {
+            public Query(ulong maxNumber, bool isPositional)
+            {
+                MaxNumber = maxNumber;
+                IsPositional = isPositional;
+            }
+            
             /// <summary>
-            /// Gets or sets the number.
+            /// Gets or sets the maximum n number.
             /// </summary>
             /// <value>
-            /// The number.
+            /// The maximum n number.
             /// </value>
-            public ulong Number { get; set; }
+            public ulong MaxNumber { get; set; }
+            
+            /// <summary>
+            /// Gets whether it is positional.
+            /// </summary>
+            public bool IsPositional { get; set; }
         }
 
         /// <summary>
@@ -61,9 +78,9 @@ namespace LiberPrimusAnalysisTool.Application.Queries.Math
             public Task<NumericSequence> Handle(Query request, CancellationToken cancellationToken)
             {
                 var totient = new NumericSequence(Name);
-                totient.Number = request.Number;
-                var n = request.Number;
-
+                totient.Number = request.MaxNumber;
+                var n = request.MaxNumber;
+                
                 for (ulong i = 1; i <= n; i++)
                 {
                     if (GCD(i, n) == 1)

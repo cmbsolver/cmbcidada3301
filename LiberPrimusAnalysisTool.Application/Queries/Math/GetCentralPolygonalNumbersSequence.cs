@@ -18,15 +18,21 @@ namespace LiberPrimusAnalysisTool.Application.Queries.Math
         /// The name.
         /// </value>
         public static string Name => "Central Polygonal Numbers";
+        
+        // <summary>
+        /// Get whether the sequence is positional.
+        /// </summary>
+        public static bool IsPositional { get; set; }
 
         /// <summary>
         /// Builds the command.
         /// </summary>
         /// <param name="number">The number.</param>
         /// <returns></returns>
-        public static object BuildCommand(ulong number)
+        public static object BuildCommand(ulong number, bool isPostional)
         {
-            var fibonacciSequence = new GetCentralPolygonalNumbersSequence.Query() { MaxNumber = number };
+            var fibonacciSequence = new GetCentralPolygonalNumbersSequence.Query(number, isPostional);
+            IsPositional = isPostional;
 
             return fibonacciSequence;
         }
@@ -36,7 +42,24 @@ namespace LiberPrimusAnalysisTool.Application.Queries.Math
         /// </summary>
         public class Query : IRequest<NumericSequence>
         {
+            public Query(ulong maxNumber, bool isPositional)
+            {
+                MaxNumber = maxNumber;
+                IsPositional = isPositional;
+            }
+            
+            /// <summary>
+            /// Gets or sets the maximum n number.
+            /// </summary>
+            /// <value>
+            /// The maximum n number.
+            /// </value>
             public ulong MaxNumber { get; set; }
+            
+            /// <summary>
+            /// Gets whether it is positional.
+            /// </summary>
+            public bool IsPositional { get; set; }
         }
 
         /// <summary>
@@ -67,13 +90,27 @@ namespace LiberPrimusAnalysisTool.Application.Queries.Math
             {
                 NumericSequence result = new NumericSequence(Name);
                 result.Number = request.MaxNumber;
+                
+                var numberToCalculate = request.IsPositional ? int.MaxValue : request.MaxNumber;
 
-                for (ulong n = 0; n < request.MaxNumber; n++)
+                for (ulong n = 0; n < numberToCalculate; n++)
                 {
                     try
                     {
-                        var item = n * (n + 1) / 2 + 1;
-                        result.Sequence.Add(item);
+                        if (!request.IsPositional)
+                        {
+                            var item = n * (n + 1) / 2 + 1;
+                            result.Sequence.Add(item);
+                        }
+                        else
+                        {
+                            if (n == request.MaxNumber)
+                            {
+                                var item = n * (n - 1) / 2 + 1;
+                                result.Sequence.Add(item);
+                                break;
+                            }
+                        }
                     }
                     catch
                     {

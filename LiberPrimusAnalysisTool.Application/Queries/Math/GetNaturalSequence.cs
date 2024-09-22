@@ -19,15 +19,21 @@ namespace LiberPrimusAnalysisTool.Application.Queries.Math
         /// The name.
         /// </value>
         public static string Name => "Natural";
+        
+        // <summary>
+        /// Get whether the sequence is positional.
+        /// </summary>
+        public static bool IsPositional { get; set; }
 
         /// <summary>
         /// Builds the command.
         /// </summary>
         /// <param name="number">The number.</param>
         /// <returns></returns>
-        public static object BuildCommand(ulong number)
+        public static object BuildCommand(ulong number, bool isPostional)
         {
-            var result = new GetNaturalSequence.Query { MaxNumber = number };
+            var result = new GetNaturalSequence.Query(number, isPostional);
+            IsPositional = isPostional;
 
             return result;
         }
@@ -37,13 +43,24 @@ namespace LiberPrimusAnalysisTool.Application.Queries.Math
         /// </summary>
         public class Query : IRequest<NumericSequence>
         {
+            public Query(ulong maxNumber, bool isPositional)
+            {
+                MaxNumber = maxNumber;
+                IsPositional = isPositional;
+            }
+            
             /// <summary>
-            /// Gets or sets the maximum number.
+            /// Gets or sets the maximum n number.
             /// </summary>
             /// <value>
-            /// The maximum number.
+            /// The maximum n number.
             /// </value>
             public ulong MaxNumber { get; set; }
+            
+            /// <summary>
+            /// Gets whether it is positional.
+            /// </summary>
+            public bool IsPositional { get; set; }
         }
 
         /// <summary>
@@ -63,12 +80,25 @@ namespace LiberPrimusAnalysisTool.Application.Queries.Math
             {
                 NumericSequence retval = new NumericSequence(Name);
                 retval.Number = request.MaxNumber;
+                
+                var numberToCalculate = request.IsPositional ? int.MaxValue : request.MaxNumber;
 
-                for (ulong n = 0; n <= request.MaxNumber; n++)
+                for (ulong n = 0; n <= numberToCalculate; n++)
                 {
                     try
                     {
-                        retval.Sequence.Add(Convert.ToUInt64(n));
+                        if (!request.IsPositional)
+                        {
+                            retval.Sequence.Add(Convert.ToUInt64(n));
+                        }
+                        else
+                        {
+                            if (n == request.MaxNumber)
+                            {
+                                retval.Sequence.Add(Convert.ToUInt64(n));
+                                break;
+                            }
+                        }
                     }
                     catch
                     {

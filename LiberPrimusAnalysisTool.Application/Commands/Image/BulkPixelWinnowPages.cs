@@ -110,7 +110,7 @@ namespace LiberPrimusAnalysisTool.Application.Commands.Image
                 {
                     string seqtext = string.Empty;
                     var seq = await _mediator.Send(
-                        new CalculateSequence.Query(Convert.ToUInt64(liberPage.PixelCount), name));
+                        new CalculateSequence.Query(Convert.ToUInt64(liberPage.PixelCount), name, false));
                     var sequence = seq.Sequence;
                     seqtext = notification.ReverseBytes ? $"ReversedPixels-{seq.Name}" : $"{seq.Name}";
 

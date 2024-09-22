@@ -18,15 +18,21 @@ namespace LiberPrimusAnalysisTool.Application.Queries.Math
         /// The name.
         /// </value>
         public static string Name => "Prime";
+        
+        // <summary>
+        /// Get whether the sequence is positional.
+        /// </summary>
+        public static bool IsPositional { get; set; }
 
         /// <summary>
         /// Builds the command.
         /// </summary>
         /// <param name="number">The number.</param>
         /// <returns></returns>
-        public static object BuildCommand(ulong number)
+        public static object BuildCommand(ulong number, bool isPostional)
         {
-            var primeSequence = new GetPrimeSequence.Query() { Number = number };
+            var primeSequence = new GetPrimeSequence.Query(number, isPostional);
+            IsPositional = isPostional;
 
             return primeSequence;
         }
@@ -37,7 +43,24 @@ namespace LiberPrimusAnalysisTool.Application.Queries.Math
         /// <seealso cref="IRequest" />
         public class Query : IRequest<NumericSequence>
         {
-            public ulong Number { get; set; }
+            public Query(ulong maxNumber, bool isPositional)
+            {
+                MaxNumber = maxNumber;
+                IsPositional = isPositional;
+            }
+            
+            /// <summary>
+            /// Gets or sets the maximum n number.
+            /// </summary>
+            /// <value>
+            /// The maximum n number.
+            /// </value>
+            public ulong MaxNumber { get; set; }
+            
+            /// <summary>
+            /// Gets whether it is positional.
+            /// </summary>
+            public bool IsPositional { get; set; }
         }
 
         /// <summary>
@@ -66,15 +89,28 @@ namespace LiberPrimusAnalysisTool.Application.Queries.Math
             public async Task<NumericSequence> Handle(Query request, CancellationToken cancellationToken)
             {
                 NumericSequence numericSequence = new NumericSequence(Name);
-                numericSequence.Number = request.Number;
+                numericSequence.Number = request.MaxNumber;
+                
+                var numberToCalculate = request.IsPositional ? long.MaxValue : request.MaxNumber;
 
-                for (ulong i = 0; i <= request.Number; i++)
+                for (ulong i = 0; i <= numberToCalculate; i++)
                 {
                     var isPrime = await _mediator.Send(new GetIsPrime.Query() { Number = i });
 
                     if (isPrime)
                     {
-                        numericSequence.Sequence.Add(i);
+                        if (!request.IsPositional)
+                        {
+                            numericSequence.Sequence.Add(i);
+                        }
+                        else
+                        {
+                            if (i == request.MaxNumber)
+                            {
+                                numericSequence.Sequence.Add(i);
+                                break;
+                            }
+                        }
                     }
                 }
 

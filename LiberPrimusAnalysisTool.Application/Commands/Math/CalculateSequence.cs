@@ -25,10 +25,12 @@ namespace LiberPrimusAnalysisTool.Application.Commands.Math
             /// </summary>
             /// <param name="value">The value.</param>
             /// <param name="name">The name.</param>
-            public Query(ulong value, string name)
+            /// <param name="isPosition">Is positional</param>
+            public Query(ulong value, string name, bool isPosition)
             {
                 Value = value;
                 NameToRun = name;
+                IsPosition = isPosition;
             }
 
             /// <summary>
@@ -46,6 +48,11 @@ namespace LiberPrimusAnalysisTool.Application.Commands.Math
             /// The value.
             /// </value>
             public ulong Value { get; set; }
+            
+            /// <summary>
+            /// Whether to calculate the position in the sequence
+            /// </summary>
+            public bool IsPosition { get; set; }
         }
 
         /// <summary>
@@ -92,7 +99,7 @@ namespace LiberPrimusAnalysisTool.Application.Commands.Math
                 }
 
                 var stype = mathTypes.FirstOrDefault(x => x.Item2.ToUpper() == request.NameToRun.ToUpper()).Item1;
-                query = stype.GetMethod("BuildCommand").Invoke(null, new object[1] { request.Value });
+                query = stype.GetMethod("BuildCommand").Invoke(null, new object[2] { request.Value, request.IsPosition });
 
                 numericSequence = (NumericSequence)await _mediator.Send(query);
 

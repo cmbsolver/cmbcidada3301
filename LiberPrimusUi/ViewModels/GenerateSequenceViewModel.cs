@@ -24,22 +24,31 @@ public partial class GenerateSequenceViewModel : ViewModelBase
         {
             SequenceTypes.Add(sequenceType);
         }
+        
+        SequenceModes.Add("Max Number");
+        SequenceModes.Add("Position in Sequence");
     }
 
     [ObservableProperty] private string _numberToCheck = "";
 
     [ObservableProperty] private object _selectedSequenceType = "";
+    
+    [ObservableProperty] private object _selectedSequenceModeType = "Max Number";
 
     [ObservableProperty] private string _result = "";
 
     public ObservableCollection<string> SequenceTypes { get; } = new ObservableCollection<string>();
+    
+    public ObservableCollection<string> SequenceModes { get; } = new ObservableCollection<string>();
 
     [RelayCommand]
     private async Task CalculateSequence()
     {
+        bool isPositional = SelectedSequenceModeType.ToString() == "Position in Sequence";
+        
         var result = await _mediator.Send(new CalculateSequence.Query(
             Convert.ToUInt64(NumberToCheck), 
-            (string)SelectedSequenceType)
+            (string)SelectedSequenceType, isPositional)
         );
 
         StringBuilder sb = new StringBuilder();
