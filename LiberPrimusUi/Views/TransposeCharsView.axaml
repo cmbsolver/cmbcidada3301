@@ -1,0 +1,26 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:LiberPrimusUi.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="LiberPrimusUi.Views.TransposeCharsView"
+             x:DataType="vm:TransposeCharsViewModel">
+    <StackPanel Margin="20" Spacing="10">
+        <StackPanel Orientation="Horizontal" Spacing="5">
+            <TextBlock VerticalAlignment="Center">Text</TextBlock>
+            <TextBox Text="{Binding TextToTranspose}" MaxLines="5"></TextBox>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" Spacing="5">
+            <CheckBox IsChecked="{Binding IsRune}">Transpose To Runes</CheckBox>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" Spacing="5">
+            <Button Command="{Binding TransposeTextCommand}">Transpose</Button>
+            <TextBlock VerticalAlignment="Center">Gematria Sum:</TextBlock>
+            <TextBlock VerticalAlignment="Center" Text="{Binding GemSum}"></TextBlock>
+        </StackPanel>
+        <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Height="500">
+            <TextBox Text="{Binding Response}"></TextBox>
+        </ScrollViewer>
+    </StackPanel>
+</UserControl>

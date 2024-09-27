@@ -30,6 +30,8 @@ public partial class MainWindowViewModel : ViewModelBase
         new ListItemTemplate(typeof(HomePageViewModel), "HomeRegular", "Home"),
         new ListItemTemplate(typeof(PrimeCheckerViewModel), "Calculator", "Prime Checker"),
         new ListItemTemplate(typeof(GenerateSequenceViewModel), "NumberList", "Generate Sequence"),
+        new ListItemTemplate(typeof(TransposeCharsViewModel), "Wrench", "Latin and Rune Transposer"),
+        new ListItemTemplate(typeof(GetWordsForValueViewModel), "Wrench", "Get Words for Value"),
         new ListItemTemplate(typeof(Base64DecodeViewModel), "Wrench", "Base64 Decode"),
         new ListItemTemplate(typeof(BinaryDecodeViewModel), "Wrench", "Binary Decode"),
         new ListItemTemplate(typeof(CalculateSectionSumsViewModel), "Wrench", "Calculate Section Sums"),
@@ -186,6 +188,18 @@ public partial class MainWindowViewModel : ViewModelBase
                 if (!_windows.Any(w => w.Item1 == value.Label))
                     _windows.Add(new Tuple<string, object>(value.Label, new DictionaryCheckTextFilesViewModel(_mediator, _messageBus)));
                 CurrentPage = _windows.FirstOrDefault(w => w.Item1 == value.Label)?.Item2 as DictionaryCheckTextFilesViewModel;
+                break;
+            
+            case Type t when t == typeof(TransposeCharsViewModel):
+                if (!_windows.Any(w => w.Item1 == value.Label))
+                    _windows.Add(new Tuple<string, object>(value.Label, new TransposeCharsViewModel(_mediator)));
+                CurrentPage = _windows.FirstOrDefault(w => w.Item1 == value.Label)?.Item2 as TransposeCharsViewModel;
+                break;
+            
+            case Type t when t == typeof(GetWordsForValueViewModel):
+                if (!_windows.Any(w => w.Item1 == value.Label))
+                    _windows.Add(new Tuple<string, object>(value.Label, new GetWordsForValueViewModel(_mediator)));
+                CurrentPage = _windows.FirstOrDefault(w => w.Item1 == value.Label)?.Item2 as GetWordsForValueViewModel;
                 break;
         }
     }

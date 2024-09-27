@@ -710,6 +710,7 @@ namespace LiberPrimusAnalysisTool.Utility.Character
                     retval = "ᚠ";
                     break;
 
+                case "V":
                 case "U":
                     retval = "ᚢ";
                     break;
@@ -722,6 +723,8 @@ namespace LiberPrimusAnalysisTool.Utility.Character
                     retval = "ᚱ";
                     break;
 
+                case "Q":
+                case "K":
                 case "C":
                     retval = "ᚳ";
                     break;
@@ -758,6 +761,7 @@ namespace LiberPrimusAnalysisTool.Utility.Character
                     retval = "ᛉ";
                     break;
 
+                case "Z":
                 case "S":
                     retval = "ᛋ";
                     break;
