@@ -37,4 +37,9 @@
     <ProjectReference Include="..\LiberPrimusAnalysisTool.Entity\LiberPrimusAnalysisTool.Entity.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Commands\Decoders\" />
+    <Folder Include="Commands\Encoders\" />
+  </ItemGroup>
+
 </Project>
