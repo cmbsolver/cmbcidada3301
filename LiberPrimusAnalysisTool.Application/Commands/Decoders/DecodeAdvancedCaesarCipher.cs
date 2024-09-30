@@ -45,6 +45,7 @@ public class DecodeAdvancedCaesarCipher
                     if (alphabetIndex != -1)
                     {
                         int shift = key.Length == 1 ? key[0] : key[i];
+                        shift = shift % alphabet.Length; // Ensure shift is within bounds
                         int newIndex = (alphabetIndex - shift + alphabet.Length) % alphabet.Length;
                         result.Append(alphabet[newIndex]);
                     }
