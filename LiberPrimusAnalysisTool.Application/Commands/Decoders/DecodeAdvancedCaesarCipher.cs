@@ -18,7 +18,7 @@ public class DecodeAdvancedCaesarCipher
         {
             Alphabet = alphabet.Split(",", StringSplitOptions.RemoveEmptyEntries).Select(x => x.Trim().ToUpper()).ToArray();
             Text = text.ToUpper();
-            Key = key.Split(",", StringSplitOptions.RemoveEmptyEntries).Select(x => int.Parse(x.Trim())).ToArray();
+            Key = key.Split(",", StringSplitOptions.RemoveEmptyEntries).Select(x => Convert.ToInt32(x.Trim())).ToArray();
         }
         
         public string[] Alphabet { get; set; }
@@ -37,18 +37,25 @@ public class DecodeAdvancedCaesarCipher
 
             for (int i = 0; i < text.Length; i++)
             {
-                char currentChar = text[i];
-                int alphabetIndex = Array.IndexOf(alphabet, currentChar.ToString());
+                try
+                {
+                    char currentChar = text[i];
+                    int alphabetIndex = Array.IndexOf(alphabet, currentChar.ToString());
 
-                if (alphabetIndex != -1)
-                {
-                    int shift = key.Length == 1 ? key[0] : key[i];
-                    int newIndex = (alphabetIndex - shift + alphabet.Length) % alphabet.Length;
-                    result.Append(alphabet[newIndex]);
+                    if (alphabetIndex != -1)
+                    {
+                        int shift = key.Length == 1 ? key[0] : key[i];
+                        int newIndex = (alphabetIndex - shift + alphabet.Length) % alphabet.Length;
+                        result.Append(alphabet[newIndex]);
+                    }
+                    else
+                    {
+                        result.Append(currentChar); // Append the character as is if it's not in the alphabet
+                    }
                 }
-                else
+                catch (Exception e)
                 {
-                    result.Append(currentChar); // Append the character as is if it's not in the alphabet
+                    Console.WriteLine(e);
                 }
             }
 

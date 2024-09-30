@@ -18,7 +18,7 @@ public class EncodeAdvancedCaesarCipher
         {
             Alphabet = alphabet.Split(",", StringSplitOptions.RemoveEmptyEntries).Select(x => x.Trim().ToUpper()).ToArray();
             Text = text.ToUpper();
-            Key = key.Split(",", StringSplitOptions.RemoveEmptyEntries).Select(x => int.Parse(x.Trim())).ToArray();
+            Key = key.Split(",", StringSplitOptions.RemoveEmptyEntries).Select(x => Convert.ToInt32(x.Trim())).ToArray();
         }
         
         public string[] Alphabet { get; set; }

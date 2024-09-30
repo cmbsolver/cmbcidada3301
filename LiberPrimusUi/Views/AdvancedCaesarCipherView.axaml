@@ -15,12 +15,12 @@
         </StackPanel>
         <StackPanel Orientation="Horizontal" Spacing="5">
             <TextBlock VerticalAlignment="Center">Input Text</TextBlock>
-            <TextBox Text="{Binding StringToDecode}" TextChanged="TextBox_OnTextChanged"></TextBox>
+            <TextBox Text="{Binding StringToDecode}" TextChanged="TextBox_OnTextChanged" MaxWidth="300"></TextBox>
             <TextBlock VerticalAlignment="Center" Text="{Binding CharCount}"></TextBlock>
         </StackPanel>
         <StackPanel Orientation="Horizontal" Spacing="5">
             <TextBlock VerticalAlignment="Center">Shift</TextBlock>
-            <TextBox Text="{Binding Shift}"></TextBox>
+            <TextBox Text="{Binding Shift}" MaxWidth="300"></TextBox>
         </StackPanel>
         <StackPanel Orientation="Horizontal" Spacing="5">
             <Button Command="{Binding EncodeStringCommand}">Encode</Button>

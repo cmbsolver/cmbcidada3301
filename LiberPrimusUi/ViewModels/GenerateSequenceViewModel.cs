@@ -37,6 +37,8 @@ public partial class GenerateSequenceViewModel : ViewModelBase
 
     [ObservableProperty] private string _result = "";
     
+    [ObservableProperty] private string _itemCount = "0";
+    
     [ObservableProperty] private bool _commaSeperate = false;
 
     public ObservableCollection<string> SequenceTypes { get; } = new ObservableCollection<string>();
@@ -60,6 +62,7 @@ public partial class GenerateSequenceViewModel : ViewModelBase
         }
 
         bool prepend = false;
+        ItemCount = result.Sequence.Count.ToString();
         foreach (var seq in result.Sequence)
         {
             if (CommaSeperate)
