@@ -92,7 +92,8 @@ namespace LiberPrimusAnalysisTool.Application.Queries.Math
                 numericSequence.Number = request.MaxNumber;
                 
                 var numberToCalculate = request.IsPositional ? long.MaxValue : request.MaxNumber;
-
+                ulong counter = 0;
+                
                 for (ulong i = 0; i <= numberToCalculate; i++)
                 {
                     var isPrime = await _mediator.Send(new GetIsPrime.Query() { Number = i });
@@ -105,12 +106,14 @@ namespace LiberPrimusAnalysisTool.Application.Queries.Math
                         }
                         else
                         {
-                            if (i == request.MaxNumber)
+                            if (counter == request.MaxNumber)
                             {
                                 numericSequence.Sequence.Add(i);
                                 break;
                             }
                         }
+
+                        counter++;
                     }
                 }
 

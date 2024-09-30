@@ -18,6 +18,7 @@
         <StackPanel Orientation="Horizontal" Spacing="5">
             <TextBlock VerticalAlignment="Center" Text="{Binding SelectedSequenceModeType}"></TextBlock>
             <TextBox Text="{Binding NumberToCheck}"></TextBox>
+            <CheckBox IsChecked="{Binding CommaSeperate}">Comma Seperate</CheckBox>
         </StackPanel>
         <StackPanel Orientation="Horizontal" Spacing="5">
             <Button Command="{Binding CalculateSequenceCommand}">Calculate</Button>

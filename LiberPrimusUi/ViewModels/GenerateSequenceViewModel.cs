@@ -36,6 +36,8 @@ public partial class GenerateSequenceViewModel : ViewModelBase
     [ObservableProperty] private object _selectedSequenceModeType = "Max Number";
 
     [ObservableProperty] private string _result = "";
+    
+    [ObservableProperty] private bool _commaSeperate = false;
 
     public ObservableCollection<string> SequenceTypes { get; } = new ObservableCollection<string>();
     
@@ -57,9 +59,19 @@ public partial class GenerateSequenceViewModel : ViewModelBase
             sb.AppendLine($"Result: {result.Result}");
         }
 
+        bool prepend = false;
         foreach (var seq in result.Sequence)
         {
-            sb.AppendLine(seq.ToString());
+            if (CommaSeperate)
+            {
+                string value = prepend ? ", " : "";
+                sb.Append(value + seq.ToString());
+                prepend = true;
+            }
+            else
+            {
+                sb.AppendLine(seq.ToString());
+            }
         }
 
         Result = sb.ToString();
