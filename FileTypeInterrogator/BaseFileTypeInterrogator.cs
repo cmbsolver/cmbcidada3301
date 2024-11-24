@@ -46,7 +46,7 @@ namespace FileTypeInterrogator
                 inputStream.Position = 0;
 
             byte[] byteBuffer = new byte[inputStream.Length];
-            inputStream.Read(byteBuffer, 0, byteBuffer.Length);
+            inputStream.ReadExactly(byteBuffer);
 
             if (inputStream.CanSeek)
                 inputStream.Position = 0;
