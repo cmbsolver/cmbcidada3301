@@ -60,6 +60,8 @@ public partial class MainWindowViewModel : ViewModelBase
     [ObservableProperty]
     private ListItemTemplate? _selectedListItem;
 
+    [ObservableProperty] private string _titleBar = "Liber Primus Analysis Tool";
+
     private List<Tuple<string, object>> _windows = new List<Tuple<string, object>>();
 
     private readonly ICharacterRepo _characterRepo;
@@ -209,6 +211,8 @@ public partial class MainWindowViewModel : ViewModelBase
                 CurrentPage = _windows.FirstOrDefault(w => w.Item1 == value.Label)?.Item2 as AdvancedCaesarCipherViewModel;
                 break;
         }
+        
+        TitleBar = $"Liber Primus Analysis Tool - {value.Label}";
     }
 
     public ObservableCollection<ListItemTemplate> Items { get; }
