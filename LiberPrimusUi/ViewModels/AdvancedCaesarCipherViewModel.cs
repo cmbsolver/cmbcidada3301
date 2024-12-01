@@ -1,5 +1,6 @@
 using System;
 using System.Collections.ObjectModel;
+using System.Text;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -49,6 +50,27 @@ public partial class AdvancedCaesarCipherViewModel: ViewModelBase
             DecodeAdvancedCaesarCipher.Command command = new(Alphabet, StringToDecode, Convert.ToInt32(Shift));
             DecodedString = await _mediator.Send(command);
         }
+    }
+    
+    [RelayCommand]
+    private async Task BulkDecodeString()
+    {
+        StringBuilder result = new();
+        int maxShift = Convert.ToInt32(Shift);
+
+        for (int i = 0; i <= maxShift; i++)
+        {
+            if (i > 0)
+            {
+                result.AppendLine();    
+            }
+            
+            result.AppendLine($"Trying {i}:");
+            DecodeAdvancedCaesarCipher.Command command = new(Alphabet, StringToDecode, Convert.ToInt32(i));
+            result.AppendLine(await _mediator.Send(command));
+        }
+        
+        DecodedString = result.ToString();
     }
     
     [RelayCommand]
