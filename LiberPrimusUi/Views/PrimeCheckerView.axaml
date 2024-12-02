@@ -10,7 +10,7 @@
     <StackPanel Spacing="10" Margin="20">
         <StackPanel Orientation="Horizontal" Spacing="5">
             <TextBlock VerticalAlignment="Center">Number to Check</TextBlock>
-            <TextBox Text="{Binding NumberToCheckIsPrime}"></TextBox>
+            <NumericUpDown Value="{Binding NumberToCheckIsPrime}" ShowButtonSpinner="False"></NumericUpDown>
         </StackPanel>
         <Button Command="{Binding CheckNumberCommand}">Check Number</Button>
         <TextBlock Text="{Binding IsPrime}"></TextBlock>

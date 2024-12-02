@@ -17,7 +17,7 @@ public partial class PrimeCheckerViewModel: ViewModelBase
     }
     
     [ObservableProperty]
-    private string _numberToCheckIsPrime = "";
+    private decimal? _numberToCheckIsPrime = 3301;
     
     [ObservableProperty]
     private string _isPrime = "";
@@ -25,7 +25,7 @@ public partial class PrimeCheckerViewModel: ViewModelBase
     [RelayCommand]
     private async Task CheckNumber()
     {
-        var result = await _mediator.Send(new GetIsPrime.Query() { Number = ulong.Parse(NumberToCheckIsPrime) });
+        var result = await _mediator.Send(new GetIsPrime.Query() { Number = Convert.ToUInt64(NumberToCheckIsPrime) });
         
         if (result)
         {

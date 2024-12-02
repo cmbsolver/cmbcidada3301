@@ -51,7 +51,7 @@ public partial class DictionaryCheckTextFilesViewModel: ViewModelBase
     /// <summary>
     /// Number of letter to check in dictionary
     /// </summary>
-    [ObservableProperty] private string _numOfLetters = "3";
+    [ObservableProperty] private decimal? _numOfLetters = 3;
     
     /// <summary>
     /// The message list.
@@ -73,7 +73,7 @@ public partial class DictionaryCheckTextFilesViewModel: ViewModelBase
         else if (e.Screen == "DictionaryCheckTextFiles:Clear")
         {
             IsButtonEnabled = true;
-            Messages.Clear();
+            //Messages.Clear();
         }
         else
         {

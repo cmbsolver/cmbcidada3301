@@ -29,7 +29,7 @@ public partial class GenerateSequenceViewModel : ViewModelBase
         SequenceModes.Add("Position in Sequence");
     }
 
-    [ObservableProperty] private string _numberToCheck = "";
+    [ObservableProperty] private decimal? _numberToCheck = 3301;
 
     [ObservableProperty] private object _selectedSequenceType = "";
     

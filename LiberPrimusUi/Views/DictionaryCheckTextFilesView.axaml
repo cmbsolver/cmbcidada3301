@@ -9,7 +9,7 @@
     <StackPanel Margin="20" Spacing="10">
         <StackPanel Orientation="Horizontal" Spacing="5">
             <TextBlock VerticalAlignment="Center">Word Length</TextBlock>
-            <TextBox Text="{Binding NumOfLetters}"></TextBox>
+            <NumericUpDown Text="{Binding NumOfLetters}" ShowButtonSpinner="False"></NumericUpDown>
             <CheckBox IsChecked="{Binding IsGpStrict}">Is GP Dictionary</CheckBox>
         </StackPanel>
         <StackPanel Orientation="Horizontal" Spacing="5">

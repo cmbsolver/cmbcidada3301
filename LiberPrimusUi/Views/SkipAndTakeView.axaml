@@ -20,15 +20,15 @@
         </StackPanel>
         <StackPanel Orientation="Horizontal" Spacing="5">
             <TextBlock VerticalAlignment="Center">Skip</TextBlock>
-            <TextBox Text="{Binding Skip}" ></TextBox>
+            <NumericUpDown Text="{Binding Skip}" ShowButtonSpinner="False"></NumericUpDown>
         </StackPanel>
         <StackPanel Orientation="Horizontal" Spacing="5">
             <TextBlock VerticalAlignment="Center">Take</TextBlock>
-            <TextBox Text="{Binding Take}" ></TextBox>
+            <NumericUpDown Text="{Binding Take}" ShowButtonSpinner="False"></NumericUpDown>
         </StackPanel>
         <StackPanel Orientation="Horizontal" Spacing="5">
             <TextBlock VerticalAlignment="Center">Array Iterations</TextBlock>
-            <TextBox Text="{Binding ArrayIterations}" ></TextBox>
+            <NumericUpDown Text="{Binding ArrayIterations}" ShowButtonSpinner="False"></NumericUpDown>
         </StackPanel>
         <StackPanel Orientation="Horizontal" Spacing="5">
             <Button Command="{Binding ProcessFileCommand}" 

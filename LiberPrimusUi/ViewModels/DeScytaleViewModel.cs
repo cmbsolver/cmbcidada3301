@@ -32,7 +32,7 @@ public partial class DeScytaleViewModel: ViewModelBase
     
     [ObservableProperty] private string _fileToDecode = "";
     
-    [ObservableProperty] private string _cols = "";
+    [ObservableProperty] private decimal? _cols = 3;
     
     [ObservableProperty] private bool _reversed = false;
     
@@ -44,7 +44,7 @@ public partial class DeScytaleViewModel: ViewModelBase
         if (FileToDecode is string)
         {
             var text = File.ReadAllText(FileToDecode);
-            Result = await _mediator.Send(new DeScytaleText.Command(text, int.Parse(Cols), Reversed));
+            Result = await _mediator.Send(new DeScytaleText.Command(text, Convert.ToInt32(Cols), Reversed));
         }
     }
     

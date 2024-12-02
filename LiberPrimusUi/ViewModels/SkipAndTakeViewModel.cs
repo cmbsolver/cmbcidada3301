@@ -36,11 +36,11 @@ public partial class SkipAndTakeViewModel : ViewModelBase
     
     public ObservableCollection<string> LiberPages { get; set; } = new ObservableCollection<string>();
     
-    [ObservableProperty] private string _arrayIterations;
+    [ObservableProperty] private decimal? _arrayIterations;
     
-    [ObservableProperty] private string _skip;
+    [ObservableProperty] private decimal? _skip;
     
-    [ObservableProperty] private string _take;
+    [ObservableProperty] private decimal? _take;
     
     [ObservableProperty] private string _selectedLiberPage;
     
