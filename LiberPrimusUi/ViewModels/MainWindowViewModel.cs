@@ -43,6 +43,7 @@ public partial class MainWindowViewModel : ViewModelBase
         new ListItemTemplate(typeof(RuneDecimalLsbViewModel), "Wrench", "Rune Decimal LSB"),
         new ListItemTemplate(typeof(SkipAndTakeViewModel), "Wrench", "Skip and Take"),
         new ListItemTemplate(typeof(DictionaryCheckTextFilesViewModel), "Wrench", "Dictionary Check Text Files"),
+        new ListItemTemplate(typeof(CalculateClockAngleViewModel), "Wrench", "Clock Angle Calculator"),
         new ListItemTemplate(typeof(ColorReportViewModel), "ImageIcon", "Color Report"),
         new ListItemTemplate(typeof(InvertColorsViewModel), "ImageIcon", "Invert Colors"),
         new ListItemTemplate(typeof(BulkByteWinnowPagesViewModel), "ImageIcon", "Byte Winnow Pages"),
@@ -209,6 +210,12 @@ public partial class MainWindowViewModel : ViewModelBase
                 if (!_windows.Any(w => w.Item1 == value.Label))
                     _windows.Add(new Tuple<string, object>(value.Label, new AdvancedCaesarCipherViewModel(_mediator)));
                 CurrentPage = _windows.FirstOrDefault(w => w.Item1 == value.Label)?.Item2 as AdvancedCaesarCipherViewModel;
+                break;
+            
+            case Type t when t == typeof(CalculateClockAngleViewModel):
+                if (!_windows.Any(w => w.Item1 == value.Label))
+                    _windows.Add(new Tuple<string, object>(value.Label, new CalculateClockAngleViewModel(_mediator)));
+                CurrentPage = _windows.FirstOrDefault(w => w.Item1 == value.Label)?.Item2 as CalculateClockAngleViewModel;
                 break;
         }
         

@@ -618,4 +618,11 @@
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </None>
     </ItemGroup>
+
+    <ItemGroup>
+      <Compile Update="Views\CalculateClockAngleView.axaml.cs">
+        <DependentUpon>CalculateClockAngleView.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
+    </ItemGroup>
 </Project>
