@@ -26,40 +26,41 @@ public class DecodeAdvancedBase60Cipher
             int baseSize = alphabet.Length;
             StringBuilder result = new();
             StringBuilder currentBaseValue = new();
+            var alphabetIndex = alphabet.Select((c, i) => new { c, i }).ToDictionary(x => x.c, x => x.i);
 
             foreach (char c in text)
             {
-                if (Array.IndexOf(alphabet, c) != -1)
+                if (alphabetIndex.ContainsKey(c))
                 {
                     currentBaseValue.Append(c);
+                    if (currentBaseValue.Length >= 2)
+                    {
+                        result.Append(DecodeBase60Value(currentBaseValue.ToString(), alphabetIndex, baseSize));
+                        currentBaseValue.Clear();
+                    }
                 }
                 else
                 {
-                    if (currentBaseValue.Length > 0)
-                    {
-                        result.Append(DecodeBase60Value(currentBaseValue.ToString(), alphabet));
-                        currentBaseValue.Clear();
-                    }
                     result.Append(c);
+                    currentBaseValue.Clear();
                 }
             }
 
             if (currentBaseValue.Length > 0)
             {
-                result.Append(DecodeBase60Value(currentBaseValue.ToString(), alphabet));
+                result.Append(DecodeBase60Value(currentBaseValue.ToString(), alphabetIndex, baseSize));
             }
 
             return result.ToString();
         }
 
-        private char DecodeBase60Value(string base60Value, char[] alphabet)
+        private char DecodeBase60Value(string base60Value, Dictionary<char, int> alphabetIndex, int baseSize)
         {
-            int baseSize = alphabet.Length;
             int value = 0;
 
             foreach (char c in base60Value)
             {
-                value = value * baseSize + Array.IndexOf(alphabet, c);
+                value = value * baseSize + alphabetIndex[c];
             }
 
             return (char)value;

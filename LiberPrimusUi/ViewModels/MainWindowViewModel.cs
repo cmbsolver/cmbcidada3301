@@ -48,8 +48,9 @@ public partial class MainWindowViewModel : ViewModelBase
         new ListItemTemplate(typeof(InvertColorsViewModel), "ImageIcon", "Invert Colors"),
         new ListItemTemplate(typeof(BulkByteWinnowPagesViewModel), "ImageIcon", "Byte Winnow Pages"),
         new ListItemTemplate(typeof(BulkPixelWinnowPagesViewModel), "ImageIcon", "Pixel Winnow Pages"),
-        new ListItemTemplate(typeof(DeScytaleViewModel), "Lock", "Scytale Text"),
-        new ListItemTemplate(typeof(AdvancedCaesarCipherViewModel), "Lock", "Caesar Cipher"),
+        new ListItemTemplate(typeof(DeScytaleViewModel), "Lock", "Scytale"),
+        new ListItemTemplate(typeof(AdvancedCaesarCipherViewModel), "Lock", "Caesar"),
+        new ListItemTemplate(typeof(AdvancedBase60CipherViewModel), "Lock", "Base 60"),
         new ListItemTemplate(typeof(CreditsViewModel), "ListIcon", "Credits"),
     ];
 
@@ -216,6 +217,12 @@ public partial class MainWindowViewModel : ViewModelBase
                 if (!_windows.Any(w => w.Item1 == value.Label))
                     _windows.Add(new Tuple<string, object>(value.Label, new CalculateClockAngleViewModel(_mediator)));
                 CurrentPage = _windows.FirstOrDefault(w => w.Item1 == value.Label)?.Item2 as CalculateClockAngleViewModel;
+                break;
+            
+            case Type t when t == typeof(AdvancedBase60CipherViewModel):
+                if (!_windows.Any(w => w.Item1 == value.Label))
+                    _windows.Add(new Tuple<string, object>(value.Label, new AdvancedBase60CipherViewModel(_mediator)));
+                CurrentPage = _windows.FirstOrDefault(w => w.Item1 == value.Label)?.Item2 as AdvancedBase60CipherViewModel;
                 break;
         }
         

@@ -21,17 +21,16 @@ public class EncodeAdvancedBase60Cipher
     {
         public async Task<string> Handle(Command request, CancellationToken cancellationToken)
         {
-            string text = request.Text;
+            string text = request.Text.ToUpper();
             char[] alphabet = request.Alphabet;
             int baseSize = alphabet.Length;
             StringBuilder result = new();
-            StringBuilder nonAlphabetChars = new();
 
             foreach (char c in text)
             {
                 if (Array.IndexOf(alphabet, c) == -1)
                 {
-                    nonAlphabetChars.Append(c);
+                    result.Append(c);
                     continue;
                 }
 
