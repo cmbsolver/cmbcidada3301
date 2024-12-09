@@ -33,6 +33,7 @@ public partial class AdvancedBase60CipherViewModel: ViewModelBase
     [ObservableProperty] private string _alphabet = "";
     
     [ObservableProperty] private string _charCount = "";
+    [ObservableProperty] private string _chunkSize = "";
     
     public ObservableCollection<string> InputTypes { get; } = new ObservableCollection<string>();
     
@@ -42,7 +43,7 @@ public partial class AdvancedBase60CipherViewModel: ViewModelBase
         string[] alphaStringArray = Alphabet.Split(',', StringSplitOptions.RemoveEmptyEntries);
         var alphaArray = alphaStringArray.Select(c => c[0]).ToArray();
         
-        DecodeAdvancedBase60Cipher.Command command = new(StringToDecode, alphaArray);
+        DecodeAdvancedBase60Cipher.Command command = new(StringToDecode, alphaArray, Convert.ToInt32(ChunkSize));
         DecodedString = await _mediator.Send(command);
     }
     

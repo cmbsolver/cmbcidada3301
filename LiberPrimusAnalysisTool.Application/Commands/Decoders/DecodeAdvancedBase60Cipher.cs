@@ -7,14 +7,16 @@ public class DecodeAdvancedBase60Cipher
 {
     public class Command : IRequest<string>
     {
-        public Command(string text, char[] alphabet)
+        public Command(string text, char[] alphabet, int chunkSize)
         {
             Text = text;
             Alphabet = alphabet;
+            ChunkSize = chunkSize;
         }
 
         public string Text { get; set; }
         public char[] Alphabet { get; set; }
+        public int ChunkSize { get; set; }
     }
 
     public class Handler : IRequestHandler<Command, string>
@@ -33,7 +35,7 @@ public class DecodeAdvancedBase60Cipher
                 if (alphabetIndex.ContainsKey(c))
                 {
                     currentBaseValue.Append(c);
-                    if (currentBaseValue.Length >= 2)
+                    if (currentBaseValue.Length >= request.ChunkSize)
                     {
                         result.Append(DecodeBase60Value(currentBaseValue.ToString(), alphabetIndex, baseSize));
                         currentBaseValue.Clear();
@@ -42,6 +44,12 @@ public class DecodeAdvancedBase60Cipher
                 else
                 {
                     result.Append(c);
+                    
+                    if (currentBaseValue.Length > 0)
+                    {
+                        result.Append(DecodeBase60Value(currentBaseValue.ToString(), alphabetIndex, baseSize));
+                    }
+                    
                     currentBaseValue.Clear();
                 }
             }
