@@ -51,6 +51,7 @@ public partial class MainWindowViewModel : ViewModelBase
         new ListItemTemplate(typeof(DeScytaleViewModel), "Lock", "Scytale"),
         new ListItemTemplate(typeof(AdvancedCaesarCipherViewModel), "Lock", "Caesar"),
         new ListItemTemplate(typeof(AdvancedBase60CipherViewModel), "Lock", "Base 60"),
+        new ListItemTemplate(typeof(AdvancedHillCipherViewModel), "Lock", "Shitty Hill"),
         new ListItemTemplate(typeof(CreditsViewModel), "ListIcon", "Credits"),
     ];
 
@@ -223,6 +224,12 @@ public partial class MainWindowViewModel : ViewModelBase
                 if (!_windows.Any(w => w.Item1 == value.Label))
                     _windows.Add(new Tuple<string, object>(value.Label, new AdvancedBase60CipherViewModel(_mediator)));
                 CurrentPage = _windows.FirstOrDefault(w => w.Item1 == value.Label)?.Item2 as AdvancedBase60CipherViewModel;
+                break;
+            
+            case Type t when t == typeof(AdvancedHillCipherViewModel):
+                if (!_windows.Any(w => w.Item1 == value.Label))
+                    _windows.Add(new Tuple<string, object>(value.Label, new AdvancedHillCipherViewModel(_mediator)));
+                CurrentPage = _windows.FirstOrDefault(w => w.Item1 == value.Label)?.Item2 as AdvancedHillCipherViewModel;
                 break;
         }
         

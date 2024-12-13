@@ -628,5 +628,9 @@
         <DependentUpon>AdvancedBase60CipherView.axaml</DependentUpon>
         <SubType>Code</SubType>
       </Compile>
+      <Compile Update="Views\AdvancedHillCipherView.axaml.cs">
+        <DependentUpon>AdvancedHillCipherView.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
     </ItemGroup>
 </Project>

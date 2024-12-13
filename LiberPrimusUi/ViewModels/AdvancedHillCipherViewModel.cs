@@ -44,7 +44,7 @@ public partial class AdvancedHillCipherViewModel: ViewModelBase
         string[] alphaStringArray = Alphabet.Split(',', StringSplitOptions.RemoveEmptyEntries);
         var alphaArray = alphaStringArray.Select(c => c[0]).ToArray();
         
-        alphaStringArray = Alphabet.Split(',', StringSplitOptions.RemoveEmptyEntries);
+        alphaStringArray = Matrix.Split(',', StringSplitOptions.RemoveEmptyEntries);
         int[,] matrixKey = new int[,] {{Convert.ToInt32(alphaStringArray[0]), Convert.ToInt32(alphaStringArray[1])}};
         
         DecodeAdvancedHillCipher.Command command = new(StringToDecode, matrixKey, alphaArray);
@@ -57,7 +57,7 @@ public partial class AdvancedHillCipherViewModel: ViewModelBase
         string[] alphaStringArray = Alphabet.Split(',', StringSplitOptions.RemoveEmptyEntries);
         var alphaArray = alphaStringArray.Select(c => c[0]).ToArray();
         
-        alphaStringArray = Alphabet.Split(',', StringSplitOptions.RemoveEmptyEntries);
+        alphaStringArray = Matrix.Split(',', StringSplitOptions.RemoveEmptyEntries);
         int[,] matrixKey = new int[,] {{Convert.ToInt32(alphaStringArray[0]), Convert.ToInt32(alphaStringArray[1])}};
         
         EncodeAdvancedHillCipher.Command command = new(StringToDecode, matrixKey, alphaArray);
