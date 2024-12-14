@@ -1,0 +1,45 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:LiberPrimusUi.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="LiberPrimusUi.Views.SpiralSquareSolveView"
+             x:DataType="vm:SpiralSquareSolveViewModel">
+    <StackPanel Margin="20" Spacing="10">
+        <TextBlock>Input Text</TextBlock>
+        <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Height="150">
+            <TextBox Text="{Binding TextToSquare}"></TextBox>
+        </ScrollViewer>
+        <StackPanel Orientation="Horizontal" Spacing="5">
+            <TextBlock VerticalAlignment="Center">Tunnel Style</TextBlock>
+            <ComboBox ItemsSource="{Binding TunnelStyles}" 
+                      SelectedItem="{Binding SelectedTunnelStyle }"></ComboBox>
+            
+            <TextBlock VerticalAlignment="Center">Spiral Direction</TextBlock>
+            <ComboBox ItemsSource="{Binding SpiralDirections}" 
+                      SelectedItem="{Binding SelectedSpiralDirection }"></ComboBox>
+            
+            <TextBlock VerticalAlignment="Center">Start Position</TextBlock>
+            <ComboBox ItemsSource="{Binding StartPositions}" 
+                      SelectedItem="{Binding SelectedStartPosition }"></ComboBox>
+            
+            <TextBlock VerticalAlignment="Center">Space Shift</TextBlock>
+            <ComboBox ItemsSource="{Binding SpaceShifts}" 
+                      SelectedItem="{Binding SelectedSpaceShift }"></ComboBox>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" Spacing="5">
+            <Button Command="{Binding SquareTextCommand}">Square Text Test</Button>
+            <Button Command="{Binding ProcessTextCommand}">Process</Button>
+            <Button Command="{Binding ClearMessagesCommand}">Clear Output</Button>
+        </StackPanel>
+        <TextBlock>Squared Text</TextBlock>
+        <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Height="150">
+            <TextBox Text="{Binding SquaredText}"></TextBox>
+        </ScrollViewer>
+        <TextBlock>Output Text</TextBlock>
+        <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Height="150">
+            <TextBox Text="{Binding Result}"></TextBox>
+        </ScrollViewer>
+    </StackPanel>
+</UserControl>

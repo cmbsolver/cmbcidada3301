@@ -50,8 +50,9 @@ public partial class MainWindowViewModel : ViewModelBase
         new ListItemTemplate(typeof(BulkPixelWinnowPagesViewModel), "ImageIcon", "Pixel Winnow Pages"),
         new ListItemTemplate(typeof(DeScytaleViewModel), "Lock", "Scytale"),
         new ListItemTemplate(typeof(AdvancedCaesarCipherViewModel), "Lock", "Caesar"),
-        new ListItemTemplate(typeof(AdvancedBase60CipherViewModel), "Lock", "Base 60"),
-        new ListItemTemplate(typeof(AdvancedHillCipherViewModel), "Lock", "Shitty Hill"),
+        //new ListItemTemplate(typeof(AdvancedBase60CipherViewModel), "Lock", "Base 60"),
+        //new ListItemTemplate(typeof(AdvancedHillCipherViewModel), "Lock", "Shitty Hill"),
+        new ListItemTemplate(typeof(SpiralSquareSolveViewModel), "Lock", "Spiral"),
         new ListItemTemplate(typeof(CreditsViewModel), "ListIcon", "Credits"),
     ];
 
@@ -230,6 +231,12 @@ public partial class MainWindowViewModel : ViewModelBase
                 if (!_windows.Any(w => w.Item1 == value.Label))
                     _windows.Add(new Tuple<string, object>(value.Label, new AdvancedHillCipherViewModel(_mediator)));
                 CurrentPage = _windows.FirstOrDefault(w => w.Item1 == value.Label)?.Item2 as AdvancedHillCipherViewModel;
+                break;
+            
+            case Type t when t == typeof(SpiralSquareSolveViewModel):
+                if (!_windows.Any(w => w.Item1 == value.Label))
+                    _windows.Add(new Tuple<string, object>(value.Label, new SpiralSquareSolveViewModel(_mediator)));
+                CurrentPage = _windows.FirstOrDefault(w => w.Item1 == value.Label)?.Item2 as SpiralSquareSolveViewModel;
                 break;
         }
         
