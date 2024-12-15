@@ -95,14 +95,30 @@ public class MatrixSquare(int squareLength)
                 _nextDirection = NextDirection.Right;
             }
         }
-
-        // Get the current position square
+        
         PositionSquare? positionSquare = PositionSquares.FirstOrDefault(value => value.X == _currentX && value.Y == _currentY);
         positionSquare?.Visit();
 
         AssignNextPosition();
 
         return positionSquare;
+    }
+    
+    public int GetFreeSquares()
+    {
+        return PositionSquares.Count(value => !value.HasBeenVisited);
+    }
+    
+    public List<PositionSquare> GetFreePositionSquares()
+    {
+        List<PositionSquare> freePositionSquares = new();
+        foreach (var freeSquare in PositionSquares.Where(x => !x.HasBeenVisited))
+        {
+            freeSquare.Visit();
+            freePositionSquares.Add(freeSquare);
+        }
+
+        return freePositionSquares;
     }
 
     public override string ToString()

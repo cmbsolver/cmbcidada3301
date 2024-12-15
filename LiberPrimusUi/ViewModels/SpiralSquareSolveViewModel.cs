@@ -1,3 +1,4 @@
+using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
@@ -82,7 +83,7 @@ public partial class SpiralSquareSolveViewModel : ViewModelBase
         
         MatrixSquare matrixSquare = _mediator.Send(new SquareText.Command(TextToSquare, tunnelStyle, spaceShift)).Result;
         SquaredText = matrixSquare.ToString();
-        SquareSize = matrixSquare.GetCount().ToString();
+        SquareSize = Math.Sqrt(matrixSquare.GetCount()).ToString();
     }
 
     [RelayCommand]
@@ -123,7 +124,7 @@ public partial class SpiralSquareSolveViewModel : ViewModelBase
         
         MatrixSquare matrixSquare = _mediator.Send(new SquareText.Command(TextToSquare, tunnelStyle, spaceShift)).Result;
         SquaredText = matrixSquare.ToString();
-        SquareSize = matrixSquare.GetCount().ToString();
+        SquareSize = Math.Sqrt(matrixSquare.GetCount()).ToString();
         
         Result = _mediator.Send(new TunnelText.Command(spiralDirection, tunnelStyle, startPosition, matrixSquare)).Result;
     }
@@ -205,7 +206,7 @@ public partial class SpiralSquareSolveViewModel : ViewModelBase
         
         MatrixSquare matrixSquare = _mediator.Send(new SquareText.Command(TextToSquare, tunnelStyle, spaceShift)).Result;
         SquaredText = matrixSquare.ToString();
-        SquareSize = matrixSquare.GetCount().ToString();
+        SquareSize = Math.Sqrt(matrixSquare.GetCount()).ToString();
                         
         outputText.AppendLine($"TunnelStyle: {ts}, SpiralDirection: {sd}, StartPosition: {sp}, SpaceShift: {ss}");
         outputText.AppendLine(_mediator.Send(new TunnelText.Command(spiralDirection, tunnelStyle, startPosition, matrixSquare)).Result);

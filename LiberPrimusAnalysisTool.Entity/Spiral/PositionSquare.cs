@@ -20,7 +20,10 @@ public class PositionSquare: ICloneable
     
     public void Visit()
     {
-        HasBeenVisited = true;
+        while (!HasBeenVisited)
+        {
+            HasBeenVisited = true;
+        }
     }
 
     public object Clone()
