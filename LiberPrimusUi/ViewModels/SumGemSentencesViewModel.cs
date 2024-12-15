@@ -45,5 +45,6 @@ public partial class SumGemSentencesViewModel: ViewModelBase
     public async void ClearText()
     {
         Response = string.Empty;
+        TextToTranspose = string.Empty;
     }
 }

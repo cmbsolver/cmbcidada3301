@@ -15,7 +15,7 @@
         </StackPanel>
         <StackPanel Orientation="Horizontal" Spacing="5">
             <Button Command="{Binding SumTextCommand}">Calculate</Button>
-            <Button Command="{Binding ClearTextCommand}">Calculate</Button>
+            <Button Command="{Binding ClearTextCommand}">Clear</Button>
         </StackPanel>
         <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Height="250">
             <TextBox Text="{Binding Response}"></TextBox>
