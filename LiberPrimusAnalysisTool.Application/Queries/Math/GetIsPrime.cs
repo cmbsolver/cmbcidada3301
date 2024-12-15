@@ -15,6 +15,15 @@ namespace LiberPrimusAnalysisTool.Application.Queries
         /// <seealso cref="IRequest" />
         public class Query : IRequest<bool>
         {
+            public Query()
+            {
+            }
+            
+            public Query(ulong number)
+            {
+                Number = number;
+            }
+
             public ulong Number { get; set; }
         }
 

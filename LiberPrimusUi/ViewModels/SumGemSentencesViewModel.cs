@@ -3,6 +3,7 @@ using System.Text;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using LiberPrimusAnalysisTool.Application.Commands.TextUtilies;
+using LiberPrimusAnalysisTool.Application.Queries;
 using MediatR;
 
 namespace LiberPrimusUi.ViewModels;
@@ -31,9 +32,11 @@ public partial class SumGemSentencesViewModel: ViewModelBase
             var result = await _mediator.Send(new CalculateGematriaSum.Command(sentence.Trim()));
             if (result != "0")
             {
+                var value = Convert.ToUInt64(result);
+                var isPrime = await _mediator.Send(new GetIsPrime.Query(value));
+                
                 counter++;
-                sb.Append($"Line: {counter} - ");
-                sb.AppendLine(result);
+                sb.Append($"Line: {counter} - Is Prime: {isPrime} - Sum: {result}");
                 sb.AppendLine("");
             }
         }
