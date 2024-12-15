@@ -76,6 +76,12 @@ public class MatrixSquare(int squareLength)
                         _nextDirection =
                             SpiralDirection == SpiralDirection.Clockwise ? NextDirection.Right : NextDirection.Up;
                         break;
+                    case StartPosition.Center:
+                        StartPosition = StartPosition.Center;
+                        _currentX = (int)Math.Ceiling((decimal)SquareWidth / 2);
+                        _currentY = (int)Math.Ceiling((decimal)SquareWidth / 2);
+                        _nextDirection = NextDirection.Right;
+                        break;
                 }
             }
         }
@@ -175,7 +181,7 @@ public class MatrixSquare(int squareLength)
                         _nextDirection = SpiralDirection == SpiralDirection.Clockwise
                             ? NextDirection.Left
                             : NextDirection.Right;
-                        _currentY = SpiralDirection == SpiralDirection.Clockwise ? _currentX - 1 : _currentX + 1;
+                        _currentX = SpiralDirection == SpiralDirection.Clockwise ? _currentX - 1 : _currentX + 1;
                     }
 
                     break;
@@ -189,7 +195,7 @@ public class MatrixSquare(int squareLength)
                         _nextDirection = SpiralDirection == SpiralDirection.Clockwise
                             ? NextDirection.Right
                             : NextDirection.Left;
-                        _currentY = SpiralDirection == SpiralDirection.Clockwise ? _currentX + 1 : _currentX - 1;
+                        _currentX = SpiralDirection == SpiralDirection.Clockwise ? _currentX + 1 : _currentX - 1;
                     }
 
                     break;
@@ -247,7 +253,7 @@ public class MatrixSquare(int squareLength)
                         }
                         else
                         {
-                            _currentY++;
+                            _currentY--;
                         }
                     }
                     break;
