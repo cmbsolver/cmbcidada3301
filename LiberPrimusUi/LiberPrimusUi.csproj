@@ -637,5 +637,9 @@
         <DependentUpon>SpiralSquareSolveView.axaml</DependentUpon>
         <SubType>Code</SubType>
       </Compile>
+      <Compile Update="Views\SumGemSentencesView.axaml.cs">
+        <DependentUpon>SumGemSentencesView.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
     </ItemGroup>
 </Project>

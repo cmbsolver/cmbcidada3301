@@ -31,13 +31,14 @@ public partial class MainWindowViewModel : ViewModelBase
         new ListItemTemplate(typeof(PrimeCheckerViewModel), "Calculator", "Prime Checker"),
         new ListItemTemplate(typeof(GenerateSequenceViewModel), "NumberList", "Generate Sequence"),
         new ListItemTemplate(typeof(TransposeCharsViewModel), "Wrench", "Latin and Rune Transposer"),
+        new ListItemTemplate(typeof(SumGemSentencesViewModel), "Wrench", "Gem Sum Utility"),
         new ListItemTemplate(typeof(GetWordsForValueViewModel), "Wrench", "Get Words for Value"),
         new ListItemTemplate(typeof(Base64DecodeViewModel), "Wrench", "Base64 Decode"),
         new ListItemTemplate(typeof(BinaryDecodeViewModel), "Wrench", "Binary Decode"),
         new ListItemTemplate(typeof(CalculateSectionSumsViewModel), "Wrench", "Calculate Section Sums"),
         new ListItemTemplate(typeof(TextSequenceReducerViewModel), "Wrench", "Text Sequence Reducer"),
         new ListItemTemplate(typeof(HexDecodeRunesViewModel), "Wrench", "Hex Decode Runes"),
-        new ListItemTemplate(typeof(SubstituteUltimaViewModel), "Wrench", "Substitute Ultima"),
+        //new ListItemTemplate(typeof(SubstituteUltimaViewModel), "Wrench", "Substitute Ultima"),
         new ListItemTemplate(typeof(IdentifyBinFileViewModel), "Wrench", "Identify Bin File"),
         new ListItemTemplate(typeof(BinaryInvertViewModel), "Wrench", "Invert Binary Values"),
         new ListItemTemplate(typeof(RuneDecimalLsbViewModel), "Wrench", "Rune Decimal LSB"),
@@ -237,6 +238,12 @@ public partial class MainWindowViewModel : ViewModelBase
                 if (!_windows.Any(w => w.Item1 == value.Label))
                     _windows.Add(new Tuple<string, object>(value.Label, new SpiralSquareSolveViewModel(_mediator)));
                 CurrentPage = _windows.FirstOrDefault(w => w.Item1 == value.Label)?.Item2 as SpiralSquareSolveViewModel;
+                break;
+            
+            case Type t when t == typeof(SumGemSentencesViewModel):
+                if (!_windows.Any(w => w.Item1 == value.Label))
+                    _windows.Add(new Tuple<string, object>(value.Label, new SumGemSentencesViewModel(_mediator)));
+                CurrentPage = _windows.FirstOrDefault(w => w.Item1 == value.Label)?.Item2 as SumGemSentencesViewModel;
                 break;
         }
         
