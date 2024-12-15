@@ -21,20 +21,29 @@ public partial class SumGemSentencesViewModel: ViewModelBase
     [ObservableProperty] private string _response = "";
     
     [RelayCommand]
-    public async void TransposeText()
+    public async void SumText()
     {
+        int counter = 0;
         StringBuilder sb = new StringBuilder();
         var sentences = _textToTranspose.Split(Environment.NewLine);
         foreach (var sentence in sentences)
         {
-            var result = await _mediator.Send(new CalculateGematriaSum.Command(sentence));
+            var result = await _mediator.Send(new CalculateGematriaSum.Command(sentence.Trim()));
             if (result != "0")
             {
+                counter++;
+                sb.Append($"Line: {counter} - ");
                 sb.AppendLine(result);
                 sb.AppendLine("");
             }
         }
         
         Response = sb.ToString();
+    }
+
+    [RelayCommand]
+    public async void ClearText()
+    {
+        Response = string.Empty;
     }
 }
