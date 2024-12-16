@@ -7,7 +7,7 @@ using CommunityToolkit.Mvvm.Input;
 using LiberPrimusAnalysisTool.Application.Commands.Image;
 using LiberPrimusAnalysisTool.Application.Commands.InputProcessing;
 using LiberPrimusAnalysisTool.Application.Queries.Page;
-using LiberPrimusAnalysisTool.Entity;
+using LiberPrimusAnalysisTool.Entity.Image;
 using LiberPrimusAnalysisTool.Utility.Message;
 using MediatR;
 

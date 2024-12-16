@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using ImageMagick;
 using LiberPrimusAnalysisTool.Application.Queries;
 using LiberPrimusAnalysisTool.Application.Queries.Page;
-using LiberPrimusAnalysisTool.Entity;
+using LiberPrimusAnalysisTool.Entity.Image;
 using LiberPrimusAnalysisTool.Utility.Message;
 using MediatR;
 

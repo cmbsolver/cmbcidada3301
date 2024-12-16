@@ -6,7 +6,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using LiberPrimusAnalysisTool.Application.Commands.Image;
 using LiberPrimusAnalysisTool.Application.Queries.Page;
-using LiberPrimusAnalysisTool.Entity;
+using LiberPrimusAnalysisTool.Entity.Image;
 using MediatR;
 
 namespace LiberPrimusUi.ViewModels;

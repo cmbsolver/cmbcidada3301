@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using LiberPrimusAnalysisTool.Entity;
+using LiberPrimusAnalysisTool.Entity.Image;
 using MediatR;
 using System.Text;
 using System.Threading;

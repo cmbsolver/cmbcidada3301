@@ -4,7 +4,7 @@ using System.Linq;
 using LiberPrimusAnalysisTool.Application.Commands.Image.ByteProcessing;
 using LiberPrimusAnalysisTool.Application.Commands.Math;
 using LiberPrimusAnalysisTool.Application.Queries;
-using LiberPrimusAnalysisTool.Entity;
+using LiberPrimusAnalysisTool.Entity.Image;
 using MediatR;
 using System.Reflection;
 using System.Threading;

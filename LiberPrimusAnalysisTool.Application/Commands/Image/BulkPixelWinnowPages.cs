@@ -9,6 +9,7 @@ using MediatR;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using LiberPrimusAnalysisTool.Entity.Image;
 
 namespace LiberPrimusAnalysisTool.Application.Commands.Image
 {
@@ -120,9 +121,9 @@ namespace LiberPrimusAnalysisTool.Application.Commands.Image
                     }
 
                     // Getting the pixels from the sequence
-                    Tuple<LiberPage, List<Entity.Pixel>> pixelData;
+                    Tuple<LiberPage, List<Entity.Image.Pixel>> pixelData;
 
-                    List<Entity.Pixel> tmpPixelList = new List<Entity.Pixel>();
+                    List<Entity.Image.Pixel> tmpPixelList = new List<Entity.Image.Pixel>();
                     foreach (var seqNumer in sequence)
                     {
                         try
@@ -142,7 +143,7 @@ namespace LiberPrimusAnalysisTool.Application.Commands.Image
                         }
                     }
 
-                    pixelData = new Tuple<LiberPage, List<Entity.Pixel>>(liberPage, tmpPixelList);
+                    pixelData = new Tuple<LiberPage, List<Entity.Image.Pixel>>(liberPage, tmpPixelList);
 
                     GC.Collect();
 

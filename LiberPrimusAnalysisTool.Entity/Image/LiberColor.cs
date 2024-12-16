@@ -1,4 +1,4 @@
-﻿namespace LiberPrimusAnalysisTool.Entity
+﻿namespace LiberPrimusAnalysisTool.Entity.Image
 {
     /// <summary>
     /// A color used in the liber primus page.

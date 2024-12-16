@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace LiberPrimusAnalysisTool.Entity
+namespace LiberPrimusAnalysisTool.Entity.Image
 {
     /// <summary>
     /// RgbCharacters

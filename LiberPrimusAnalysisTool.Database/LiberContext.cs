@@ -1,4 +1,4 @@
-﻿using LiberPrimusAnalysisTool.Entity;
+﻿using LiberPrimusAnalysisTool.Entity.Image;
 using Microsoft.EntityFrameworkCore;
 
 namespace LiberPrimusAnalysisTool.Database

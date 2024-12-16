@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.IO;
 using System.Linq;
 
-namespace LiberPrimusAnalysisTool.Entity
+namespace LiberPrimusAnalysisTool.Entity.Image
 {
     /// <summary>
     /// The page from the liber primus
@@ -96,6 +96,13 @@ namespace LiberPrimusAnalysisTool.Entity
         /// </value>
         [NotMapped]
         public List<Pixel> Pixels { get; set; }
+        
+        
+        /// <summary>
+        /// Gets or sets a value indicating whether hierarchical encoding is used.
+        /// </summary>
+        [NotMapped]
+        public bool IsHierarchicalEncoding { get; set; }
 
         /// <summary>
         /// Gets or sets the bytes.

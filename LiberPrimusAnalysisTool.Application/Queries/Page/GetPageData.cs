@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using LiberPrimusAnalysisTool.Entity.Image;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 
@@ -99,7 +100,7 @@ namespace LiberPrimusAnalysisTool.Application.Queries
 
                     Rgba32[] pixelArray = new Rgba32[image.Width * image.Height];
                     image.CopyPixelDataTo(pixelArray);
-                    page.Pixels = pixelArray.Select(x => new Entity.Pixel(
+                    page.Pixels = pixelArray.Select(x => new Entity.Image.Pixel(
                         x.R,
                         x.G,
                         x.B,

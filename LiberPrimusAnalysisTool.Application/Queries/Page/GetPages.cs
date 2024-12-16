@@ -1,4 +1,4 @@
-using LiberPrimusAnalysisTool.Entity;
+using LiberPrimusAnalysisTool.Entity.Image;
 using MediatR;
 
 namespace LiberPrimusAnalysisTool.Application.Queries.Page;
