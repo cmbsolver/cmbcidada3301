@@ -96,11 +96,12 @@ namespace LiberPrimusAnalysisTool.Application.Queries
                         Height = image.Height,
                         Width = image.Width,
                         PixelCount = image.Height * image.Width,
+                        PixelBlocks = new List<PixelBlock>()
                     };
 
                     Rgba32[] pixelArray = new Rgba32[image.Width * image.Height];
                     image.CopyPixelDataTo(pixelArray);
-                    page.Pixels = pixelArray.Select(x => new Entity.Image.Pixel(
+                    page.Pixels = pixelArray.Select(x => new Pixel(
                         x.R,
                         x.G,
                         x.B,
@@ -113,6 +114,33 @@ namespace LiberPrimusAnalysisTool.Application.Queries
                     }
 
                     page.TotalColors = page.Pixels.Select(x => x.Hex).Distinct().Count();
+
+                    // // Create 8x8 blocks
+                    // int blockSize = 8;
+                    // for (int y = 0; y < image.Height; y += blockSize)
+                    // {
+                    //     for (int x = 0; x < image.Width; x += blockSize)
+                    //     {
+                    //         PixelBlock block = new PixelBlock
+                    //         {
+                    //             Width = System.Math.Min(blockSize, image.Width - x),
+                    //             Height = System.Math.Min(blockSize, image.Height - y)
+                    //         };
+                    //
+                    //         for (int by = 0; by < block.Height; by++)
+                    //         {
+                    //             for (int bx = 0; bx < block.Width; bx++)
+                    //             {
+                    //                 int pixelIndex = (y + by) * image.Width + (x + bx);
+                    //                 Pixel pixel = page.Pixels[pixelIndex];
+                    //                 pixel.SetBlockPosition(bx, by);
+                    //                 block.Pixels.Add(pixel);
+                    //             }
+                    //         }
+                    //
+                    //         page.PixelBlocks.Add(block);
+                    //     }
+                    // }
 
                     image.Dispose();
                 }

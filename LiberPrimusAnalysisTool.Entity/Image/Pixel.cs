@@ -28,6 +28,16 @@
             Hex = hex;
             PageName = pageName;
         }
+        
+        /// <summary>
+        /// X position within the pixel block
+        /// </summary>
+        public long BlockPositionX { get; set; }
+        
+        /// <summary>
+        /// Y position within the pixel block
+        /// </summary>
+        public long BlockPositionY { get; set; }
 
         /// <summary>
         /// Gets or sets the position.
@@ -76,5 +86,16 @@
         /// The page identifier.
         /// </value>
         public string PageName { get; set; }
+        
+        /// <summary>
+        /// This set the position in the block.
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        public void SetBlockPosition(long x, long y)
+        {
+            BlockPositionX = x;
+            BlockPositionY = y;
+        }
     }
 }

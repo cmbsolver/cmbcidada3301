@@ -97,6 +97,10 @@ namespace LiberPrimusAnalysisTool.Entity.Image
         [NotMapped]
         public List<Pixel> Pixels { get; set; }
         
+        /// <summary>
+        /// This is the pixel blocks.
+        /// </summary>
+        public List<PixelBlock> PixelBlocks { get; set; }
         
         /// <summary>
         /// Gets or sets a value indicating whether hierarchical encoding is used.
