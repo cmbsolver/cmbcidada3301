@@ -41,7 +41,6 @@ public partial class MainWindowViewModel : ViewModelBase
         //new ListItemTemplate(typeof(CalculateSectionSumsViewModel), "Wrench", "Calculate Section Sums"),
         new ListItemTemplate(typeof(TextSequenceReducerViewModel), "Wrench", "Text Sequence Reducer"),
         new ListItemTemplate(typeof(HexDecodeRunesViewModel), "Wrench", "Hex Decode Runes"),
-        //new ListItemTemplate(typeof(SubstituteUltimaViewModel), "Wrench", "Substitute Ultima"),
         new ListItemTemplate(typeof(IdentifyBinFileViewModel), "Wrench", "Identify Bin File"),
         new ListItemTemplate(typeof(BinaryInvertViewModel), "Wrench", "Invert Binary Values"),
         new ListItemTemplate(typeof(RuneDecimalLsbViewModel), "Wrench", "Rune Decimal LSB"),
@@ -58,6 +57,7 @@ public partial class MainWindowViewModel : ViewModelBase
         //new ListItemTemplate(typeof(AdvancedBase60CipherViewModel), "Lock", "Base 60"),
         //new ListItemTemplate(typeof(AdvancedHillCipherViewModel), "Lock", "Shitty Hill"),
         new ListItemTemplate(typeof(SpiralSquareSolveViewModel), "Lock", "Spiral"),
+        new ListItemTemplate(typeof(SubstituteUltimaViewModel), "Lock", "Rune Substitute Ultima"),
         
         // Image analysis
         new ListItemTemplate(typeof(ColorReportViewModel), "ImageIcon", "Color Report"),
