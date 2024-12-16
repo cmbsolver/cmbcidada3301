@@ -27,15 +27,18 @@ public partial class MainWindowViewModel : ViewModelBase
     
     private readonly List<ListItemTemplate> _templates =
     [
+        // Main
         new ListItemTemplate(typeof(HomePageViewModel), "HomeRegular", "Home"),
         new ListItemTemplate(typeof(PrimeCheckerViewModel), "Calculator", "Prime Checker"),
         new ListItemTemplate(typeof(GenerateSequenceViewModel), "NumberList", "Generate Sequence"),
+        
+        // Utilities
         new ListItemTemplate(typeof(TransposeCharsViewModel), "Wrench", "Latin and Rune Transposer"),
         new ListItemTemplate(typeof(SumGemSentencesViewModel), "Wrench", "Gem Sum Utility"),
         new ListItemTemplate(typeof(GetWordsForValueViewModel), "Wrench", "Get Words for Value"),
         new ListItemTemplate(typeof(Base64DecodeViewModel), "Wrench", "Base64 Decode"),
         new ListItemTemplate(typeof(BinaryDecodeViewModel), "Wrench", "Binary Decode"),
-        new ListItemTemplate(typeof(CalculateSectionSumsViewModel), "Wrench", "Calculate Section Sums"),
+        //new ListItemTemplate(typeof(CalculateSectionSumsViewModel), "Wrench", "Calculate Section Sums"),
         new ListItemTemplate(typeof(TextSequenceReducerViewModel), "Wrench", "Text Sequence Reducer"),
         new ListItemTemplate(typeof(HexDecodeRunesViewModel), "Wrench", "Hex Decode Runes"),
         //new ListItemTemplate(typeof(SubstituteUltimaViewModel), "Wrench", "Substitute Ultima"),
@@ -45,15 +48,24 @@ public partial class MainWindowViewModel : ViewModelBase
         new ListItemTemplate(typeof(SkipAndTakeViewModel), "Wrench", "Skip and Take"),
         new ListItemTemplate(typeof(DictionaryCheckTextFilesViewModel), "Wrench", "Dictionary Check Text Files"),
         new ListItemTemplate(typeof(CalculateClockAngleViewModel), "Wrench", "Clock Angle Calculator"),
-        new ListItemTemplate(typeof(ColorReportViewModel), "ImageIcon", "Color Report"),
-        new ListItemTemplate(typeof(InvertColorsViewModel), "ImageIcon", "Invert Colors"),
-        new ListItemTemplate(typeof(BulkByteWinnowPagesViewModel), "ImageIcon", "Byte Winnow Pages"),
-        new ListItemTemplate(typeof(BulkPixelWinnowPagesViewModel), "ImageIcon", "Pixel Winnow Pages"),
+        
+        // Text analysis
+        new ListItemTemplate(typeof(LetterFrequencyAnalysisViewModel), "Analysis", "Letter Frequency Analysis"),
+        
+        // Ciphers
         new ListItemTemplate(typeof(DeScytaleViewModel), "Lock", "Scytale"),
         new ListItemTemplate(typeof(AdvancedCaesarCipherViewModel), "Lock", "Caesar"),
         //new ListItemTemplate(typeof(AdvancedBase60CipherViewModel), "Lock", "Base 60"),
         //new ListItemTemplate(typeof(AdvancedHillCipherViewModel), "Lock", "Shitty Hill"),
         new ListItemTemplate(typeof(SpiralSquareSolveViewModel), "Lock", "Spiral"),
+        
+        // Image analysis
+        new ListItemTemplate(typeof(ColorReportViewModel), "ImageIcon", "Color Report"),
+        new ListItemTemplate(typeof(InvertColorsViewModel), "ImageIcon", "Invert Colors"),
+        new ListItemTemplate(typeof(BulkByteWinnowPagesViewModel), "ImageIcon", "Byte Winnow Pages"),
+        new ListItemTemplate(typeof(BulkPixelWinnowPagesViewModel), "ImageIcon", "Pixel Winnow Pages"),
+        
+        // Credits
         new ListItemTemplate(typeof(CreditsViewModel), "ListIcon", "Credits"),
     ];
 
@@ -244,6 +256,12 @@ public partial class MainWindowViewModel : ViewModelBase
                 if (!_windows.Any(w => w.Item1 == value.Label))
                     _windows.Add(new Tuple<string, object>(value.Label, new SumGemSentencesViewModel(_mediator)));
                 CurrentPage = _windows.FirstOrDefault(w => w.Item1 == value.Label)?.Item2 as SumGemSentencesViewModel;
+                break;
+            
+            case Type t when t == typeof(LetterFrequencyAnalysisViewModel):
+                if (!_windows.Any(w => w.Item1 == value.Label))
+                    _windows.Add(new Tuple<string, object>(value.Label, new LetterFrequencyAnalysisViewModel(_mediator)));
+                CurrentPage = _windows.FirstOrDefault(w => w.Item1 == value.Label)?.Item2 as LetterFrequencyAnalysisViewModel;
                 break;
         }
         
