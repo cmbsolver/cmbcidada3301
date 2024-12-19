@@ -71,10 +71,7 @@ public class IndexCharactersFromDirectory
 
             await Parallel.ForEachAsync(directoryInfo.GetFiles(), options, async (file, cancellationToken) =>
             {
-                if (file.FullName.ToLower().EndsWith(".txt"))
-                {
-                    await ReadAndIndexFileContents(file.FullName, excludedCharacters);
-                }
+                await ReadAndIndexFileContents(file.FullName, excludedCharacters);
             });
         }
 
