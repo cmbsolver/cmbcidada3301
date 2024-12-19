@@ -71,7 +71,15 @@ public class IndexCharactersFromDirectory
 
             await Parallel.ForEachAsync(directoryInfo.GetFiles(), options, async (file, cancellationToken) =>
             {
-                await ReadAndIndexFileContents(file.FullName, excludedCharacters);
+                if (file.Extension.ToLower() != ".png" && 
+                    file.Extension.ToLower() != ".jpg" && 
+                    file.Extension.ToLower() != ".jpeg" && 
+                    file.Extension.ToLower() != ".gif" && 
+                    file.Extension.ToLower() != ".bmp" && 
+                    file.Extension.ToLower() != ".tiff")
+                {
+                    await ReadAndIndexFileContents(file.FullName, excludedCharacters);
+                }
             });
         }
 
