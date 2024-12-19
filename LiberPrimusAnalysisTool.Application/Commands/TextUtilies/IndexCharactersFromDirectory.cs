@@ -161,7 +161,6 @@ public class IndexCharactersFromDirectory
                             Console.WriteLine($"Character: {textDocumentCharacter.Character}");
                             Console.WriteLine(e.ToString());
                         }
-
                     }
 
                     List<LiberTextDocumentCharacter> liberTextDocumentCharacters =

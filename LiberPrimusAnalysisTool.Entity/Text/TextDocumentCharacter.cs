@@ -6,6 +6,7 @@ namespace LiberPrimusAnalysisTool.Entity.Text;
 public class TextDocumentCharacter
 {
     [Key]
+    [Column("ID")]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public long Id { get; set; }
     
