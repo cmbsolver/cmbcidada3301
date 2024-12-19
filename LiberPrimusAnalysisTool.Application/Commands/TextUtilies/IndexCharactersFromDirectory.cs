@@ -153,6 +153,10 @@ public class IndexCharactersFromDirectory
                             if (item == null)
                             {
                                 await context.AddAsync(textDocumentCharacter);
+                            }
+                            else
+                            {
+                                item.Count = textDocumentCharacter.Count;
                                 await context.SaveChangesAsync();
                             }
                         }
@@ -162,6 +166,8 @@ public class IndexCharactersFromDirectory
                             Console.WriteLine(e.ToString());
                         }
                     }
+
+                    await context.SaveChangesAsync();
 
                     List<LiberTextDocumentCharacter> liberTextDocumentCharacters =
                         new List<LiberTextDocumentCharacter>();
@@ -205,6 +211,10 @@ public class IndexCharactersFromDirectory
                             if (item == null)
                             {
                                 await context.AddAsync(liberTextDocumentCharacter);
+                            }
+                            else
+                            {
+                                item.Count = liberTextDocumentCharacter.Count;
                                 await context.SaveChangesAsync();
                             }
                         }
@@ -214,6 +224,8 @@ public class IndexCharactersFromDirectory
                             Console.WriteLine(e.ToString());
                         }
                     }
+
+                    await context.SaveChangesAsync();
                 }
                 catch (Exception ex)
                 {
