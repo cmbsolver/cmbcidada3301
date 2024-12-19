@@ -1,0 +1,10 @@
+# docker-compose.yml
+services:
+  db:
+    container_name: docker.io/dockerdb
+    image: postgres:latest
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: lppasswd
+    ports:
+      - 5432:5432

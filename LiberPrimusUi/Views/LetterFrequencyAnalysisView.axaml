@@ -8,20 +8,23 @@
              x:DataType="vm:LetterFrequencyAnalysisViewModel">
     <StackPanel Margin="20" Spacing="10">
         <StackPanel Orientation="Horizontal" Spacing="5">
+            <TextBlock VerticalAlignment="Center">Characters To Exclude</TextBlock>
+            <TextBox Text="{Binding CharactersToExclude}" MaxWidth="800"></TextBox>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" Spacing="5">
+            <Button Click="Button_OnClick">(Re)Index Reference Documents</Button>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" Spacing="5">
             <TextBlock VerticalAlignment="Center">Pages</TextBlock>
             <ComboBox ItemsSource="{Binding LiberPages}" 
                       SelectedItem="{Binding SelectedLiberPage}"></ComboBox>
+            <Button Command="{Binding ProcessFileCommand}" >Process File</Button>
         </StackPanel>
         <StackPanel Orientation="Horizontal" Spacing="5">
             <TextBlock VerticalAlignment="Center">Text To Send</TextBlock>
             <TextBox Text="{Binding TextToSend}" MaxWidth="800"></TextBox>
         </StackPanel>
         <StackPanel Orientation="Horizontal" Spacing="5">
-            <TextBlock VerticalAlignment="Center">Characters To Exclude</TextBlock>
-            <TextBox Text="{Binding CharactersToExclude}" MaxWidth="800"></TextBox>
-        </StackPanel>
-        <StackPanel Orientation="Horizontal" Spacing="5">
-            <Button Command="{Binding ProcessFileCommand}" >Process File</Button>
             <Button Command="{Binding ProcessFileCommand}" >Process Text</Button>
             <Button Command="{Binding ClearMessagesCommand}">Clear Output</Button>
         </StackPanel>

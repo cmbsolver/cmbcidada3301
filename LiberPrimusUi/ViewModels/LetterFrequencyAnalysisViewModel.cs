@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Text;
+using System.Threading.Tasks;
+using Avalonia.Controls;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using LiberPrimusAnalysisTool.Application.Commands.InputProcessing.SkipAndTake;
+using LiberPrimusAnalysisTool.Application.Commands.TextUtilies;
 using LiberPrimusAnalysisTool.Application.Queries.Analysis;
 using LiberPrimusAnalysisTool.Application.Queries.Page;
 using MediatR;
@@ -104,5 +106,12 @@ public partial class LetterFrequencyAnalysisViewModel : ViewModelBase
     public void ClearMessages()
     {
         Result = string.Empty;
+    }
+    
+    public async Task IndexDocuments(string folder)
+    {
+        Result = "Indexing documents... this is going to take a while depending on the size of the folder.";
+        await _mediator.Publish(new IndexCharactersFromDirectory.Command(folder, CharactersToExclude));
+        Result = "Indexing complete.";
     }
 }

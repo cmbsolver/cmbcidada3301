@@ -1,10 +1,4 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.IO;
-using System.Linq;
-
-namespace LiberPrimusAnalysisTool.Entity.Image
+﻿namespace LiberPrimusAnalysisTool.Entity.Image
 {
     /// <summary>
     /// The page from the liber primus
@@ -25,7 +19,6 @@ namespace LiberPrimusAnalysisTool.Entity.Image
         /// <value>
         /// The identifier.
         /// </value>
-        [Key]
         public int Id { get; set; }
 
         /// <summary>
@@ -34,8 +27,6 @@ namespace LiberPrimusAnalysisTool.Entity.Image
         /// <value>
         /// The name of the file.
         /// </value>
-        [Required]
-        [Column("FILE_NAME")]
         public string FileName { get; set; }
 
         /// <summary>
@@ -44,8 +35,6 @@ namespace LiberPrimusAnalysisTool.Entity.Image
         /// <value>
         /// The name of the page.
         /// </value>
-        [Required]
-        [Column("PAGE_NAME")]
         public string PageName { get; set; }
 
         /// <summary>
@@ -54,8 +43,6 @@ namespace LiberPrimusAnalysisTool.Entity.Image
         /// <value>
         /// The total colors.
         /// </value>
-        [Required]
-        [Column("TOTAL_COLORS")]
         public int TotalColors { get; set; }
 
         /// <summary>
@@ -64,8 +51,6 @@ namespace LiberPrimusAnalysisTool.Entity.Image
         /// <value>
         /// The height.
         /// </value>
-        [Required]
-        [Column("HEIGHT")]
         public int Height { get; set; }
 
         /// <summary>
@@ -74,8 +59,6 @@ namespace LiberPrimusAnalysisTool.Entity.Image
         /// <value>
         /// The width.
         /// </value>
-        [Required]
-        [Column("WIDTH")]
         public int Width { get; set; }
 
         /// <summary>
@@ -84,8 +67,6 @@ namespace LiberPrimusAnalysisTool.Entity.Image
         /// <value>
         /// The pixel count.
         /// </value>
-        [Required]
-        [Column("PIXEL_COUNT")]
         public int PixelCount { get; set; }
 
         /// <summary>
@@ -94,7 +75,6 @@ namespace LiberPrimusAnalysisTool.Entity.Image
         /// <value>
         /// The pixels.
         /// </value>
-        [NotMapped]
         public List<Pixel> Pixels { get; set; }
         
         /// <summary>
@@ -102,12 +82,6 @@ namespace LiberPrimusAnalysisTool.Entity.Image
         /// </summary>
         public List<PixelBlock> PixelBlocks { get; set; }
         
-        /// <summary>
-        /// Gets or sets a value indicating whether hierarchical encoding is used.
-        /// </summary>
-        [NotMapped]
-        public bool IsHierarchicalEncoding { get; set; }
-
         /// <summary>
         /// Gets or sets the bytes.
         /// </summary>

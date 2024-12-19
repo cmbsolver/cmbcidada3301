@@ -1,4 +1,4 @@
-﻿using LiberPrimusAnalysisTool.Entity.Image;
+﻿using LiberPrimusAnalysisTool.Entity.Text;
 using Microsoft.EntityFrameworkCore;
 
 namespace LiberPrimusAnalysisTool.Database
@@ -9,13 +9,19 @@ namespace LiberPrimusAnalysisTool.Database
     /// <seealso cref="Microsoft.EntityFrameworkCore.DbContext" />
     public class LiberContext : DbContext
     {
-        /// <summary>
-        /// Gets or sets the liber pages.
-        /// </summary>
-        /// <value>
-        /// The liber pages.
-        /// </value>
-        public DbSet<LiberPage> LiberPages { get; set; }
+        private readonly string _connectionString = "<connection string>";
+        
+        public LiberContext()
+        {
+            FileInfo fileInfo = new(Environment.ProcessPath);
+            _connectionString = File.ReadAllText($"{fileInfo.Directory}/connstring.txt");
+        }
+        
+        public DbSet<TextDocument> TextDocuments { get; set; }
+        
+        public DbSet<TextDocumentCharacter> TextDocumentCharacters { get; set; }
+        
+        public DbSet<LiberTextDocumentCharacter> LiberTextDocumentCharacters { get; set; }
 
         /// <summary>
         /// Override this method to configure the database (and other options) to be used for this context.
@@ -37,7 +43,7 @@ namespace LiberPrimusAnalysisTool.Database
         /// </para>
         /// </remarks>
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-            => optionsBuilder.UseSqlite("Data Source=liberdatabase.db");
+            => optionsBuilder.UseNpgsql(_connectionString);
 
         /// <summary>
         /// Override this method to further configure the model that was discovered by convention from the entity types
@@ -59,9 +65,20 @@ namespace LiberPrimusAnalysisTool.Database
         /// </remarks>
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<LiberPage>()
-                .ToTable("TB_LIBER_PAGE")
-                .HasKey(i => i.Id);
+            modelBuilder.Entity<TextDocument>()
+                .ToTable("TB_FILE")
+                .Property(b => b.Id)
+                .UseIdentityAlwaysColumn();
+            
+            modelBuilder.Entity<TextDocumentCharacter>()
+                .ToTable("TB_FILE_CHARACTER_COUNT")
+                .Property(b => b.Id)
+                .UseIdentityAlwaysColumn();
+            
+            modelBuilder.Entity<LiberTextDocumentCharacter>()
+                .ToTable("TB_LIBER_FILE_CHARACTER_COUNT")
+                .Property(b => b.Id)
+                .UseIdentityAlwaysColumn();
         }
     }
 }

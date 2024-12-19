@@ -12,6 +12,7 @@
         <MagickCopyNativeMacOS>true</MagickCopyNativeMacOS>
         <Platforms>AnyCPU;x64</Platforms>
         <ErrorOnDuplicatePublishOutputFiles>false</ErrorOnDuplicatePublishOutputFiles>
+        <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     </PropertyGroup>
 
     <ItemGroup>
@@ -37,8 +38,7 @@
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
         <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="9.0.0" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="9.0.0" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite.Core" Version="9.0.0" />
+        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.2" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.0">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -616,6 +616,18 @@
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </None>
       <None Update="input\text\LP-Combined-Sections\57-parable.txt">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+      <None Update="create_podman_db.sh">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+      <None Update="create_podman.ps1">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+      <None Update="docker-compose.yml">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+      <None Update="connstring.txt">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </None>
     </ItemGroup>
