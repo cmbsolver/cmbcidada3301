@@ -43,9 +43,6 @@ public class IndexCharactersFromDirectory
 
             await using (var context = new LiberContext())
             {
-                // Make sure the database is deleted
-                await context.Database.EnsureDeletedAsync();
-
                 // Make sure the database is created
                 await context.Database.EnsureCreatedAsync();
             }
@@ -76,7 +73,16 @@ public class IndexCharactersFromDirectory
                     file.Extension.ToLower() != ".jpeg" && 
                     file.Extension.ToLower() != ".gif" && 
                     file.Extension.ToLower() != ".bmp" && 
-                    file.Extension.ToLower() != ".tiff")
+                    file.Extension.ToLower() != ".tiff" &&
+                    file.Extension.ToLower() != ".webp" &&
+                    file.Extension.ToLower() != ".svg" &&
+                    file.Extension.ToLower() != ".pdf" &&
+                    file.Extension.ToLower() != ".zip" &&
+                    file.Extension.ToLower() != ".rar" &&
+                    file.Extension.ToLower() != ".7z" &&
+                    file.Extension.ToLower() != ".tar" &&
+                    file.Extension.ToLower() != ".gz" &&
+                    file.Extension.ToLower() != ".bz2")
                 {
                     await ReadAndIndexFileContents(file.FullName, excludedCharacters);
                 }
