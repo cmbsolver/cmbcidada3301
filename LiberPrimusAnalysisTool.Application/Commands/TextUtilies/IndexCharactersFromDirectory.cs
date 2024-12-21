@@ -43,6 +43,9 @@ public class IndexCharactersFromDirectory
 
             await using (var context = new LiberContext())
             {
+                // Make sure the database is deleted
+                await context.Database.EnsureDeletedAsync();
+                
                 // Make sure the database is created
                 await context.Database.EnsureCreatedAsync();
             }
@@ -100,12 +103,15 @@ public class IndexCharactersFromDirectory
                     // Reading in the file contents
                     var lines = await File.ReadAllLinesAsync(file);
                     List<string> liberLines = new();
+                    List<string> runeLines = new();
 
                     // Prepping text for liber conversion - will need this to perform liber analysis.
                     foreach (var line in lines)
                     {
                         var liberLine = await _mediator.Send(new PrepLatinToRune.Command(line));
+                        var runeLine = await _mediator.Send(new TransposeLatinToRune.Command(liberLine));
                         liberLines.Add(liberLine);
+                        runeLines.Add(runeLine);
                     }
 
                     TextDocument? textDocument = context.TextDocuments.FirstOrDefault(x => x.FileName == fileInfo.Name);
@@ -235,6 +241,64 @@ public class IndexCharactersFromDirectory
                         catch (Exception e)
                         {
                             Console.WriteLine($"Character: {liberTextDocumentCharacter.Character}");
+                            Console.WriteLine(e.ToString());
+                        }
+                    }
+
+                    await context.SaveChangesAsync();
+                    
+                    List<RuneTextDocumentCharacter> runeTextDocumentCharacters =
+                        new List<RuneTextDocumentCharacter>();
+                    foreach (var line in runeLines)
+                    {
+                        foreach (var xcharacter in line)
+                        {
+                            var character = xcharacter.ToString().ToUpper();
+                            if (excludedCharacters.Contains(character))
+                            {
+                                continue;
+                            }
+
+                            if (runeTextDocumentCharacters.Any(x => x.Character == character))
+                            {
+                                var runeTextDocumentCharacter =
+                                    runeTextDocumentCharacters.First(x => x.Character == character);
+                                runeTextDocumentCharacter.Count++;
+                            }
+                            else
+                            {
+                                var runeTextDocumentCharacter = new RuneTextDocumentCharacter
+                                {
+                                    Character = character,
+                                    Count = 1,
+                                    TextDocumentId = textDocument.Id
+                                };
+                                runeTextDocumentCharacters.Add(runeTextDocumentCharacter);
+                            }
+                        }
+                    }
+
+                    foreach (var runeTextDocumentCharacter in runeTextDocumentCharacters)
+                    {
+                        try
+                        {
+                            var item = await context.LiberTextDocumentCharacters.FirstOrDefaultAsync(x =>
+                                x.Character == runeTextDocumentCharacter.Character &&
+                                x.TextDocumentId == runeTextDocumentCharacter.TextDocumentId);
+
+                            if (item == null)
+                            {
+                                await context.AddAsync(runeTextDocumentCharacter);
+                            }
+                            else
+                            {
+                                item.Count = runeTextDocumentCharacter.Count;
+                                await context.SaveChangesAsync();
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            Console.WriteLine($"Character: {runeTextDocumentCharacter.Character}");
                             Console.WriteLine(e.ToString());
                         }
                     }

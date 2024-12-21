@@ -22,6 +22,8 @@ namespace LiberPrimusAnalysisTool.Database
         public DbSet<TextDocumentCharacter> TextDocumentCharacters { get; set; }
         
         public DbSet<LiberTextDocumentCharacter> LiberTextDocumentCharacters { get; set; }
+        
+        public DbSet<RuneTextDocumentCharacter> RuneTextDocumentCharacters { get; set; }
 
         /// <summary>
         /// Override this method to configure the database (and other options) to be used for this context.
@@ -77,6 +79,11 @@ namespace LiberPrimusAnalysisTool.Database
             
             modelBuilder.Entity<LiberTextDocumentCharacter>()
                 .ToTable("TB_LIBER_FILE_CHARACTER_COUNT")
+                .Property(b => b.Id)
+                .UseIdentityAlwaysColumn();
+            
+            modelBuilder.Entity<RuneTextDocumentCharacter>()
+                .ToTable("TB_RUNE_FILE_CHARACTER_COUNT")
                 .Property(b => b.Id)
                 .UseIdentityAlwaysColumn();
         }

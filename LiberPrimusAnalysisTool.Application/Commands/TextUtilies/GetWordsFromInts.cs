@@ -63,7 +63,8 @@ namespace LiberPrimusAnalysisTool.Application.Commands.TextUtilies
                     string line;
                     while ((line = file.ReadLine()) != null)
                     {
-                        var runes = await _mediator.Send(new TransposeLatinToRune.Command(line));
+                        var text = await _mediator.Send(new PrepLatinToRune.Command(line));
+                        var runes = await _mediator.Send(new TransposeLatinToRune.Command(text));
                         var value = await _mediator.Send(new CalculateGematriaSum.Command(runes));
                         
                         dictValues.Add(new Tuple<string, string, long>(line, runes, long.Parse(value)));

@@ -32,7 +32,8 @@ public partial class TransposeCharsViewModel: ViewModelBase
         }
         else
         {
-            Response = await _mediator.Send(new TransposeLatinToRune.Command(TextToTranspose));
+            var text = await _mediator.Send(new PrepLatinToRune.Command(TextToTranspose));
+            Response = await _mediator.Send(new TransposeLatinToRune.Command(text));
             GemSum = await _mediator.Send(new CalculateGematriaSum.Command(Response));
         }
     }
