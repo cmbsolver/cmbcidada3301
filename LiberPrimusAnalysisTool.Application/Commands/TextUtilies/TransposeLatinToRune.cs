@@ -30,70 +30,99 @@ public class TransposeLatinToRune
             
             request.Text = request.Text.ToUpper();
             
-            while (request.Text.Contains("QU"))
+            for (int i = 0; i < request.Text.Length; i++)
             {
-                request.Text = request.Text.Replace(
-                    "QU", 
-                    "CW");
-            }
-            
-            while (request.Text.Contains("Z"))
-            {
-                request.Text = request.Text.Replace(
-                    "Z", 
-                    "S");
-            }
-            
-            while (request.Text.Contains("K"))
-            {
-                request.Text = request.Text.Replace(
-                    "K", 
-                    "C");
-            }
-            
-            while (request.Text.Contains("Q"))
-            {
-                request.Text = request.Text.Replace(
-                    "Q", 
-                    "C");
-            }
-            
-            while (request.Text.Contains("V"))
-            {
-                request.Text = request.Text.Replace(
-                    "V", 
-                    "U");
-            }
-
-            string[] multiStringArray = new string[7] { "ING", "OE", "EO", "IO", "EA", "AE", "TH" };
-
-            foreach (var multiString in multiStringArray)
-            {
-                while (request.Text.Contains(multiString))
+                var xchar = request.Text[i];
+                if (!_characterRepo.IsRune(xchar.ToString()))
                 {
-                    request.Text = request.Text.Replace(
-                        multiString, 
-                        _characterRepo.GetRuneFromChar(multiString.ToString().ToUpper()));
-                }
-            }
-            
-            foreach (var latin in request.Text)
-            {
-                if (_characterRepo.IsRune(latin.ToString()))
-                {
-                    sb.Append(latin);
+                    switch (xchar)
+                    {
+                        case 'A':
+                            if (((i + 1) < (request.Text.Length)) && request.Text[i + 1] == 'E')
+                            {
+                                sb.Append(_characterRepo.GetRuneFromChar("AE"));
+                                i++;
+                            }
+                            else
+                            {
+                                sb.Append(_characterRepo.GetRuneFromChar("A"));
+                            }
+
+                            break;
+                        case 'E':
+                            if (((i + 1) < (request.Text.Length)) && request.Text[i + 1] == 'A')
+                            {
+                                sb.Append(_characterRepo.GetRuneFromChar("EA"));
+                                i++;
+                            }
+                            else if(((i + 1) < (request.Text.Length)) && request.Text[i + 1] == 'O')
+                            {
+                                sb.Append(_characterRepo.GetRuneFromChar("EO"));
+                                i++;
+                            }
+                            else
+                            {
+                                sb.Append(_characterRepo.GetRuneFromChar("E"));
+                            }
+
+                            break;
+                        
+                        case 'O':
+                            if (((i + 1) < (request.Text.Length)) && request.Text[i + 1] == 'E')
+                            {
+                                sb.Append(_characterRepo.GetRuneFromChar("OE"));
+                                i++;
+                            }
+                            else
+                            {
+                                sb.Append(_characterRepo.GetRuneFromChar("O"));
+                            }
+
+                            break;
+                        
+                        case 'T':
+                            if (((i + 1) < (request.Text.Length)) && request.Text[i + 1] == 'H')
+                            {
+                                sb.Append(_characterRepo.GetRuneFromChar("TH"));
+                                i++;
+                            }
+                            else
+                            {
+                                sb.Append(_characterRepo.GetRuneFromChar("T"));
+                            }
+
+                            break;
+                        
+                        case 'I':
+                            if (((i + 1) < (request.Text.Length)) && request.Text[i + 1] == 'O')
+                            {
+                                sb.Append(_characterRepo.GetRuneFromChar("IO"));
+                                i++;
+                            }
+                            else if(((i + 2) < (request.Text.Length)) && request.Text[i + 1] == 'N' && request.Text[i + 2] == 'G')
+                            {
+                                sb.Append(_characterRepo.GetRuneFromChar("ING"));
+                                i += 2;
+                            }
+                            else if(((i + 2) < (request.Text.Length)) && request.Text[i + 1] == 'E')
+                            {
+                                sb.Append(_characterRepo.GetRuneFromChar("EO"));
+                                i++;
+                            }
+                            else
+                            {
+                                sb.Append(_characterRepo.GetRuneFromChar("I"));
+                            }
+                            
+                            break;
+                        default:
+                            sb.Append(_characterRepo.GetRuneFromChar(xchar.ToString()));
+                            break;
+                    }
                 }
                 else
                 {
-                    var character = _characterRepo.GetRuneFromChar(latin.ToString().ToUpper());
-                    if (character != null && character.Length > 0)
-                    {
-                        sb.Append(character);
-                    }
-                    else
-                    {
-                        sb.Append(latin);
-                    }
+                    sb.Append(_characterRepo.GetRuneFromChar(xchar.ToString()));
                 }
             }
             
