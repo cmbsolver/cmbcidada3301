@@ -50,6 +50,8 @@ public partial class MainWindowViewModel : ViewModelBase
         
         // Text analysis
         new ListItemTemplate(typeof(LetterFrequencyAnalysisViewModel), "Analysis", "Letter Frequency Analysis"),
+        new ListItemTemplate(typeof(GetLetterForFrequencyFromLibViewModel), "Analysis", "Letter DB Frequency Analysis"),
+        new ListItemTemplate(typeof(GetFrequencyAnalysisForLiberTextViewModel), "Analysis", "Letter Sub DB Analysis"),
         
         // Ciphers
         new ListItemTemplate(typeof(DeScytaleViewModel), "Lock", "Scytale"),
@@ -262,6 +264,18 @@ public partial class MainWindowViewModel : ViewModelBase
                 if (!_windows.Any(w => w.Item1 == value.Label))
                     _windows.Add(new Tuple<string, object>(value.Label, new LetterFrequencyAnalysisViewModel(_mediator)));
                 CurrentPage = _windows.FirstOrDefault(w => w.Item1 == value.Label)?.Item2 as LetterFrequencyAnalysisViewModel;
+                break;
+            
+            case Type t when t == typeof(GetLetterForFrequencyFromLibViewModel):
+                if (!_windows.Any(w => w.Item1 == value.Label))
+                    _windows.Add(new Tuple<string, object>(value.Label, new GetLetterForFrequencyFromLibViewModel(_mediator)));
+                CurrentPage = _windows.FirstOrDefault(w => w.Item1 == value.Label)?.Item2 as GetLetterForFrequencyFromLibViewModel;
+                break;
+            
+            case Type t when t == typeof(GetFrequencyAnalysisForLiberTextViewModel):
+                if (!_windows.Any(w => w.Item1 == value.Label))
+                    _windows.Add(new Tuple<string, object>(value.Label, new GetFrequencyAnalysisForLiberTextViewModel(_mediator)));
+                CurrentPage = _windows.FirstOrDefault(w => w.Item1 == value.Label)?.Item2 as GetFrequencyAnalysisForLiberTextViewModel;
                 break;
         }
         

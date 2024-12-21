@@ -630,6 +630,39 @@
       <None Update="connstring.txt">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </None>
+      <None Update="input\text\LP-Combined-Sections-IRL\0-2-sign-post-cross.txt">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+      <None Update="input\text\LP-Combined-Sections-IRL\3-7-spirals.txt">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+      <None Update="input\text\LP-Combined-Sections-IRL\8-14-branches.txt">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+      <None Update="input\text\LP-Combined-Sections-IRL\15-22-mobius.txt">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+      <None Update="input\text\LP-Combined-Sections-IRL\23-26-mayfly.txt">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+      <None Update="input\text\LP-Combined-Sections-IRL\27-32-wing-tree.txt">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+      <None Update="input\text\LP-Combined-Sections-IRL\33-39-cuneiform.txt">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+      <None Update="input\text\LP-Combined-Sections-IRL\40-55-spiral-branches.txt">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+      <None Update="input\text\LP-Combined-Sections-IRL\54-55-jpg.txt">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+      <None Update="input\text\LP-Combined-Sections-IRL\56-an-end.txt">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+      <None Update="input\text\LP-Combined-Sections-IRL\57-parable.txt">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
     </ItemGroup>
 
     <ItemGroup>
@@ -655,6 +688,14 @@
       </Compile>
       <Compile Update="Views\LetterFrequencyAnalysisView.axaml.cs">
         <DependentUpon>LetterFrequencyAnalysisView.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
+      <Compile Update="Views\GetLetterForFrequencyFromLibView.axaml.cs">
+        <DependentUpon>GetLetterForFrequencyFromLibView.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
+      <Compile Update="Views\GetFrequencyAnalysisForLiberTextView.axaml.cs">
+        <DependentUpon>GetFrequencyAnalysisForLiberTextView.axaml</DependentUpon>
         <SubType>Code</SubType>
       </Compile>
     </ItemGroup>

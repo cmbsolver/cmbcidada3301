@@ -24,6 +24,21 @@ public class LetterFrequency
         }
     }
     
+    public void AddLetter(string letter, long count)
+    {
+        if (LetterFrequencyDetails.Any(x => x.Letter == letter))
+        {
+            var letterFrequencyDetail = LetterFrequencyDetails.First(x => x.Letter == letter);
+            letterFrequencyDetail.AddOccurrences(count);
+        }
+        else
+        {
+            var letterFrequencyDetail = new LetterFrequencyDetail(letter);
+            letterFrequencyDetail.AddOccurrences(count);
+            LetterFrequencyDetails.Add(letterFrequencyDetail);
+        }
+    }
+    
     public void UpdateLetterFrequencyDetails()
     {
         for (var i = 0; i < LetterFrequencyDetails.Count; i++)
