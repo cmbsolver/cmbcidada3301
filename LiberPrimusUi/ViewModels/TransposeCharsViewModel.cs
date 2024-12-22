@@ -1,3 +1,4 @@
+using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using LiberPrimusAnalysisTool.Application.Commands.TextUtilies;
@@ -12,6 +13,10 @@ public partial class TransposeCharsViewModel: ViewModelBase
     public TransposeCharsViewModel(IMediator mediator)
     {
         _mediator = mediator;
+        
+        Modes.Add("Latin to Rune");
+        Modes.Add("Rune to Latin");
+        SelectedMode = Modes[0];
     }
     
     [ObservableProperty] private string _textToTranspose = "";
@@ -20,21 +25,35 @@ public partial class TransposeCharsViewModel: ViewModelBase
     
     [ObservableProperty] private string _gemSum = "";
     
-    [ObservableProperty] private bool _isRune = false;
+    public ObservableCollection<string> Modes { get; set; } = new ObservableCollection<string>();
+    
+    [ObservableProperty] private string _selectedMode = "";
+    
+    [ObservableProperty] private bool _prepTextToIrl = false;
     
     [RelayCommand]
     public async void TransposeText()
     {
-        if (!IsRune)
+        switch (SelectedMode)
         {
-            GemSum = await _mediator.Send(new CalculateGematriaSum.Command(TextToTranspose));
-            Response = await _mediator.Send(new TransposeRuneToLatin.Command(TextToTranspose));
-        }
-        else
-        {
-            var text = await _mediator.Send(new PrepLatinToRune.Command(TextToTranspose));
-            Response = await _mediator.Send(new TransposeLatinToRune.Command(text));
-            GemSum = await _mediator.Send(new CalculateGematriaSum.Command(Response));
+            case "Latin to Rune":
+                if (PrepTextToIrl)
+                {
+                    var text = await _mediator.Send(new PrepLatinToRune.Command(TextToTranspose));
+                    Response = await _mediator.Send(new TransposeLatinToRune.Command(text));
+                    GemSum = await _mediator.Send(new CalculateGematriaSum.Command(Response));
+                }
+                else
+                {
+                    Response = await _mediator.Send(new TransposeLatinToRune.Command(TextToTranspose));
+                    GemSum = await _mediator.Send(new CalculateGematriaSum.Command(Response));
+                }
+                break;
+            
+            case "Rune to Latin":
+                GemSum = await _mediator.Send(new CalculateGematriaSum.Command(TextToTranspose));
+                Response = await _mediator.Send(new TransposeRuneToLatin.Command(TextToTranspose));
+                break;
         }
     }
 }

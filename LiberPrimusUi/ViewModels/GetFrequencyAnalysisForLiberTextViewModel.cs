@@ -24,11 +24,19 @@ public partial class GetFrequencyAnalysisForLiberTextViewModel : ViewModelBase
         {
             LiberPages.Add(page);
         }
+        
+        Modes.Add("Rune Frequency");
+        Modes.Add("Letter Frequency");
+        SelectedMode = Modes[0];
     }
     
     public ObservableCollection<string> LiberPages { get; set; } = new ObservableCollection<string>();
     
     [ObservableProperty] private string _selectedLiberPage;
+    
+    public ObservableCollection<string> Modes { get; set; } = new ObservableCollection<string>();
+    
+    [ObservableProperty] private string _selectedMode;
     
     [ObservableProperty] private string _outputFile;
     
@@ -41,11 +49,23 @@ public partial class GetFrequencyAnalysisForLiberTextViewModel : ViewModelBase
     [RelayCommand] 
     public async void ProcessFile()
     {
-        await _mediator.Publish(new GetFrequencyAnalysisForLiberText.Query(
-            _selectedLiberPage, 
-            IsFromIntermediaryRune, 
-            IsPermuteCombinations, 
-            _outputFile));
+        switch (SelectedMode)
+        {
+            case "Letter Frequency":
+                await _mediator.Publish(new GetFrequencyAnalysisForLiberText.Query(
+                    _selectedLiberPage, 
+                    IsFromIntermediaryRune, 
+                    IsPermuteCombinations, 
+                    _outputFile));
+                break;
+            
+            case "Rune Frequency":
+                await _mediator.Publish(new GetFrequencyAnalysisForRuneText.Query(
+                    _selectedLiberPage,
+                    IsPermuteCombinations, 
+                    _outputFile));
+                break;
+        }
         
         Result += $"Processing: {SelectedLiberPage}";
         Result += Environment.NewLine;

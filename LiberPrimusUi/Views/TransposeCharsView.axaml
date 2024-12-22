@@ -12,7 +12,10 @@
             <TextBox Text="{Binding TextToTranspose}" MaxWidth="400"></TextBox>
         </StackPanel>
         <StackPanel Orientation="Horizontal" Spacing="5">
-            <CheckBox IsChecked="{Binding IsRune}">Transpose To Runes</CheckBox>
+            <TextBlock VerticalAlignment="Center">Modes</TextBlock>
+            <ComboBox ItemsSource="{Binding Modes}" 
+                      SelectedItem="{Binding SelectedMode}"></ComboBox>
+            <CheckBox IsChecked="{Binding PrepTextToIrl}">Prepare Text to Intermediary Rune Characters?</CheckBox>
         </StackPanel>
         <StackPanel Orientation="Horizontal" Spacing="5">
             <Button Command="{Binding TransposeTextCommand}">Transpose</Button>

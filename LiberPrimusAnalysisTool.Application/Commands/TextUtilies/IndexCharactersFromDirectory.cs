@@ -85,7 +85,23 @@ public class IndexCharactersFromDirectory
                     file.Extension.ToLower() != ".7z" &&
                     file.Extension.ToLower() != ".tar" &&
                     file.Extension.ToLower() != ".gz" &&
-                    file.Extension.ToLower() != ".bz2")
+                    file.Extension.ToLower() != ".bz2" &&
+                    file.Extension.ToLower() != ".xz" &&
+                    file.Extension.ToLower() != ".mov" &&
+                    file.Extension.ToLower() != ".mp4" &&
+                    file.Extension.ToLower() != ".avi" &&
+                    file.Extension.ToLower() != ".mkv" &&
+                    file.Extension.ToLower() != ".mp3" &&
+                    file.Extension.ToLower() != ".wav" &&
+                    file.Extension.ToLower() != ".flac" &&
+                    file.Extension.ToLower() != ".ogg" &&
+                    file.Extension.ToLower() != ".wma" &&
+                    file.Extension.ToLower() != ".aac" &&
+                    file.Extension.ToLower() != ".m4a" &&
+                    file.Extension.ToLower() != ".opus" &&
+                    file.Extension.ToLower() != ".webm" &&
+                    file.Extension.ToLower() != ".flv" &&
+                    file.Extension.ToLower() != ".wmv")
                 {
                     await ReadAndIndexFileContents(file.FullName, excludedCharacters);
                 }
