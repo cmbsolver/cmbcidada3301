@@ -104,9 +104,9 @@ public class TransposeLatinToRune
                                 sb.Append(_characterRepo.GetRuneFromChar("ING"));
                                 i += 2;
                             }
-                            else if(((i + 1) < (request.Text.Length)) && request.Text[i + 1] == 'E')
+                            else if(((i + 1) < (request.Text.Length)) && request.Text[i + 1] == 'A')
                             {
-                                sb.Append(_characterRepo.GetRuneFromChar("EO"));
+                                sb.Append(_characterRepo.GetRuneFromChar("IA"));
                                 i++;
                             }
                             else
