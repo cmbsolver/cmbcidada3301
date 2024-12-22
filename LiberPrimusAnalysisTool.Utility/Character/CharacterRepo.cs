@@ -692,6 +692,7 @@ namespace LiberPrimusAnalysisTool.Utility.Character
                     break;
 
                 case "IO":
+                case "IA":
                     retval = "ᛡ";
                     break;
 
