@@ -50,7 +50,7 @@ public partial class MainWindowViewModel : ViewModelBase
         
         // Text analysis
         new ListItemTemplate(typeof(LetterFrequencyAnalysisViewModel), "Analysis", "Letter Frequency Analysis"),
-        new ListItemTemplate(typeof(GetLetterForFrequencyFromLibViewModel), "Analysis", "Letter DB Frequency Analysis"),
+        new ListItemTemplate(typeof(GetLetterForFrequencyFromLibViewModel), "Analysis", "Frequency Analysis Stats"),
         new ListItemTemplate(typeof(GetFrequencyAnalysisForLiberTextViewModel), "Analysis", "Letter Sub DB Analysis"),
         
         // Ciphers

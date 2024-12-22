@@ -8,7 +8,9 @@
              x:DataType="vm:GetLetterForFrequencyFromLibViewModel">
     <StackPanel Margin="20" Spacing="10">
         <StackPanel Orientation="Horizontal" Spacing="5">
-            <CheckBox IsChecked="{Binding IsIntermediryLib}">Select from Rune Intermediary Table</CheckBox>    
+            <TextBlock VerticalAlignment="Center">Select Statistic Mode</TextBlock>
+            <ComboBox ItemsSource="{Binding Modes}" 
+                      SelectedItem="{Binding SelectedMode}"></ComboBox>    
         </StackPanel>
         <StackPanel Orientation="Horizontal" Spacing="5">
             <Button Command="{Binding GetValuesCommand}">Get Values</Button>

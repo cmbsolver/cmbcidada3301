@@ -23,17 +23,24 @@ public partial class GetLetterForFrequencyFromLibViewModel : ViewModelBase
     public GetLetterForFrequencyFromLibViewModel(IMediator mediator)
     {
         _mediator = mediator;
+        
+        Modes.Add("runes");
+        Modes.Add("letters");
+        Modes.Add("intermediary");
+        SelectedMode = Modes[0];
     }
     
-    [ObservableProperty] private bool _isIntermediryLib = false;
-    
     [ObservableProperty] private string _result = "";
+    
+    public ObservableCollection<string> Modes { get; set; } = new ObservableCollection<string>();
+    
+    [ObservableProperty] private string _selectedMode = "";
 
     [RelayCommand] 
     public async void GetValues()
     {
         var result = new StringBuilder();
-        var letterFrequency = await _mediator.Send(new GetLetterForFrequencyFromLib.Query(IsIntermediryLib));
+        var letterFrequency = await _mediator.Send(new GetLetterForFrequencyFromLib.Query(SelectedMode));
         foreach (var freq in OrderByExtension.OrderBy(letterFrequency.LetterFrequencyDetails, x => x.Frequency, OrderByDirection.Descending))
         {
             result.AppendLine($"Character: {freq.Letter}\tOccurrences: {freq.Occurrences}\tFrequency: {freq.Frequency}");

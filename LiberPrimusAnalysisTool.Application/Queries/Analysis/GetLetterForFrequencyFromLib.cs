@@ -6,9 +6,14 @@ namespace LiberPrimusAnalysisTool.Application.Queries.Analysis;
 
 public class GetLetterForFrequencyFromLib
 {
-    public class Query(bool fromIntermediaryRune) : IRequest<LetterFrequency>
+    public class Query: IRequest<LetterFrequency>
     {
-        public bool FromIntermediaryRune { get; private set; } = fromIntermediaryRune;
+        public Query(string mode = null)
+        {
+            Mode = mode;
+        }
+
+        public string Mode { get; set; }
     }
     
     public class Handler: IRequestHandler<Query, LetterFrequency>
@@ -21,31 +26,59 @@ public class GetLetterForFrequencyFromLib
                 "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"
             };
             
+            var runesToIncludeArray = new List<string>
+            {
+                "ᛝ", "ᛟ", "ᛇ", "ᛡ", "ᛠ", "ᚫ", "ᚦ", "ᚠ", "ᚢ", "ᚩ", "ᚱ", "ᚳ", "ᚷ", "ᚹ",
+                "ᚻ", "ᚾ", "ᛁ", "ᛄ", "ᛈ", "ᛉ", "ᛋ", "ᛏ", "ᛒ", "ᛖ", "ᛗ", "ᛚ", "ᛞ", "ᚪ",
+                "ᚣ"
+            };
+            
             var letterFrequency = new LetterFrequency();
             
             await using (var context = new LiberContext())
             {
-                if (request.FromIntermediaryRune)
+                switch (request.Mode)
                 {
-                    var letters = context.LiberTextDocumentCharacters
-                        .Where(x => lettersToIncludeArray.Contains(x.Character))
-                        .ToList();
+                    case "runes":
+                        var rletters = context.RuneTextDocumentCharacters
+                            .Where(x => runesToIncludeArray.Contains(x.Character))
+                            .ToList();
                     
-                    foreach (var letter in letters)
-                    {
-                        letterFrequency.AddLetter(letter.Character, letter.Count);
-                    }
-                }
-                else
-                {
-                    var letters = context.TextDocumentCharacters
-                        .Where(x => lettersToIncludeArray.Contains(x.Character))
-                        .ToList();
+                        foreach (var letter in rletters)
+                        {
+                            letterFrequency.AddLetter(letter.Character, letter.Count);
+                        }
+                        break;
+                    case "letters":
+                        var letters = context.TextDocumentCharacters
+                            .Where(x => lettersToIncludeArray.Contains(x.Character))
+                            .ToList();
                     
-                    foreach (var letter in letters)
-                    {
-                        letterFrequency.AddLetter(letter.Character, letter.Count);
-                    }
+                        foreach (var letter in letters)
+                        {
+                            letterFrequency.AddLetter(letter.Character, letter.Count);
+                        }
+                        break;
+                    case "intermediary":
+                        var iletters = context.LiberTextDocumentCharacters
+                            .Where(x => lettersToIncludeArray.Contains(x.Character))
+                            .ToList();
+                    
+                        foreach (var letter in iletters)
+                        {
+                            letterFrequency.AddLetter(letter.Character, letter.Count);
+                        }
+                        break;
+                    default:
+                        var lletters = context.TextDocumentCharacters
+                            .Where(x => lettersToIncludeArray.Contains(x.Character))
+                            .ToList();
+                    
+                        foreach (var letter in lletters)
+                        {
+                            letterFrequency.AddLetter(letter.Character, letter.Count);
+                        }
+                        break;
                 }
             }
             

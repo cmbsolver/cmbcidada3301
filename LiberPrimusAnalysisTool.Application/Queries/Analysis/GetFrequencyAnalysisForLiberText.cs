@@ -40,7 +40,9 @@ public class GetFrequencyAnalysisForLiberText
 
             // Get the letter frequency from the Liber text
             LetterFrequency liberFrequency =
-                await _mediator.Send(new GetLetterForFrequencyFromLib.Query(request.FromIntermediaryRune),
+                await _mediator.Send(
+                    new GetLetterForFrequencyFromLib.Query(
+                        request.FromIntermediaryRune ? "intermediary" : "letters"), 
                     cancellationToken);
 
             // Get the letter frequency from the text
