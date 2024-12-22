@@ -104,7 +104,7 @@ public class TransposeLatinToRune
                                 sb.Append(_characterRepo.GetRuneFromChar("ING"));
                                 i += 2;
                             }
-                            else if(((i + 2) < (request.Text.Length)) && request.Text[i + 1] == 'E')
+                            else if(((i + 1) < (request.Text.Length)) && request.Text[i + 1] == 'E')
                             {
                                 sb.Append(_characterRepo.GetRuneFromChar("EO"));
                                 i++;
@@ -115,6 +115,20 @@ public class TransposeLatinToRune
                             }
                             
                             break;
+                        
+                        case 'N':
+                            if (((i + 1) < (request.Text.Length)) && request.Text[i + 1] == 'G')
+                            {
+                                sb.Append(_characterRepo.GetRuneFromChar("NG"));
+                                i++;
+                            }
+                            else
+                            {
+                                sb.Append(_characterRepo.GetRuneFromChar("N"));
+                            }
+
+                            break;
+                        
                         default:
                             sb.Append(_characterRepo.GetRuneFromChar(xchar.ToString()));
                             break;

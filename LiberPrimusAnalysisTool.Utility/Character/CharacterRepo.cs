@@ -679,6 +679,7 @@ namespace LiberPrimusAnalysisTool.Utility.Character
             switch (value)
             {
                 case "ING":
+                case "NG":
                     retval = "ᛝ";
                     break;
 
