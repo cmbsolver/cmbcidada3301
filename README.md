@@ -14,7 +14,7 @@ This will bring up the user interface. The left hand side has the menu options o
 ## Building release binaries
 You can build the release binaries by running the following command in the LiberPrimusUi folder.
 
-This is for Linux and not Windows or Mac.
+This script is for Linux and not Windows or Mac.
 
 ```
 chmod 777 build-output.sh
