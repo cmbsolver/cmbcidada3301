@@ -87,5 +87,5 @@ There are the LP documents in the input folder.
 - Images/LP: This is the Liber Primus images for the unsolved pages.
 - Text/LP-Combined-Sections: This is the Liber Primus text for the unsolved pages in runes in combined sections.
 - Text/LP-Combined-Sections-IRL: This is the Liber Primus text for the unsolved pages in Latin characters.
-- Text/LP-Full: This is the Liber Primus rune text for the unsolved pages in runes in pages.
-- Text/LP-Full-NLB: This is the Liber Primus rune text for the unsolved pages in runes in pages with no line breaks.
+- Text/LP-Full: This is the Liber Primus rune text for the unsolved pages.
+- Text/LP-Full-NLB: This is the Liber Primus rune text for the unsolved pages with no line breaks.
