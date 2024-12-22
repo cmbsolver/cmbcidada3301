@@ -37,7 +37,6 @@ perform_build() {
             exit 1
         fi
         cd $CURRENT_DIR
-        #rm -rvf "$OUTPUT_DIR/$RID"
     done
 
     dotnet clean --verbosity diag
