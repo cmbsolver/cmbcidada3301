@@ -39,7 +39,8 @@ public partial class LetterFrequencyAnalysisViewModel : ViewModelBase
     
     [ObservableProperty] private string _textToSend;
     
-    [ObservableProperty] private string _charactersToExclude = "•,␍,␊,␉,␈,␇,␆,␅,␄,␃,␂,␁,␀, ,\n,\t,\r,!,-,_,=,+,*,^,&,%,@,$,#,~,`,',\",|,\\,/,?,>,<,.,:,;,{,},[,],(,),\',⊹";
+    [ObservableProperty] private string _charactersToExclude = "•,␍,␊,␉,␈,␇,␆,␅,␄,␃,␂,␁,␀, ,\n,\t,\r,!,-,_,=,+,*,^,&,%,@,$,#,~,`,',\",|,\\,/,?,>,<,.,:,;,{,},[,],(,),\',⊹,1,2,3,4,5,6,7,8,9,0";
+    //[ObservableProperty] private string _charactersToExclude = "•,␍,␊,␉,␈,␇,␆,␅,␄,␃,␂,␁,␀, ,\n,\t,\r,!,-,_,=,+,*,^,&,%,@,$,#,~,`,',\",|,\\,/,?,>,<,.,:,;,{,},[,],(,),\',⊹,1,2,3,4,5,6,7,8,9,0,A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z,a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z";
     
     [ObservableProperty] private string _result = "";
 
@@ -65,9 +66,10 @@ public partial class LetterFrequencyAnalysisViewModel : ViewModelBase
         }
         
         var letterFrequency = await _mediator.Send(new GetFrequencyAnalysisForText.Query(realText.ToString()));
+        result.AppendLine($"Character\tOccurrences\tFrequency");
         foreach (var freq in OrderByExtension.OrderBy(letterFrequency.LetterFrequencyDetails, x => x.Frequency, OrderByDirection.Descending))
         {
-            result.AppendLine($"Character: {freq.Letter}\tOccurrences: {freq.Occurrences}\tFrequency: {freq.Frequency}");
+            result.AppendLine($"{freq.Letter}\t{freq.Occurrences}\t{freq.Frequency}");
         }
         
         Result = result.ToString();
@@ -94,9 +96,10 @@ public partial class LetterFrequencyAnalysisViewModel : ViewModelBase
         }
         
         var letterFrequency = await _mediator.Send(new GetFrequencyAnalysisForText.Query(realText.ToString()));
+        result.AppendLine($"Character\tOccurrences\tFrequency");
         foreach (var freq in OrderByExtension.OrderBy(letterFrequency.LetterFrequencyDetails, x => x.Frequency, OrderByDirection.Descending))
         {
-            result.AppendLine($"Character: {freq.Letter}\tOccurrences: {freq.Occurrences}\tFrequency: {freq.Frequency}");
+            result.AppendLine($"{freq.Letter}\t{freq.Occurrences}\t{freq.Frequency}");
         }
         
         Result = result.ToString();

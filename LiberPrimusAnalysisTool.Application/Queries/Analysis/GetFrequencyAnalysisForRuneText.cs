@@ -8,16 +8,19 @@ public class GetFrequencyAnalysisForRuneText
 {
     public class Query: INotification
     {
-        public Query(string input, bool isPermuteCombinations, string output)
+        public Query(string input, bool isPermuteCombinations, string output, string mode)
         {
             Input = input;
             Output = output;
             IsPermuteCombinations = isPermuteCombinations;
+            Mode = mode;
         }
 
         public string Input { get; private set; }
         
         public string Output { get; private set; }
+        
+        public string Mode { get; private set; }
         
         public bool IsPermuteCombinations { get; private set; }
     }
@@ -37,7 +40,7 @@ public class GetFrequencyAnalysisForRuneText
 
             // Get the letter frequency from the Liber text
             LetterFrequency liberFrequency =
-                await _mediator.Send(new GetRuneForFrequencyFromLib.Query(),
+                await _mediator.Send(new GetLetterForFrequencyFromLib.Query(request.Mode),
                     cancellationToken);
 
             // Get the letter frequency from the text

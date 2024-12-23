@@ -30,4 +30,9 @@ public class LetterFrequencyDetail
         Frequency = (double)Occurrences / (double)totalLetters;
         Frequency = Frequency * 100;
     }
+    
+    public void SetFrequency(double frequency)
+    {
+        Frequency = frequency;
+    }
 }

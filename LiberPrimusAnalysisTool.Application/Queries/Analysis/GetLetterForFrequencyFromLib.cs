@@ -1,6 +1,8 @@
 using LiberPrimusAnalysisTool.Database;
 using LiberPrimusAnalysisTool.Entity.Analysis;
+using LiberPrimusAnalysisTool.Entity.Text;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace LiberPrimusAnalysisTool.Application.Queries.Analysis;
 
@@ -8,7 +10,7 @@ public class GetLetterForFrequencyFromLib
 {
     public class Query: IRequest<LetterFrequency>
     {
-        public Query(string mode = null)
+        public Query(string mode)
         {
             Mode = mode;
         }
@@ -35,56 +37,157 @@ public class GetLetterForFrequencyFromLib
             
             var letterFrequency = new LetterFrequency();
             
-            await using (var context = new LiberContext())
-            {
                 switch (request.Mode)
                 {
                     case "runes":
-                        var rletters = context.RuneTextDocumentCharacters
-                            .Where(x => runesToIncludeArray.Contains(x.Character))
-                            .ToList();
-                    
-                        foreach (var letter in rletters)
+                        await using (var context = new LiberContext())
                         {
-                            letterFrequency.AddLetter(letter.Character, letter.Count);
+                            var rletters = context.RuneTextDocumentCharacters
+                                .Where(x => runesToIncludeArray.Contains(x.Character))
+                                .ToList();
+
+                            foreach (var letter in rletters)
+                            {
+                                letterFrequency.AddLetter(letter.Character, letter.Count);
+                            }
+
+                            letterFrequency.UpdateLetterFrequencyDetails();
                         }
+
+                        break;
+                    case "runes-med":
+                        List<Tuple<long, string, long, double>> docRunes = new List<Tuple<long, string, long, double>>();
+                        List<TextDocument> documents;
+                        
+                        await using (var context = new LiberContext())
+                        {
+                            documents = context.TextDocuments.ToList();
+                        }
+
+                        var parallelOptions = new ParallelOptions
+                        {
+                            MaxDegreeOfParallelism = Environment.ProcessorCount / 2
+                        };
+
+                        await Parallel.ForEachAsync(documents, parallelOptions, async (document, cancellationToken) =>
+                        {
+                            await using (var context = new LiberContext())
+                            {
+                                LetterFrequency docLetterFrequency = new LetterFrequency();
+
+                                var raletters = await context.RuneTextDocumentCharacters
+                                    .Where(x => runesToIncludeArray.Contains(x.Character) &&
+                                                x.TextDocumentId == document.Id)
+                                    .ToListAsync(cancellationToken: cancellationToken);
+
+                                foreach (var letter in raletters)
+                                {
+                                    docLetterFrequency.AddLetter(letter.Character, letter.Count);
+                                }
+
+                                docLetterFrequency.UpdateLetterFrequencyDetails();
+
+                                foreach (var letter in docLetterFrequency.LetterFrequencyDetails)
+                                {
+                                    docRunes.Add(new Tuple<long, string, long, double>(
+                                        document.Id,
+                                        letter.Letter,
+                                        letter.Occurrences,
+                                        letter.Frequency));
+                                }
+                            }
+                        });
+                        
+                        // Now we need to get the average letter frequency for each letter
+                        foreach (var rune in runesToIncludeArray)
+                        {
+                            var runeCounts = docRunes.Where(x => x != null && x.Item2 != null && x.Item2 == rune).Select(x => x.Item3).OrderBy(x => x);
+                            var runeFrequencies = docRunes.Where(x => x != null && x.Item2 != null && x.Item2 == rune).Select(x => x.Item4).OrderBy(x => x);
+                            
+                            var runeCountAverage = FindMedian(runeCounts.ToArray());
+                            var runeFrequencyAverage = FindMedian(runeFrequencies.ToArray());
+                            letterFrequency.AddLetter(rune, runeCountAverage, runeFrequencyAverage);
+                        }
+                        
                         break;
                     case "letters":
-                        var letters = context.TextDocumentCharacters
-                            .Where(x => lettersToIncludeArray.Contains(x.Character))
-                            .ToList();
-                    
-                        foreach (var letter in letters)
+                        await using (var context = new LiberContext())
                         {
-                            letterFrequency.AddLetter(letter.Character, letter.Count);
+                            var letters = context.TextDocumentCharacters
+                                .Where(x => lettersToIncludeArray.Contains(x.Character))
+                                .ToList();
+
+                            foreach (var letter in letters)
+                            {
+                                letterFrequency.AddLetter(letter.Character, letter.Count);
+                            }
+
+                            letterFrequency.UpdateLetterFrequencyDetails();
                         }
+
                         break;
                     case "intermediary":
-                        var iletters = context.LiberTextDocumentCharacters
-                            .Where(x => lettersToIncludeArray.Contains(x.Character))
-                            .ToList();
-                    
-                        foreach (var letter in iletters)
+                        await using (var context = new LiberContext())
                         {
-                            letterFrequency.AddLetter(letter.Character, letter.Count);
+                            var iletters = context.LiberTextDocumentCharacters
+                                .Where(x => lettersToIncludeArray.Contains(x.Character))
+                                .ToList();
+
+                            foreach (var letter in iletters)
+                            {
+                                letterFrequency.AddLetter(letter.Character, letter.Count);
+                            }
+
+                            letterFrequency.UpdateLetterFrequencyDetails();
                         }
+
                         break;
                     default:
-                        var lletters = context.TextDocumentCharacters
-                            .Where(x => lettersToIncludeArray.Contains(x.Character))
-                            .ToList();
-                    
-                        foreach (var letter in lletters)
+                        await using (var context = new LiberContext())
                         {
-                            letterFrequency.AddLetter(letter.Character, letter.Count);
+                            var lletters = context.TextDocumentCharacters
+                                .Where(x => lettersToIncludeArray.Contains(x.Character))
+                                .ToList();
+
+                            foreach (var letter in lletters)
+                            {
+                                letterFrequency.AddLetter(letter.Character, letter.Count);
+                            }
+
+                            letterFrequency.UpdateLetterFrequencyDetails();
                         }
                         break;
                 }
-            }
-            
-            letterFrequency.UpdateLetterFrequencyDetails();
             
             return letterFrequency;
+        }
+        
+        private double FindMedian(double[] array)
+        {
+            long mid = Convert.ToInt64(array.Length/2);
+            double median = 0;
+            if (mid % 2 != 0){
+                median = array[mid];
+            }
+            else {
+                median =  (array[mid - 1] + array[mid])/2;
+            }
+        
+            return median;
+        }
+        
+        private long FindMedian(long[] array)
+        {
+            long mid = Convert.ToInt64(array.Length/2);
+            long median = 0;
+            if (mid % 2 != 0){
+                median = array[mid];
+            }
+            else {
+                median =  (array[mid - 1] + array[mid])/2;
+            }
+        
+            return median;
         }
     }
 }

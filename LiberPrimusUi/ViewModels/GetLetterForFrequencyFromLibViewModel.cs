@@ -25,6 +25,7 @@ public partial class GetLetterForFrequencyFromLibViewModel : ViewModelBase
         _mediator = mediator;
         
         Modes.Add("runes");
+        Modes.Add("runes-med");
         Modes.Add("letters");
         Modes.Add("intermediary");
         SelectedMode = Modes[0];
@@ -41,9 +42,12 @@ public partial class GetLetterForFrequencyFromLibViewModel : ViewModelBase
     {
         var result = new StringBuilder();
         var letterFrequency = await _mediator.Send(new GetLetterForFrequencyFromLib.Query(SelectedMode));
+        
+        result.AppendLine($"Character\tOccurrences\tFrequency");
+        
         foreach (var freq in OrderByExtension.OrderBy(letterFrequency.LetterFrequencyDetails, x => x.Frequency, OrderByDirection.Descending))
         {
-            result.AppendLine($"Character: {freq.Letter}\tOccurrences: {freq.Occurrences}\tFrequency: {freq.Frequency}");
+            result.AppendLine($"{freq.Letter}\t{freq.Occurrences}\t{freq.Frequency}");
         }
         
         Result = result.ToString();

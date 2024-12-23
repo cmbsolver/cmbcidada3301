@@ -26,6 +26,7 @@ public partial class GetFrequencyAnalysisForLiberTextViewModel : ViewModelBase
         }
         
         Modes.Add("Rune Frequency");
+        Modes.Add("Rune Frequency (Med)");
         Modes.Add("Letter Frequency");
         SelectedMode = Modes[0];
     }
@@ -63,7 +64,16 @@ public partial class GetFrequencyAnalysisForLiberTextViewModel : ViewModelBase
                 await _mediator.Publish(new GetFrequencyAnalysisForRuneText.Query(
                     _selectedLiberPage,
                     IsPermuteCombinations, 
-                    _outputFile));
+                    _outputFile,
+                    "runes"));
+                break;
+            
+            case "Rune Frequency (Med)":
+                await _mediator.Publish(new GetFrequencyAnalysisForRuneText.Query(
+                    _selectedLiberPage,
+                    IsPermuteCombinations, 
+                    _outputFile,
+                    "runes-med"));
                 break;
         }
         
