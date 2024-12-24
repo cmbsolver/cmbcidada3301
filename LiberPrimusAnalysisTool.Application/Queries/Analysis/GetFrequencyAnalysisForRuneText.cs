@@ -80,7 +80,7 @@ public class GetFrequencyAnalysisForRuneText
 
                     foreach (var xchar in text)
                     {
-                        if (!request.CharactersToExclude.Any(x => x == xchar.ToString().ToUpper()))
+                        if (request.CharactersToExclude.Any(x => x == xchar.ToString().ToUpper()))
                         {
                             var replacement = permutation.FirstOrDefault(x => x.Letter == xchar.ToString().ToUpper());
                             if (replacement != null)
@@ -93,6 +93,10 @@ public class GetFrequencyAnalysisForRuneText
                             }
                         }
                     }
+                    
+                    // Now we need to score the text for matches.
+                    // Highest match is output to the files.
+                    // TODO: Implement scoring system.
 
                     var permutationString = string.Join(",", permutation.Select(x =>
                     {
@@ -235,18 +239,11 @@ public class GetFrequencyAnalysisForRuneText
             return new SubstitutionPossibility(letter, possibleSubstitutions.ToArray());
         }
         
-        private List<List<SubstitutionPossibility>> GeneratePermutations(
+        private IEnumerable<List<SubstitutionPossibility>> GeneratePermutations(
             SubstitutionPossibility[] substitutionPossibilities, 
             SubstitutionPossibility[]? currentArray = null, 
-            List<List<SubstitutionPossibility>>? result = null,
             int currentListIndex = 0)
         {
-            // Setting the result if null.
-            if (result == null)
-            {
-                result = new List<List<SubstitutionPossibility>>();
-            }
-            
             // Setting the current array up.
             var currentList = new List<SubstitutionPossibility>();
             if (currentArray != null)
@@ -254,26 +251,27 @@ public class GetFrequencyAnalysisForRuneText
                 currentList.AddRange(currentArray);
             }
 
-            while(!substitutionPossibilities[currentListIndex].HasNextSubstitution())
+            while (!substitutionPossibilities[currentListIndex].HasNextSubstitution())
             {
                 var addValue = substitutionPossibilities[currentListIndex].GetNext();
                 if (addValue != null) currentList.Add(addValue);
 
                 if (currentList.Count >= substitutionPossibilities.Length)
                 {
-                    result.Add(currentList);
+                    yield return currentList;
                     currentList = new List<SubstitutionPossibility>();
                     if (currentArray != null) currentList.AddRange(currentArray);
                 }
                 else
                 {
-                    GeneratePermutations(substitutionPossibilities, currentList.ToArray(), result, currentListIndex + 1);
+                    foreach (var permutation in GeneratePermutations(substitutionPossibilities, currentList.ToArray(), currentListIndex + 1))
+                    {
+                        yield return permutation;
+                    }
                 }
             }
-            
-            substitutionPossibilities[currentListIndex].Reset();
 
-            return result;
+            substitutionPossibilities[currentListIndex].Reset();
         }
         
         

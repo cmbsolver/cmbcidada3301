@@ -41,7 +41,7 @@ public class SubstitutionPossibility
     
     public bool HasNextSubstitution()
     {
-        return CurrentSubstitutionIndex >= PossibleSubstitutions.Count - 1;
+        return CurrentSubstitutionIndex < PossibleSubstitutions.Count - 1;
     }
     
     public void Reset()
