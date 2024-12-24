@@ -8,12 +8,13 @@ public class GetFrequencyAnalysisForRuneText
 {
     public class Query: INotification
     {
-        public Query(string input, bool isPermuteCombinations, string output, string mode)
+        public Query(string input, bool isPermuteCombinations, string output, string mode, string[] charactersToExclude)
         {
             Input = input;
             Output = output;
             IsPermuteCombinations = isPermuteCombinations;
             Mode = mode;
+            CharactersToExclude = charactersToExclude;
         }
 
         public string Input { get; private set; }
@@ -23,6 +24,8 @@ public class GetFrequencyAnalysisForRuneText
         public string Mode { get; private set; }
         
         public bool IsPermuteCombinations { get; private set; }
+        
+        public string[] CharactersToExclude { get; private set; }
     }
     
     public class Handler: INotificationHandler<Query>
@@ -39,59 +42,69 @@ public class GetFrequencyAnalysisForRuneText
             List<SubstitutionPossibility> substitutionPossibilities = new();
 
             // Get the letter frequency from the Liber text
-            LetterFrequency liberFrequency =
+            LetterFrequency dbFrequency =
                 await _mediator.Send(new GetLetterForFrequencyFromLib.Query(request.Mode),
                     cancellationToken);
 
             // Get the letter frequency from the text
-            var letterFrequency = new LetterFrequency();
+            var runeFrequency = new LetterFrequency();
 
             var text = await File.ReadAllTextAsync(request.Input);
             foreach (var letter in text)
             {
-                var upper_letter = char.ToUpper(letter);
-                letterFrequency.AddLetter(upper_letter.ToString());
+                var upperLetter = char.ToUpper(letter).ToString();
+                if (!request.CharactersToExclude.Any(x => x == upperLetter))
+                {
+                    runeFrequency.AddLetter(upperLetter);
+                }
             }
 
-            letterFrequency.UpdateLetterFrequencyDetails();
+            runeFrequency.UpdateLetterFrequencyDetails();
 
             // Now we need to compare the letter frequency from the Liber text with the letter frequency from the text
-            foreach (var letterFrequencyDetail in letterFrequency.LetterFrequencyDetails)
+            foreach (var runeFrequencyDetail in runeFrequency.LetterFrequencyDetails)
             {
-                if (liberFrequency.LetterFrequencyDetails.Any(x => x.Letter == letterFrequencyDetail.Letter))
+                if (dbFrequency.LetterFrequencyDetails.Any(x => x.Letter == runeFrequencyDetail.Letter))
                 {
-                    substitutionPossibilities.Add(GetSubstitutionPossibility(letterFrequencyDetail.Letter,
-                        letterFrequencyDetail.Frequency, liberFrequency));
+                    substitutionPossibilities.Add(GetSubstitutionPossibility(runeFrequencyDetail.Letter,
+                        runeFrequencyDetail.Frequency, dbFrequency));
                 }
             }
 
             if (request.IsPermuteCombinations)
             {
-                // Generate all permutations of substitution possibilities
-                var permutations = GeneratePermutations(substitutionPossibilities);
-
                 // Perform string replacements for each permutation
-                foreach (var permutation in permutations)
+                foreach (var permutation in GeneratePermutations(substitutionPossibilities.ToArray()))
                 {
                     var sb = new StringBuilder();
 
                     foreach (var xchar in text)
                     {
-                        var replacement = permutation.FirstOrDefault(x => x.Letter == xchar.ToString().ToUpper());
-                        if (replacement != null)
+                        if (!request.CharactersToExclude.Any(x => x == xchar.ToString().ToUpper()))
                         {
-                            sb.Append(replacement.PossibleSubstitutions[0]);
-                        }
-                        else
-                        {
-                            sb.Append(xchar);
+                            var replacement = permutation.FirstOrDefault(x => x.Letter == xchar.ToString().ToUpper());
+                            if (replacement != null)
+                            {
+                                sb.Append(replacement.GetCurrent());
+                            }
+                            else
+                            {
+                                sb.Append(xchar);
+                            }
                         }
                     }
 
-                    File.AppendAllText(request.Output, request.Input  + Environment.NewLine);
-                    File.AppendAllText(request.Output, sb.ToString() + Environment.NewLine);
-                    File.AppendAllText(request.Output, Environment.NewLine);
-                    File.AppendAllText(request.Output, Environment.NewLine);
+                    var permutationString = string.Join(",", permutation.Select(x =>
+                    {
+                        string tstring = $"{x.Letter} -> {x.GetCurrent()?.Letter}";
+                        return tstring;
+                    }));
+                    
+                    await File.AppendAllTextAsync(request.Output, request.Input  + Environment.NewLine, cancellationToken);
+                    await File.AppendAllTextAsync(request.Output, permutationString  + Environment.NewLine, cancellationToken);
+                    await File.AppendAllTextAsync(request.Output, sb.ToString() + Environment.NewLine, cancellationToken);
+                    await File.AppendAllTextAsync(request.Output, Environment.NewLine, cancellationToken);
+                    await File.AppendAllTextAsync(request.Output, Environment.NewLine, cancellationToken);
                 }
             }
             else
@@ -100,21 +113,25 @@ public class GetFrequencyAnalysisForRuneText
 
                 foreach (var xchar in text)
                 {
-                    var replacement = substitutionPossibilities.FirstOrDefault(x => x.Letter == xchar.ToString().ToUpper());
-                    if (replacement != null)
+                    if (!request.CharactersToExclude.Any(x => x == xchar.ToString().ToUpper()))
                     {
-                        sb.Append(replacement.PossibleSubstitutions[0]);
-                    }
-                    else
-                    {
-                        sb.Append(xchar);
+                        var replacement =
+                            substitutionPossibilities.FirstOrDefault(x => x.Letter == xchar.ToString().ToUpper());
+                        if (replacement != null)
+                        {
+                            sb.Append(replacement.GetCurrent());
+                        }
+                        else
+                        {
+                            sb.Append(xchar);
+                        }
                     }
                 }
 
-                File.AppendAllText(request.Output, request.Input + Environment.NewLine);
-                File.AppendAllText(request.Output, sb.ToString() + Environment.NewLine);
-                File.AppendAllText(request.Output, Environment.NewLine);
-                File.AppendAllText(request.Output, Environment.NewLine);
+                await File.AppendAllTextAsync(request.Output, request.Input + Environment.NewLine, cancellationToken);
+                await File.AppendAllTextAsync(request.Output, sb.ToString() + Environment.NewLine, cancellationToken);
+                await File.AppendAllTextAsync(request.Output, Environment.NewLine, cancellationToken);
+                await File.AppendAllTextAsync(request.Output, Environment.NewLine, cancellationToken);
             }
         }
 
@@ -218,13 +235,47 @@ public class GetFrequencyAnalysisForRuneText
             return new SubstitutionPossibility(letter, possibleSubstitutions.ToArray());
         }
         
-        private List<List<SubstitutionPossibility>> GeneratePermutations(List<SubstitutionPossibility> substitutionPossibilities)
+        private List<List<SubstitutionPossibility>> GeneratePermutations(
+            SubstitutionPossibility[] substitutionPossibilities, 
+            SubstitutionPossibility[]? currentArray = null, 
+            List<List<SubstitutionPossibility>>? result = null,
+            int currentListIndex = 0)
         {
-            var result = new List<List<SubstitutionPossibility>>();
-            // TODO: Implement the permutation logic
-            // Permute(substitutionPossibilities, 0, result);
+            // Setting the result if null.
+            if (result == null)
+            {
+                result = new List<List<SubstitutionPossibility>>();
+            }
+            
+            // Setting the current array up.
+            var currentList = new List<SubstitutionPossibility>();
+            if (currentArray != null)
+            {
+                currentList.AddRange(currentArray);
+            }
+
+            while(!substitutionPossibilities[currentListIndex].HasNextSubstitution())
+            {
+                var addValue = substitutionPossibilities[currentListIndex].GetNext();
+                if (addValue != null) currentList.Add(addValue);
+
+                if (currentList.Count >= substitutionPossibilities.Length)
+                {
+                    result.Add(currentList);
+                    currentList = new List<SubstitutionPossibility>();
+                    if (currentArray != null) currentList.AddRange(currentArray);
+                }
+                else
+                {
+                    GeneratePermutations(substitutionPossibilities, currentList.ToArray(), result, currentListIndex + 1);
+                }
+            }
+            
+            substitutionPossibilities[currentListIndex].Reset();
+
             return result;
         }
+        
         
     }
 }

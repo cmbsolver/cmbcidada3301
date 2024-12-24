@@ -29,7 +29,19 @@ public partial class GetFrequencyAnalysisForLiberTextViewModel : ViewModelBase
         Modes.Add("Rune Frequency (Med)");
         Modes.Add("Letter Frequency");
         SelectedMode = Modes[0];
+        
+        CharacterExclusions.Add("0-9,A-Z");
+        CharacterExclusions.Add("0-9");
+        CharacterExclusions.Add("A-Z");
+        CharacterExclusions.Add("Everything");
+        SelectedCharacterExclusions = CharacterExclusions[3];
     }
+    
+    public ObservableCollection<string> CharacterExclusions { get; set; } = new ObservableCollection<string>();
+
+    [ObservableProperty] private string _selectedCharacterExclusions = "";
+    
+    [ObservableProperty] private string _charactersToExclude = "";
     
     public ObservableCollection<string> LiberPages { get; set; } = new ObservableCollection<string>();
     
@@ -54,26 +66,29 @@ public partial class GetFrequencyAnalysisForLiberTextViewModel : ViewModelBase
         {
             case "Letter Frequency":
                 await _mediator.Publish(new GetFrequencyAnalysisForLiberText.Query(
-                    _selectedLiberPage, 
+                    SelectedLiberPage, 
                     IsFromIntermediaryRune, 
                     IsPermuteCombinations, 
-                    _outputFile));
+                    OutputFile,
+                    CharactersToExclude.Split(",")));
                 break;
             
             case "Rune Frequency":
                 await _mediator.Publish(new GetFrequencyAnalysisForRuneText.Query(
-                    _selectedLiberPage,
+                    SelectedLiberPage,
                     IsPermuteCombinations, 
-                    _outputFile,
-                    "runes"));
+                    OutputFile,
+                    "runes",
+                    CharactersToExclude.Split(",")));
                 break;
             
             case "Rune Frequency (Med)":
                 await _mediator.Publish(new GetFrequencyAnalysisForRuneText.Query(
-                    _selectedLiberPage,
+                    SelectedLiberPage,
                     IsPermuteCombinations, 
-                    _outputFile,
-                    "runes-med"));
+                    OutputFile,
+                    "runes-med",
+                    CharactersToExclude.Split(",")));
                 break;
         }
         
@@ -88,5 +103,36 @@ public partial class GetFrequencyAnalysisForLiberTextViewModel : ViewModelBase
     public void ClearMessages()
     {
         Result = string.Empty;
+    }
+    
+    [RelayCommand]
+    public void ExcludeCharacters()
+    {
+        switch (SelectedCharacterExclusions)
+        {
+            case "0-9,A-Z":
+                CharactersToExclude = "1,2,3,4,5,6,7,8,9,0,A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z," +
+                                      "a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z";
+                break;
+            case "0-9":
+                CharactersToExclude = "1,2,3,4,5,6,7,8,9,0";
+                break;
+            case "A-Z":
+                CharactersToExclude = "A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z," +
+                                      "a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z";
+                break;
+            case "Everything":
+                CharactersToExclude =
+                    "•,␍,␊,␉,␈,␇,␆,␅,␄,␃,␂,␁,␀, ,\n,\t,\r,!,-,_,=,+,*,^,&,%,@,$,#,~,`,',\",|,\\,/,?,>,<,.,:,;,{,},[,],(,),\'," +
+                    "⊹,1,2,3,4,5,6,7,8,9,0,A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z," +
+                    "a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z";
+                break;
+            default:
+                CharactersToExclude =
+                    "•,␍,␊,␉,␈,␇,␆,␅,␄,␃,␂,␁,␀, ,\n,\t,\r,!,-,_,=,+,*,^,&,%,@,$,#,~,`,',\",|,\\,/,?,>,<,.,:,;,{,}," +
+                    "[,],(,),\',⊹,1,2,3,4,5,6,7,8,9,0,A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z," +
+                    "a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z";
+                break;
+        }
     }
 }
