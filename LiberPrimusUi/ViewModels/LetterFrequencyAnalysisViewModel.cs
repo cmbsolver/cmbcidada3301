@@ -31,7 +31,16 @@ public partial class LetterFrequencyAnalysisViewModel : ViewModelBase
         {
             LiberPages.Add(page);
         }
+        
+        CharacterExclusions.Add("0-9,A-Z");
+        CharacterExclusions.Add("0-9");
+        CharacterExclusions.Add("A-Z");
+        CharacterExclusions.Add("Everything");
     }
+    
+    public ObservableCollection<string> CharacterExclusions { get; set; } = new ObservableCollection<string>();
+
+    [ObservableProperty] private string _selectedCharacterExclusions = "";
     
     public ObservableCollection<string> LiberPages { get; set; } = new ObservableCollection<string>();
     
@@ -39,8 +48,7 @@ public partial class LetterFrequencyAnalysisViewModel : ViewModelBase
     
     [ObservableProperty] private string _textToSend;
     
-    [ObservableProperty] private string _charactersToExclude = "•,␍,␊,␉,␈,␇,␆,␅,␄,␃,␂,␁,␀, ,\n,\t,\r,!,-,_,=,+,*,^,&,%,@,$,#,~,`,',\",|,\\,/,?,>,<,.,:,;,{,},[,],(,),\',⊹,1,2,3,4,5,6,7,8,9,0";
-    //[ObservableProperty] private string _charactersToExclude = "•,␍,␊,␉,␈,␇,␆,␅,␄,␃,␂,␁,␀, ,\n,\t,\r,!,-,_,=,+,*,^,&,%,@,$,#,~,`,',\",|,\\,/,?,>,<,.,:,;,{,},[,],(,),\',⊹,1,2,3,4,5,6,7,8,9,0,A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z,a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z";
+    [ObservableProperty] private string _charactersToExclude = "";
     
     [ObservableProperty] private string _result = "";
 
@@ -109,6 +117,31 @@ public partial class LetterFrequencyAnalysisViewModel : ViewModelBase
     public void ClearMessages()
     {
         Result = string.Empty;
+    }
+    
+    [RelayCommand]
+    public void ExcludeCharacters()
+    {
+        switch (SelectedCharacterExclusions)
+        {
+            case "0-9,A-Z":
+                CharactersToExclude = "1,2,3,4,5,6,7,8,9,0,A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z,a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z";
+                break;
+            case "0-9":
+                CharactersToExclude = "1,2,3,4,5,6,7,8,9,0";
+                break;
+            case "A-Z":
+                CharactersToExclude = "A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z,a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z";
+                break;
+            case "Everything":
+                CharactersToExclude =
+                    "•,␍,␊,␉,␈,␇,␆,␅,␄,␃,␂,␁,␀, ,\n,\t,\r,!,-,_,=,+,*,^,&,%,@,$,#,~,`,',\",|,\\,/,?,>,<,.,:,;,{,},[,],(,),\',⊹,1,2,3,4,5,6,7,8,9,0,A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z,a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z";
+                break;
+            default:
+                CharactersToExclude =
+                    "•,␍,␊,␉,␈,␇,␆,␅,␄,␃,␂,␁,␀, ,\n,\t,\r,!,-,_,=,+,*,^,&,%,@,$,#,~,`,',\",|,\\,/,?,>,<,.,:,;,{,},[,],(,),\',⊹,1,2,3,4,5,6,7,8,9,0,A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z,a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z";
+                break;
+        }
     }
     
     public async Task IndexDocuments(string folder)

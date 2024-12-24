@@ -9,7 +9,10 @@
     <StackPanel Margin="20" Spacing="10">
         <StackPanel Orientation="Horizontal" Spacing="5">
             <TextBlock VerticalAlignment="Center">Characters To Exclude</TextBlock>
-            <TextBox Text="{Binding CharactersToExclude}" MaxWidth="800"></TextBox>
+            <TextBox Text="{Binding CharactersToExclude}" MaxWidth="600" TextWrapping="Wrap" MaxHeight="150"></TextBox>
+            <ComboBox ItemsSource="{Binding CharacterExclusions}" 
+                      SelectedItem="{Binding SelectedCharacterExclusions}"></ComboBox>
+            <Button Command="{Binding ExcludeCharactersCommand}" >Fill In Characters</Button>
         </StackPanel>
         <StackPanel Orientation="Horizontal" Spacing="5">
             <Button Click="Button_OnClick">(Re)Index Reference Documents</Button>
