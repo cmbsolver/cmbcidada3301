@@ -53,20 +53,22 @@ public class IndexCharactersFromDirectory
             
             await using(var context = new LiberContext())
             {
-                foreach (var line in lines)
+                await Parallel.ForEachAsync(lines, async (line, cancellationToken) =>
                 {
                     var word = new DictionaryWord();
                     word.DictionaryWordText = line.ToUpper();
-                    
-                    var translatedText = await _mediator.Send(new PrepLatinToRune.Command(line.ToUpper()), cancellationToken);
+
+                    var translatedText =
+                        await _mediator.Send(new PrepLatinToRune.Command(line.ToUpper()), cancellationToken);
                     word.RuneglishWordText = translatedText;
-                    
-                    var runeText = await _mediator.Send(new TransposeLatinToRune.Command(translatedText), cancellationToken);
+
+                    var runeText = await _mediator.Send(new TransposeLatinToRune.Command(translatedText),
+                        cancellationToken);
                     word.RuneWordText = runeText;
 
                     await context.DictionaryWords.AddAsync(word, cancellationToken);
                     await context.SaveChangesAsync(cancellationToken);
-                }
+                });
             }
 
             await ReadDirectoryContents(notification.DirectoryPath, excludedCharacters.ToArray());
