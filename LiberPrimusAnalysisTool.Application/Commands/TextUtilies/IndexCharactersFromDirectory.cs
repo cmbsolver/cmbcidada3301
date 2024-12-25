@@ -38,16 +38,35 @@ public class IndexCharactersFromDirectory
                 excludedCharacters.Add(",");
             }
 
-            FileInfo fileInfo = new(Environment.ProcessPath);
-            File.Delete($"{fileInfo.Directory}/liberdatabase.db");
-
             await using (var context = new LiberContext())
             {
                 // Make sure the database is deleted
-                await context.Database.EnsureDeletedAsync();
+                await context.Database.EnsureDeletedAsync(cancellationToken);
                 
                 // Make sure the database is created
-                await context.Database.EnsureCreatedAsync();
+                await context.Database.EnsureCreatedAsync(cancellationToken);
+            }
+            
+            var processExe = Environment.ProcessPath;
+            var dictionaryPath = Path.Combine(Path.GetDirectoryName(processExe) ?? string.Empty, "words.txt");
+            var lines = await File.ReadAllLinesAsync(dictionaryPath, cancellationToken);
+            
+            await using(var context = new LiberContext())
+            {
+                foreach (var line in lines)
+                {
+                    var word = new DictionaryWord();
+                    word.DictionaryWordText = line.ToUpper();
+                    
+                    var translatedText = await _mediator.Send(new PrepLatinToRune.Command(line.ToUpper()), cancellationToken);
+                    word.RuneglishWordText = translatedText;
+                    
+                    var runeText = await _mediator.Send(new TransposeLatinToRune.Command(translatedText), cancellationToken);
+                    word.RuneWordText = runeText;
+
+                    await context.DictionaryWords.AddAsync(word, cancellationToken);
+                    await context.SaveChangesAsync(cancellationToken);
+                }
             }
 
             await ReadDirectoryContents(notification.DirectoryPath, excludedCharacters.ToArray());

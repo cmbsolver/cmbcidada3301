@@ -1,6 +1,9 @@
 using System.Text;
+using LiberPrimusAnalysisTool.Application.Commands.TextUtilies;
+using LiberPrimusAnalysisTool.Database;
 using LiberPrimusAnalysisTool.Entity.Analysis;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace LiberPrimusAnalysisTool.Application.Queries.Analysis;
 
@@ -39,6 +42,22 @@ public class GetFrequencyAnalysisForLiberText
 
         public async Task Handle(Query request, CancellationToken cancellationToken)
         {
+            List<string> wordList = new();
+            double highestScore = 0;
+            StringBuilder fileText = new();
+            
+            using (var context = new LiberContext())
+            {
+                if (request.FromIntermediaryRune)
+                {
+                    wordList = await context.DictionaryWords.Select(x => x.RuneglishWordText).ToListAsync(cancellationToken);
+                }
+                else
+                {
+                    wordList = await context.DictionaryWords.Select(x => x.DictionaryWordText).ToListAsync(cancellationToken);
+                }
+            }
+            
             List<SubstitutionPossibility> substitutionPossibilities = new();
 
             // Get the letter frequency from the Liber text
@@ -93,10 +112,27 @@ public class GetFrequencyAnalysisForLiberText
                         }
                     }
 
-                    await File.AppendAllTextAsync(request.Output, request.Input  + Environment.NewLine, cancellationToken);
-                    await File.AppendAllTextAsync(request.Output, sb.ToString() + Environment.NewLine, cancellationToken);
-                    await File.AppendAllTextAsync(request.Output, Environment.NewLine, cancellationToken);
-                    await File.AppendAllTextAsync(request.Output, Environment.NewLine, cancellationToken);
+                    // Now we need to score the text for matches.
+                    // Highest match is output to the files.
+                    var score = await _mediator.Send(new ScoreText.Command(sb.ToString().ToUpper(), wordList), cancellationToken);
+                    if (score > highestScore)
+                    {
+                        highestScore = score;
+                        
+                        var permutationString = string.Join(",", permutation.Select(x =>
+                        {
+                            return $"{x.Letter} -> {x.GetCurrent()?.Letter}";
+                        }));
+                        
+                        fileText.Clear();
+                        fileText.AppendLine(request.Input);
+                        fileText.AppendLine($"score");
+                        fileText.AppendLine(permutationString);
+                        fileText.AppendLine(sb.ToString());
+                        fileText.AppendLine(Environment.NewLine);
+                        
+                        await File.WriteAllTextAsync(request.Output, fileText.ToString(), cancellationToken);
+                    }
                 }
             }
             else
