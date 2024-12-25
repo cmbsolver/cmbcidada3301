@@ -85,12 +85,7 @@ public class IndexCharactersFromDirectory
                 }
             }
 
-            var options = new ParallelOptions()
-            {
-                MaxDegreeOfParallelism = Environment.ProcessorCount / 2
-            };
-
-            await Parallel.ForEachAsync(directoryInfo.GetFiles(), options, async (file, cancellationToken) =>
+            await Parallel.ForEachAsync(directoryInfo.GetFiles(), async (file, cancellationToken) =>
             {
                 if (file.Extension.ToLower() != ".png" && 
                     file.Extension.ToLower() != ".jpg" && 
