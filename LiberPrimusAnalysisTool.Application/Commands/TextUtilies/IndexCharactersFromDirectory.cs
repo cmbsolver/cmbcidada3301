@@ -51,26 +51,26 @@ public class IndexCharactersFromDirectory
             var dictionaryPath = Path.Combine(Path.GetDirectoryName(processExe) ?? string.Empty, "words.txt");
             var lines = await File.ReadAllLinesAsync(dictionaryPath, cancellationToken);
             
-            await using(var context = new LiberContext())
+            await Parallel.ForEachAsync(lines, async (line, cancellationToken) =>
             {
-                await Parallel.ForEachAsync(lines, async (line, cancellationToken) =>
+                var word = new DictionaryWord();
+                word.DictionaryWordText = line.ToUpper();
+
+                var translatedText =
+                    await _mediator.Send(new PrepLatinToRune.Command(line.ToUpper()), cancellationToken);
+                word.RuneglishWordText = translatedText;
+
+                var runeText = await _mediator.Send(new TransposeLatinToRune.Command(translatedText),
+                    cancellationToken);
+                word.RuneWordText = runeText;
+
+                await using (var context = new LiberContext())
                 {
-                    var word = new DictionaryWord();
-                    word.DictionaryWordText = line.ToUpper();
-
-                    var translatedText =
-                        await _mediator.Send(new PrepLatinToRune.Command(line.ToUpper()), cancellationToken);
-                    word.RuneglishWordText = translatedText;
-
-                    var runeText = await _mediator.Send(new TransposeLatinToRune.Command(translatedText),
-                        cancellationToken);
-                    word.RuneWordText = runeText;
-
                     await context.DictionaryWords.AddAsync(word, cancellationToken);
                     await context.SaveChangesAsync(cancellationToken);
-                });
-            }
-
+                }
+            });
+                
             await ReadDirectoryContents(notification.DirectoryPath, excludedCharacters.ToArray());
         }
 
