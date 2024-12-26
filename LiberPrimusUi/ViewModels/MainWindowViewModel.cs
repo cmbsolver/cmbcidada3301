@@ -38,6 +38,7 @@ public partial class MainWindowViewModel : ViewModelBase
         new ListItemTemplate(typeof(GetWordsForValueViewModel), "Wrench", "Get Words for Value"),
         new ListItemTemplate(typeof(Base64DecodeViewModel), "Wrench", "Base64 Decode"),
         new ListItemTemplate(typeof(BinaryDecodeViewModel), "Wrench", "Binary Decode"),
+        new ListItemTemplate(typeof(CircularShiftViewModel), "Wrench", "Circular Shift"),
         //new ListItemTemplate(typeof(CalculateSectionSumsViewModel), "Wrench", "Calculate Section Sums"),
         new ListItemTemplate(typeof(TextSequenceReducerViewModel), "Wrench", "Text Sequence Reducer"),
         new ListItemTemplate(typeof(HexDecodeRunesViewModel), "Wrench", "Hex Decode Runes"),
@@ -276,6 +277,12 @@ public partial class MainWindowViewModel : ViewModelBase
                 if (!_windows.Any(w => w.Item1 == value.Label))
                     _windows.Add(new Tuple<string, object>(value.Label, new GetFrequencyAnalysisForLiberTextViewModel(_mediator)));
                 CurrentPage = _windows.FirstOrDefault(w => w.Item1 == value.Label)?.Item2 as GetFrequencyAnalysisForLiberTextViewModel;
+                break;
+            
+            case Type t when t == typeof(CircularShiftViewModel):
+                if (!_windows.Any(w => w.Item1 == value.Label))
+                    _windows.Add(new Tuple<string, object>(value.Label, new CircularShiftViewModel(_mediator)));
+                CurrentPage = _windows.FirstOrDefault(w => w.Item1 == value.Label)?.Item2 as CircularShiftViewModel;
                 break;
         }
         

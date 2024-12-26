@@ -1,0 +1,39 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             xmlns:vm="using:LiberPrimusUi.ViewModels"
+             x:Class="LiberPrimusUi.Views.CircularShiftView"
+             x:DataType="vm:CircularShiftViewModel">
+    <StackPanel Margin="20" Spacing="10">
+        <StackPanel Orientation="Horizontal" Spacing="5">
+            <TextBlock VerticalAlignment="Center">Number List</TextBlock>
+            <TextBox Text="{Binding TextInput}" MaxWidth="600" TextWrapping="Wrap" MaxHeight="150" AcceptsReturn="True"></TextBox>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" Spacing="5">
+            <TextBlock VerticalAlignment="Center">Process Numbers As</TextBlock>
+            <ComboBox ItemsSource="{Binding IntBitList}" 
+                      SelectedItem="{Binding SelectedIntBit}"></ComboBox>
+            <TextBlock VerticalAlignment="Center">Bits to Shift</TextBlock>
+            <ComboBox ItemsSource="{Binding BitShiftList}" 
+                      SelectedItem="{Binding SelectedBitShift}"></ComboBox>
+            <TextBlock VerticalAlignment="Center">Shift Direction</TextBlock>
+            <ComboBox ItemsSource="{Binding ShiftDirections}" 
+                      SelectedItem="{Binding SelectedShiftDirection}"></ComboBox>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" Spacing="5">
+            <TextBlock VerticalAlignment="Center">Output</TextBlock>
+            <ComboBox ItemsSource="{Binding OutputList}" 
+                      SelectedItem="{Binding SelectedOutput}"></ComboBox>
+            <Button Click="Button_OnClick">Select File</Button>
+            <TextBlock Text="{Binding SelectedFile}"></TextBlock>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" Spacing="5">
+            <Button Command="{Binding ProcessCommand}">Process</Button>
+        </StackPanel>
+        <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Height="400">
+            <TextBox Text="{Binding Result}"></TextBox>
+        </ScrollViewer>
+    </StackPanel>
+</UserControl>
