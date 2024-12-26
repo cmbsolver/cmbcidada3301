@@ -27,6 +27,7 @@ public partial class CircularShiftViewModel: ViewModelBase
         OutputList.Add("File");
         OutputList.Add("ANSI");
         OutputList.Add("ASCII");
+        OutputList.Add("NUMBERS");
         
         for(int i = 1; i <= 64; i++)
         {
@@ -70,6 +71,9 @@ public partial class CircularShiftViewModel: ViewModelBase
                 break;
             case "ASCII":
                 output = "ASCII";
+                break;
+            case "NUMBERS":
+                output = "NUMBERS";
                 break;
         }
         

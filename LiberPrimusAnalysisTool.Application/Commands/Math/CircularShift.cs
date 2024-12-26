@@ -114,29 +114,36 @@ public class CircularShift
                 case "ASCII":
                     result.AppendLine(ConvertBinaryToAscii(binaryStrings));
                     break;
+                case "NUMBERS":
+                    List<long> numbers = new();
+                    foreach (var binaryString in binaryStrings)
+                    {
+                        var value = Convert.ToInt64(binaryString, 2);
+                        numbers.Add(value);
+                    }
+                    result.AppendLine(string.Join(", ", numbers));
+                    break;
                 default:
                     List<byte> bytes = new();
                     foreach (var binaryString in binaryStrings)
                     {
-                        if (binaryString.Length % 8 != 0)
+                        StringBuilder binaryStringBuilder = new();
+                        for (int i = 0; i < binaryString.Length; i++)
                         {
-                            bytes.Add(Convert.ToByte(binaryString));
-                        }
-                        else
-                        {
-                            StringBuilder binaryStringBuilder = new();
-                            for (int i = 0; i < binaryString.Length; i++)
+                            binaryStringBuilder.Append(binaryString[i]);
+                            if (binaryStringBuilder.Length == 8)
                             {
-                                binaryStringBuilder.Append(binaryString[i]);
-                                if (binaryStringBuilder.Length % 8 == 0)
+                                var value = Convert.ToInt64(binaryString, 2);
+                                if (value is > byte.MaxValue or < byte.MinValue)
                                 {
-                                    bytes.Add(Convert.ToByte(binaryStringBuilder.ToString()));
-                                    binaryStringBuilder.Clear();
+                                    throw new Exception("Value is greater or less than byte max value");
                                 }
+                                bytes.Add(Convert.ToByte(value));
+                                binaryStringBuilder.Clear();
                             }
-
-                            await File.WriteAllBytesAsync(request.OutputType, bytes.ToArray(), cancellationToken);
                         }
+
+                        await File.WriteAllBytesAsync(request.OutputType, bytes.ToArray(), cancellationToken);
                     }
 
                     result.AppendLine($"Please check the output file: {request.OutputType}");
