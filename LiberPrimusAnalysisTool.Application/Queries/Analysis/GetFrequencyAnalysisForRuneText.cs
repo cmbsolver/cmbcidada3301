@@ -148,6 +148,7 @@ public class GetFrequencyAnalysisForRuneText
                             fileText.AppendLine(textScore.Text);
                             fileText.AppendLine(transposition);
                             fileText.AppendLine(Environment.NewLine);
+                            fileText.AppendLine(Environment.NewLine);
                         }
                         
                         await File.WriteAllTextAsync(request.Output, fileText.ToString());
