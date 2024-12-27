@@ -125,11 +125,15 @@ public class GetFrequencyAnalysisForRuneText
 
                     // Now we need to score the text for matches.
                     // Highest matches are output to the files.
-                    var score = await _mediator.Send(new ScoreText.Command(sb.ToString(), wordList));
+                    var totalScore = await _mediator.Send(new ScoreText.Command(sb.ToString(), wordList));
                     var permutationString = string.Join(",",
                         permutation.Select(x => { return $"{x.Letter} -> {x.GetCurrentReplacementLetter()}"; }));
                     
-                    if (AddAndReorderScore(new TextScore(sb.ToString(), score, permutationString), ref textScores))
+                    if (AddAndReorderScore(new TextScore(
+                            sb.ToString(), 
+                            totalScore.Item1, 
+                            permutationString, 
+                            totalScore.Item2), ref textScores))
                     {
                         fileText.Clear();
                         foreach (var textScore in textScores)
@@ -139,8 +143,9 @@ public class GetFrequencyAnalysisForRuneText
                             fileText.AppendLine(request.Input);
                             fileText.AppendLine($"Score {textScore.Score}");
                             fileText.AppendLine(textScore.PermutationString);
+                            fileText.AppendLine($"IoC {textScore.IocScore}");
+                            fileText.AppendLine(textScore.PermutationString);
                             fileText.AppendLine(textScore.Text);
-                            fileText.AppendLine(Environment.NewLine);
                             fileText.AppendLine(transposition);
                             fileText.AppendLine(Environment.NewLine);
                         }

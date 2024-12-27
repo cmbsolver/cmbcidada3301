@@ -70,12 +70,13 @@ public partial class GetFrequencyAnalysisForLiberTextViewModel : ViewModelBase
         switch (SelectedMode)
         {
             case "Letter Frequency":
-                await _mediator.Publish(new GetFrequencyAnalysisForLiberText.Query(
-                    SelectedLiberPage, 
-                    IsFromIntermediaryRune, 
-                    IsPermuteCombinations, 
-                    OutputFile,
-                    CharactersToExclude.Split(",")));
+                throw new NotImplementedException("Not implemented yet");
+                // await _mediator.Publish(new GetFrequencyAnalysisForLiberText.Query(
+                //     SelectedLiberPage, 
+                //     IsFromIntermediaryRune, 
+                //     IsPermuteCombinations, 
+                //     OutputFile,
+                //     CharactersToExclude.Split(",")));
                 break;
             
             case "Rune Frequency":

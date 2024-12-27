@@ -6,7 +6,7 @@ namespace LiberPrimusAnalysisTool.Application.Commands.TextUtilies;
 
 public class ScoreText
 {
-    public class Command: IRequest<ulong>  
+    public class Command: IRequest<Tuple<ulong, double>>  
     {
         public Command(string text, List<string> wordList)
         {
@@ -19,9 +19,9 @@ public class ScoreText
         public List<string> WordList { get; set; }
     }
     
-    public class Handler : IRequestHandler<Command, ulong>
+    public class Handler : IRequestHandler<Command, Tuple<ulong, double>>
     {
-        public async Task<ulong> Handle(Command request, CancellationToken cancellationToken)
+        public async Task<Tuple<ulong, double>> Handle(Command request, CancellationToken cancellationToken)
         {
             ulong count = 0;
 
@@ -33,7 +33,50 @@ public class ScoreText
                 }
             });
             
-            return count;
+            double ioc = CalculateIncidenceOfCoincidence(request.Text);
+            
+            return new Tuple<ulong, double>(count, ioc);
+        }
+        
+        public double CalculateIncidenceOfCoincidence(string text)
+        {
+            if (string.IsNullOrEmpty(text))
+            {
+                return 0.0;
+            }
+
+            var letterCounts = new Dictionary<char, int>();
+            int totalLetters = 0;
+
+            foreach (var c in text)
+            {
+                if (char.IsLetter(c))
+                {
+                    char upperChar = char.ToUpper(c);
+                    if (letterCounts.ContainsKey(upperChar))
+                    {
+                        letterCounts[upperChar]++;
+                    }
+                    else
+                    {
+                        letterCounts[upperChar] = 1;
+                    }
+                    totalLetters++;
+                }
+            }
+
+            double ic = 0.0;
+            foreach (var count in letterCounts.Values)
+            {
+                ic += count * (count - 1);
+            }
+
+            if (totalLetters > 1)
+            {
+                ic /= totalLetters * (totalLetters - 1);
+            }
+
+            return ic;
         }
     }
 }
