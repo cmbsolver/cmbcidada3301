@@ -117,6 +117,10 @@ public class GetFrequencyAnalysisForRuneText
                                 sb.Append(xchar);
                             }
                         }
+                        else
+                        {
+                            sb.Append(xchar);
+                        }
                     }
 
                     // Now we need to score the text for matches.
