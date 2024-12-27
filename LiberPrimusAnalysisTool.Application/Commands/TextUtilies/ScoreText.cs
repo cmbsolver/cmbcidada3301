@@ -33,12 +33,12 @@ public class ScoreText
                 }
             });
             
-            double ioc = CalculateIncidenceOfCoincidence(request.Text) * 100;
+            double ioc = CalculateIndexOfCoincidence(request.Text) * 100;
             
             return new Tuple<ulong, double>(count, ioc);
         }
         
-        public double CalculateIncidenceOfCoincidence(string text)
+        public double CalculateIndexOfCoincidence(string text)
         {
             if (string.IsNullOrEmpty(text))
             {
