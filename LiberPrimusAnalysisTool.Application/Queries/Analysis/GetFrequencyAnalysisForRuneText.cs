@@ -140,13 +140,14 @@ public class GetFrequencyAnalysisForRuneText
                         {
                             var transposition = await _mediator.Send(new TransposeRuneToLatin.Command(textScore.Text));
                             
-                            fileText.AppendLine(request.Input);
-                            fileText.AppendLine($"Score {textScore.Score}");
-                            fileText.AppendLine(textScore.PermutationString);
-                            fileText.AppendLine($"IoC {textScore.IocScore}");
-                            fileText.AppendLine(textScore.PermutationString);
+                            fileText.AppendLine($"File: {request.Input}");
+                            fileText.AppendLine($"Permutation: {textScore.PermutationString}");
+                            fileText.AppendLine($"Score: {textScore.Score}");
+                            fileText.AppendLine($"IoC: {textScore.IocScore}%");
                             fileText.AppendLine(textScore.Text);
+                            fileText.AppendLine(Environment.NewLine);
                             fileText.AppendLine(transposition);
+                            fileText.AppendLine(Environment.NewLine);
                             fileText.AppendLine(Environment.NewLine);
                             fileText.AppendLine(Environment.NewLine);
                         }

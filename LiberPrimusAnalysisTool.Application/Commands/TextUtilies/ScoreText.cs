@@ -33,7 +33,7 @@ public class ScoreText
                 }
             });
             
-            double ioc = CalculateIncidenceOfCoincidence(request.Text);
+            double ioc = CalculateIncidenceOfCoincidence(request.Text) * 100;
             
             return new Tuple<ulong, double>(count, ioc);
         }
