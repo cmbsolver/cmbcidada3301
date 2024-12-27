@@ -11,7 +11,7 @@
             <TextBlock VerticalAlignment="Center">Modes</TextBlock>
             <ComboBox ItemsSource="{Binding Modes}" 
                       SelectedItem="{Binding SelectedMode}"></ComboBox>
-            <CheckBox IsChecked="{Binding IsFromIntermediaryRune}">Is From Intermediary Rune Text?</CheckBox>
+            <!-- <CheckBox IsChecked="{Binding IsFromIntermediaryRune}">Is From Intermediary Rune Text?</CheckBox> -->
             <CheckBox IsChecked="{Binding IsPermuteCombinations}">Permute Combinations?</CheckBox>
         </StackPanel>
         <StackPanel Orientation="Horizontal" Spacing="5">

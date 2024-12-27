@@ -6,7 +6,7 @@ namespace LiberPrimusAnalysisTool.Application.Commands.TextUtilies;
 
 public class ScoreText
 {
-    public class Command: IRequest<double>  
+    public class Command: IRequest<ulong>  
     {
         public Command(string text, List<string> wordList)
         {
@@ -19,22 +19,21 @@ public class ScoreText
         public List<string> WordList { get; set; }
     }
     
-    public class Handler : IRequestHandler<Command, double>
+    public class Handler : IRequestHandler<Command, ulong>
     {
-        public async Task<double> Handle(Command request, CancellationToken cancellationToken)
+        public async Task<ulong> Handle(Command request, CancellationToken cancellationToken)
         {
-            var count = 0;
+            ulong count = 0;
 
-            foreach (var word in request.WordList)
+            await Parallel.ForEachAsync(request.WordList, async (word, cancellationToken) =>
             {
-                if (request.Text.ToUpper().Contains(word) && word.Length > 2)
+                if (request.Text.Contains(word))
                 {
-                    count += word.Length;
+                    count += (ulong)word.Length ^ 2;
                 }
-            }
-
-            double score = ((double)count / (double)request.Text.Length) * 100;
-            return score;
+            });
+            
+            return count;
         }
     }
 }

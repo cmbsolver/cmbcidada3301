@@ -30,18 +30,18 @@ public class SubstitutionPossibility
             return new SubstitutionPossibility(Letter, nextSubstitution);
         }
     }
-
-    public SubstitutionPossibility? GetCurrent()
+    
+    public string? GetCurrentReplacementLetter()
     {
-        int currentIndex = CurrentSubstitutionIndex > -1 || CurrentSubstitutionIndex < PossibleSubstitutions.Count - 1 
+        int currentIndex = (CurrentSubstitutionIndex >= 0 && CurrentSubstitutionIndex <= PossibleSubstitutions.Count - 1)
             ? CurrentSubstitutionIndex : 0;
-        var nextSubstitution = new string[1] { PossibleSubstitutions[currentIndex] };
-        return new SubstitutionPossibility(Letter, nextSubstitution);
+        var nextSubstitution = PossibleSubstitutions[currentIndex];
+        return nextSubstitution;
     }
     
     public bool HasNextSubstitution()
     {
-        return CurrentSubstitutionIndex < PossibleSubstitutions.Count - 1;
+        return CurrentSubstitutionIndex < PossibleSubstitutions.Count;
     }
     
     public void Reset()

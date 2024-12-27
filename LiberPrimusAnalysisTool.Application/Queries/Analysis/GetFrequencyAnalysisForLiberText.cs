@@ -2,6 +2,7 @@ using System.Text;
 using LiberPrimusAnalysisTool.Application.Commands.TextUtilies;
 using LiberPrimusAnalysisTool.Database;
 using LiberPrimusAnalysisTool.Entity.Analysis;
+using LiberPrimusAnalysisTool.Entity.Text;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -45,16 +46,17 @@ public class GetFrequencyAnalysisForLiberText
             List<string> wordList = new();
             double highestScore = 0;
             StringBuilder fileText = new();
+            List<TextScore> textScores = new();
             
             using (var context = new LiberContext())
             {
                 if (request.FromIntermediaryRune)
                 {
-                    wordList = await context.DictionaryWords.Select(x => x.RuneglishWordText).ToListAsync(cancellationToken);
+                    wordList = await context.DictionaryWords.Select(x => x.RuneglishWordText).ToListAsync();
                 }
                 else
                 {
-                    wordList = await context.DictionaryWords.Select(x => x.DictionaryWordText).ToListAsync(cancellationToken);
+                    wordList = await context.DictionaryWords.Select(x => x.DictionaryWordText).ToListAsync();
                 }
             }
             
@@ -91,11 +93,9 @@ public class GetFrequencyAnalysisForLiberText
 
             if (request.IsPermuteCombinations)
             {
-                // Generate all permutations of substitution possibilities
-                var permutations = GeneratePermutations(substitutionPossibilities.ToArray());
-
+                var possArray = substitutionPossibilities.ToArray();
                 // Perform string replacements for each permutation
-                foreach (var permutation in permutations)
+                foreach (var permutation in GeneratePermutations(possArray))
                 {
                     var sb = new StringBuilder();
 
@@ -104,34 +104,33 @@ public class GetFrequencyAnalysisForLiberText
                         var replacement = permutation.FirstOrDefault(x => x.Letter == xchar.ToString().ToUpper());
                         if (replacement != null)
                         {
-                            sb.Append(replacement.GetCurrent());
+                            sb.Append(replacement.GetCurrentReplacementLetter());
                         }
                         else
                         {
                             sb.Append(xchar);
                         }
                     }
-
+                    
                     // Now we need to score the text for matches.
-                    // Highest match is output to the files.
-                    var score = await _mediator.Send(new ScoreText.Command(sb.ToString().ToUpper(), wordList), cancellationToken);
-                    if (score > highestScore)
+                    // Highest matches are output to the files.
+                    var score = await _mediator.Send(new ScoreText.Command(sb.ToString(), wordList));
+                    var permutationString = string.Join(",",
+                        permutation.Select(x => { return $"{x.Letter} -> {x.GetCurrentReplacementLetter()}"; }));
+                    
+                    if (AddAndReorderScore(new TextScore(sb.ToString(), score, permutationString), ref textScores))
                     {
-                        highestScore = score;
-                        
-                        var permutationString = string.Join(",", permutation.Select(x =>
-                        {
-                            return $"{x.Letter} -> {x.GetCurrent()?.Letter}";
-                        }));
-                        
                         fileText.Clear();
-                        fileText.AppendLine(request.Input);
-                        fileText.AppendLine($"score");
-                        fileText.AppendLine(permutationString);
-                        fileText.AppendLine(sb.ToString());
-                        fileText.AppendLine(Environment.NewLine);
+                        foreach (var textScore in textScores)
+                        {
+                            fileText.AppendLine(request.Input);
+                            fileText.AppendLine($"Score {textScore.Score}");
+                            fileText.AppendLine(textScore.PermutationString);
+                            fileText.AppendLine(textScore.Text);
+                            fileText.AppendLine(Environment.NewLine);
+                        }
                         
-                        await File.WriteAllTextAsync(request.Output, fileText.ToString(), cancellationToken);
+                        await File.WriteAllTextAsync(request.Output, fileText.ToString());
                     }
                 }
             }
@@ -144,7 +143,7 @@ public class GetFrequencyAnalysisForLiberText
                     var replacement = substitutionPossibilities.FirstOrDefault(x => x.Letter == xchar.ToString().ToUpper());
                     if (replacement != null)
                     {
-                        sb.Append(replacement.GetCurrent());
+                        sb.Append(replacement.GetCurrentReplacementLetter());
                     }
                     else
                     {
@@ -152,14 +151,34 @@ public class GetFrequencyAnalysisForLiberText
                     }
                 }
 
-                await File.AppendAllTextAsync(request.Output, request.Input + Environment.NewLine, cancellationToken);
-                await File.AppendAllTextAsync(request.Output, sb.ToString() + Environment.NewLine, cancellationToken);
-                await File.AppendAllTextAsync(request.Output, Environment.NewLine, cancellationToken);
-                await File.AppendAllTextAsync(request.Output, Environment.NewLine, cancellationToken);
+                await File.AppendAllTextAsync(request.Output, request.Input + Environment.NewLine);
+                await File.AppendAllTextAsync(request.Output, sb.ToString() + Environment.NewLine);
+                await File.AppendAllTextAsync(request.Output, Environment.NewLine);
+                await File.AppendAllTextAsync(request.Output, Environment.NewLine);
             }
         }
+        
+        private bool AddAndReorderScore(TextScore score, ref List<TextScore> textScores)
+        {
+            bool needToWriteNewFile = false;
+            ulong[] topScores = textScores.Select(x => x.Score).ToArray();
+            textScores.Add(score);
+            textScores = textScores.OrderByDescending(x => x.Score).ToList();
+            if (textScores.Count > 100)
+            {
+                textScores = textScores.Take(100).ToList();
+                var currScores = textScores.Select(x => x.Score).ToArray();
+                
+                if (topScores != currScores)
+                {
+                    needToWriteNewFile = true;
+                }
+            }
 
-        public SubstitutionPossibility GetSubstitutionPossibility(string letter, double frquency, LetterFrequency liberFrequency)
+            return needToWriteNewFile;
+        }
+
+        private SubstitutionPossibility GetSubstitutionPossibility(string letter, double frquency, LetterFrequency liberFrequency)
         {
             List<string> possibleSubstitutions = new();
             string hightestPossibleMatch = string.Empty;

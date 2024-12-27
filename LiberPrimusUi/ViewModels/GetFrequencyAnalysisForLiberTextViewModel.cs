@@ -27,7 +27,7 @@ public partial class GetFrequencyAnalysisForLiberTextViewModel : ViewModelBase
         
         Modes.Add("Rune Frequency");
         Modes.Add("Rune Frequency (Med)");
-        Modes.Add("Letter Frequency");
+        //Modes.Add("Letter Frequency");
         SelectedMode = Modes[0];
         
         CharacterExclusions.Add("0-9,A-Z");
@@ -62,6 +62,11 @@ public partial class GetFrequencyAnalysisForLiberTextViewModel : ViewModelBase
     [RelayCommand] 
     public async void ProcessFile()
     {
+        if (IsPermuteCombinations)
+        {
+            Result = $"Permuting combinations... Please be patient and check the output file: {OutputFile}";
+        }
+        
         switch (SelectedMode)
         {
             case "Letter Frequency":
@@ -92,7 +97,7 @@ public partial class GetFrequencyAnalysisForLiberTextViewModel : ViewModelBase
                 break;
         }
         
-        Result += $"Processing: {SelectedLiberPage}";
+        Result += $"Processed: {SelectedLiberPage}";
         Result += Environment.NewLine;
         Result += $"Check the output file: {OutputFile}";
         Result += Environment.NewLine;
