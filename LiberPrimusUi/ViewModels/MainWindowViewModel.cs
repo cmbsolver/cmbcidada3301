@@ -39,8 +39,6 @@ public partial class MainWindowViewModel : ViewModelBase
         new ListItemTemplate(typeof(Base64DecodeViewModel), "Wrench", "Base64 Decode"),
         new ListItemTemplate(typeof(BinaryDecodeViewModel), "Wrench", "Binary Decode"),
         new ListItemTemplate(typeof(CircularShiftViewModel), "Wrench", "Circular Shift"),
-        //new ListItemTemplate(typeof(CalculateSectionSumsViewModel), "Wrench", "Calculate Section Sums"),
-        new ListItemTemplate(typeof(TextSequenceReducerViewModel), "Wrench", "Text Sequence Reducer"),
         new ListItemTemplate(typeof(HexDecodeRunesViewModel), "Wrench", "Hex Decode Runes"),
         new ListItemTemplate(typeof(IdentifyBinFileViewModel), "Wrench", "Identify Bin File"),
         new ListItemTemplate(typeof(BinaryInvertViewModel), "Wrench", "Invert Binary Values"),
@@ -56,9 +54,9 @@ public partial class MainWindowViewModel : ViewModelBase
         
         // Ciphers
         new ListItemTemplate(typeof(DeScytaleViewModel), "Lock", "Scytale"),
-        new ListItemTemplate(typeof(AdvancedCaesarCipherViewModel), "Lock", "Caesar"),
-        //new ListItemTemplate(typeof(AdvancedBase60CipherViewModel), "Lock", "Base 60"),
-        //new ListItemTemplate(typeof(AdvancedHillCipherViewModel), "Lock", "Shitty Hill"),
+        new ListItemTemplate(typeof(CaesarCipherViewModel), "Lock", "Caesar"),
+        new ListItemTemplate(typeof(AtbashCipherViewModel), "Lock", "Atbash"),
+        new ListItemTemplate(typeof(AffineCipherViewModel), "Lock", "Affine"),
         new ListItemTemplate(typeof(SpiralSquareSolveViewModel), "Lock", "Spiral"),
         new ListItemTemplate(typeof(SubstituteUltimaViewModel), "Lock", "Rune Substitute Ultima"),
         
@@ -141,23 +139,11 @@ public partial class MainWindowViewModel : ViewModelBase
                 CurrentPage = _windows.FirstOrDefault(w => w.Item1 == value.Label)?.Item2 as InvertColorsViewModel;
                 break;
             
-            case Type t when t == typeof(CalculateSectionSumsViewModel):
-                if (!_windows.Any(w => w.Item1 == value.Label))
-                    _windows.Add(new Tuple<string, object>(value.Label, new CalculateSectionSumsViewModel(_mediator)));
-                CurrentPage = _windows.FirstOrDefault(w => w.Item1 == value.Label)?.Item2 as CalculateSectionSumsViewModel;
-                break;
-            
             case Type t when t == typeof(DeScytaleViewModel):
                 if (!_windows.Any(w => w.Item1 == value.Label))
                     _windows.Add(new Tuple<string, object>(value.Label, new DeScytaleViewModel(_mediator)));
                 CurrentPage = _windows.FirstOrDefault(w => w.Item1 == value.Label)?.Item2 as DeScytaleViewModel;
-                break; 
-            
-            case Type t when t == typeof(TextSequenceReducerViewModel):
-                if (!_windows.Any(w => w.Item1 == value.Label))
-                    _windows.Add(new Tuple<string, object>(value.Label, new TextSequenceReducerViewModel(_mediator)));
-                CurrentPage = _windows.FirstOrDefault(w => w.Item1 == value.Label)?.Item2 as TextSequenceReducerViewModel;
-                break; 
+                break;
             
             case Type t when t == typeof(SubstituteUltimaViewModel):
                 if (!_windows.Any(w => w.Item1 == value.Label))
@@ -225,10 +211,10 @@ public partial class MainWindowViewModel : ViewModelBase
                 CurrentPage = _windows.FirstOrDefault(w => w.Item1 == value.Label)?.Item2 as GetWordsForValueViewModel;
                 break;
             
-            case Type t when t == typeof(AdvancedCaesarCipherViewModel):
+            case Type t when t == typeof(CaesarCipherViewModel):
                 if (!_windows.Any(w => w.Item1 == value.Label))
-                    _windows.Add(new Tuple<string, object>(value.Label, new AdvancedCaesarCipherViewModel(_mediator)));
-                CurrentPage = _windows.FirstOrDefault(w => w.Item1 == value.Label)?.Item2 as AdvancedCaesarCipherViewModel;
+                    _windows.Add(new Tuple<string, object>(value.Label, new CaesarCipherViewModel(_mediator)));
+                CurrentPage = _windows.FirstOrDefault(w => w.Item1 == value.Label)?.Item2 as CaesarCipherViewModel;
                 break;
             
             case Type t when t == typeof(CalculateClockAngleViewModel):
@@ -271,6 +257,18 @@ public partial class MainWindowViewModel : ViewModelBase
                 if (!_windows.Any(w => w.Item1 == value.Label))
                     _windows.Add(new Tuple<string, object>(value.Label, new CircularShiftViewModel(_mediator)));
                 CurrentPage = _windows.FirstOrDefault(w => w.Item1 == value.Label)?.Item2 as CircularShiftViewModel;
+                break;
+            
+            case Type t when t == typeof(AtbashCipherViewModel):
+                if (!_windows.Any(w => w.Item1 == value.Label))
+                    _windows.Add(new Tuple<string, object>(value.Label, new AtbashCipherViewModel(_mediator)));
+                CurrentPage = _windows.FirstOrDefault(w => w.Item1 == value.Label)?.Item2 as AtbashCipherViewModel;
+                break;
+            
+            case Type t when t == typeof(AffineCipherViewModel):
+                if (!_windows.Any(w => w.Item1 == value.Label))
+                    _windows.Add(new Tuple<string, object>(value.Label, new AffineCipherViewModel(_mediator)));
+                CurrentPage = _windows.FirstOrDefault(w => w.Item1 == value.Label)?.Item2 as AffineCipherViewModel;
                 break;
         }
         

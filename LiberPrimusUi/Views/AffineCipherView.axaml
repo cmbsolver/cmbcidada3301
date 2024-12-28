@@ -4,8 +4,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="using:LiberPrimusUi.ViewModels"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="LiberPrimusUi.Views.AdvancedCaesarCipherView"
-             x:DataType="vm:AdvancedCaesarCipherViewModel">
+             x:Class="LiberPrimusUi.Views.AffineCipherView"
+             x:DataType="vm:AffineCipherViewModel">
     <StackPanel Margin="20" Spacing="10">
         <StackPanel Orientation="Horizontal" Spacing="5">
             <TextBlock VerticalAlignment="Center">Alphabet</TextBlock>
@@ -19,13 +19,14 @@
             <TextBlock VerticalAlignment="Center" Text="{Binding CharCount}"></TextBlock>
         </StackPanel>
         <StackPanel Orientation="Horizontal" Spacing="5">
+            <TextBlock VerticalAlignment="Center">Multiplier</TextBlock>
+            <TextBox Text="{Binding Multiplier}" MaxWidth="300"></TextBox>
             <TextBlock VerticalAlignment="Center">Shift</TextBlock>
             <TextBox Text="{Binding Shift}" MaxWidth="300"></TextBox>
         </StackPanel>
         <StackPanel Orientation="Horizontal" Spacing="5">
             <Button Command="{Binding EncodeStringCommand}">Encode</Button>
             <Button Command="{Binding DecodeStringCommand}">Decode</Button>
-            <Button Command="{Binding BulkDecodeStringCommand}">Bulk Decode</Button>
         </StackPanel>
         <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Height="500">
             <TextBox Text="{Binding DecodedString}"></TextBox>

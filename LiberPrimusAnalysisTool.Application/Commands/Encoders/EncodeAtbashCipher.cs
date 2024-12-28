@@ -5,6 +5,12 @@ public class EncodeAtbashCipher
 {
     public class Command : IRequest<string>
     {
+        public Command(string text, string alphabet)
+        {
+            Text = text;
+            Alphabet = alphabet;
+        }
+
         public string Text { get; set; }
 
         public string Alphabet { get; set; }

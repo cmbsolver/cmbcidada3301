@@ -10,11 +10,11 @@ using MediatR;
 
 namespace LiberPrimusUi.ViewModels;
 
-public partial class AdvancedCaesarCipherViewModel: ViewModelBase
+public partial class CaesarCipherViewModel: ViewModelBase
 {
     private readonly IMediator _mediator;
     
-    public AdvancedCaesarCipherViewModel(IMediator mediator)
+    public CaesarCipherViewModel(IMediator mediator)
     {
         _mediator = mediator;
         

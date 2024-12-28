@@ -690,5 +690,13 @@
         <DependentUpon>GetFrequencyAnalysisForLiberTextView.axaml</DependentUpon>
         <SubType>Code</SubType>
       </Compile>
+      <Compile Update="Views\AtbashCipherView.axaml.cs">
+        <DependentUpon>AtbashCipherView.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
+      <Compile Update="Views\AffineCipherView.axaml.cs">
+        <DependentUpon>AffineCipherView.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
     </ItemGroup>
 </Project>

@@ -5,16 +5,16 @@ using LiberPrimusUi.ViewModels;
 
 namespace LiberPrimusUi.Views;
 
-public partial class AdvancedCaesarCipherView : UserControl
+public partial class AffineCipherView : UserControl
 {
-    public AdvancedCaesarCipherView()
+    public AffineCipherView()
     {
         InitializeComponent();
     }
 
     private void SelectingItemsControl_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
     {
-        var viewModel = (AdvancedCaesarCipherViewModel)DataContext;
+        var viewModel = (AffineCipherViewModel)DataContext;
         viewModel.SelectedEncoding = (string)e.AddedItems[0];
         
         switch (viewModel.SelectedEncoding)
@@ -33,7 +33,7 @@ public partial class AdvancedCaesarCipherView : UserControl
     private void TextBox_OnTextChanged(object? sender, TextChangedEventArgs e)
     {
         int count = 0;
-        var viewModel = (AdvancedCaesarCipherViewModel)DataContext;
+        var viewModel = (AffineCipherViewModel)DataContext;
         foreach (var charToCalc in viewModel.StringToDecode)
         {
             if (char.IsLetter(charToCalc) || IsRune(charToCalc.ToString()))
