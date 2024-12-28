@@ -670,14 +670,6 @@
         <DependentUpon>CalculateClockAngleView.axaml</DependentUpon>
         <SubType>Code</SubType>
       </Compile>
-      <Compile Update="Views\AdvancedBase60CipherView.axaml.cs">
-        <DependentUpon>AdvancedBase60CipherView.axaml</DependentUpon>
-        <SubType>Code</SubType>
-      </Compile>
-      <Compile Update="Views\AdvancedHillCipherView.axaml.cs">
-        <DependentUpon>AdvancedHillCipherView.axaml</DependentUpon>
-        <SubType>Code</SubType>
-      </Compile>
       <Compile Update="Views\SpiralSquareSolveView.axaml.cs">
         <DependentUpon>SpiralSquareSolveView.axaml</DependentUpon>
         <SubType>Code</SubType>

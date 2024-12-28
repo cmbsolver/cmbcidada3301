@@ -42,12 +42,12 @@ public partial class AdvancedCaesarCipherViewModel: ViewModelBase
     {
         if (Shift.Contains(","))
         {
-            DecodeAdvancedCaesarCipher.Command command = new(Alphabet, StringToDecode, Shift);
+            DecodeCaesarCipher.Command command = new(Alphabet, StringToDecode, Shift);
             DecodedString = await _mediator.Send(command);
         }
         else
         {
-            DecodeAdvancedCaesarCipher.Command command = new(Alphabet, StringToDecode, Convert.ToInt32(Shift));
+            DecodeCaesarCipher.Command command = new(Alphabet, StringToDecode, Convert.ToInt32(Shift));
             DecodedString = await _mediator.Send(command);
         }
     }
@@ -66,7 +66,7 @@ public partial class AdvancedCaesarCipherViewModel: ViewModelBase
             }
             
             result.AppendLine($"Trying {i}:");
-            DecodeAdvancedCaesarCipher.Command command = new(Alphabet, StringToDecode, Convert.ToInt32(i));
+            DecodeCaesarCipher.Command command = new(Alphabet, StringToDecode, Convert.ToInt32(i));
             result.AppendLine(await _mediator.Send(command));
         }
         
@@ -78,12 +78,12 @@ public partial class AdvancedCaesarCipherViewModel: ViewModelBase
     {
         if (Shift.Contains(","))
         {
-            EncodeAdvancedCaesarCipher.Command command = new(Alphabet, StringToDecode, Shift);
+            EncodeCaesarCipher.Command command = new(Alphabet, StringToDecode, Shift);
             DecodedString = await _mediator.Send(command);
         }
         else
         {
-            EncodeAdvancedCaesarCipher.Command command = new(Alphabet, StringToDecode, Convert.ToInt32(Shift));
+            EncodeCaesarCipher.Command command = new(Alphabet, StringToDecode, Convert.ToInt32(Shift));
             DecodedString = await _mediator.Send(command);
         }
     }

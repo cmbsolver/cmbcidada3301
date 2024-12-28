@@ -3,7 +3,7 @@ using MediatR;
 
 namespace LiberPrimusAnalysisTool.Application.Commands.Decoders;
 
-public class DecodeAdvancedCaesarCipher
+public class DecodeCaesarCipher
 {
     public class Command : IRequest<string>
     {

@@ -237,18 +237,6 @@ public partial class MainWindowViewModel : ViewModelBase
                 CurrentPage = _windows.FirstOrDefault(w => w.Item1 == value.Label)?.Item2 as CalculateClockAngleViewModel;
                 break;
             
-            case Type t when t == typeof(AdvancedBase60CipherViewModel):
-                if (!_windows.Any(w => w.Item1 == value.Label))
-                    _windows.Add(new Tuple<string, object>(value.Label, new AdvancedBase60CipherViewModel(_mediator)));
-                CurrentPage = _windows.FirstOrDefault(w => w.Item1 == value.Label)?.Item2 as AdvancedBase60CipherViewModel;
-                break;
-            
-            case Type t when t == typeof(AdvancedHillCipherViewModel):
-                if (!_windows.Any(w => w.Item1 == value.Label))
-                    _windows.Add(new Tuple<string, object>(value.Label, new AdvancedHillCipherViewModel(_mediator)));
-                CurrentPage = _windows.FirstOrDefault(w => w.Item1 == value.Label)?.Item2 as AdvancedHillCipherViewModel;
-                break;
-            
             case Type t when t == typeof(SpiralSquareSolveViewModel):
                 if (!_windows.Any(w => w.Item1 == value.Label))
                     _windows.Add(new Tuple<string, object>(value.Label, new SpiralSquareSolveViewModel(_mediator)));
