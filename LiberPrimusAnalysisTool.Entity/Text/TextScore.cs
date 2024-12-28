@@ -2,7 +2,7 @@ namespace LiberPrimusAnalysisTool.Entity.Text;
 
 public class TextScore
 {
-    public TextScore(string text, ulong score, string permutationString, double iocScore)
+    public TextScore(string originalText, string text, ulong score, string permutationString, double iocScore)
     {
         Text = text;
         Score = score;

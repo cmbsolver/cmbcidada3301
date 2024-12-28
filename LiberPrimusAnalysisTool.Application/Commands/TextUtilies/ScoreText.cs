@@ -8,11 +8,14 @@ public class ScoreText
 {
     public class Command: IRequest<Tuple<ulong, double>>  
     {
-        public Command(string text, List<string> wordList)
+        public Command(string originalText, string text, List<string> wordList)
         {
+            OriginalText = originalText;
             Text = text;
             WordList = wordList;
         }
+        
+        public string OriginalText { get; set; }
 
         public string Text { get; set; }
         
@@ -33,50 +36,32 @@ public class ScoreText
                 }
             });
             
-            double ioc = CalculateIndexOfCoincidence(request.Text) * 100;
+            double ioc = CalculateIndexOfCoincidence(request.OriginalText, request.Text) * 100;
             
             return new Tuple<ulong, double>(count, ioc);
         }
         
-        public double CalculateIndexOfCoincidence(string text)
+        private double CalculateIndexOfCoincidence(string originalText, string text)
         {
-            if (string.IsNullOrEmpty(text))
+            if (originalText.Length != text.Length)
             {
-                return 0.0;
+                throw new ArgumentException("Texts must be of the same length");
             }
 
-            var letterCounts = new Dictionary<char, int>();
-            int totalLetters = 0;
+            int matchCount = 0;
+            int length = originalText.Length;
 
-            foreach (var c in text)
+            for (int i = 0; i < length; i++)
             {
-                if (char.IsLetter(c))
+                if (originalText[i] == text[i])
                 {
-                    char upperChar = char.ToUpper(c);
-                    if (letterCounts.ContainsKey(upperChar))
-                    {
-                        letterCounts[upperChar]++;
-                    }
-                    else
-                    {
-                        letterCounts[upperChar] = 1;
-                    }
-                    totalLetters++;
+                    matchCount++;
                 }
             }
 
-            double ic = 0.0;
-            foreach (var count in letterCounts.Values)
-            {
-                ic += count * (count - 1);
-            }
-
-            if (totalLetters > 1)
-            {
-                ic /= totalLetters * (totalLetters - 1);
-            }
-
-            return ic;
+            return (double)matchCount / length;
         }
+        
+        
     }
 }

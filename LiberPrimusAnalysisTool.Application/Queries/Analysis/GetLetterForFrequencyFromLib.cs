@@ -43,7 +43,7 @@ public class GetLetterForFrequencyFromLib
                         await using (var context = new LiberContext())
                         {
                             var rletters = context.RuneTextDocumentCharacters
-                                .Where(x => runesToIncludeArray.Contains(x.Character))
+                                //.Where(x => runesToIncludeArray.Contains(x.Character))
                                 .ToList();
 
                             foreach (var letter in rletters)
