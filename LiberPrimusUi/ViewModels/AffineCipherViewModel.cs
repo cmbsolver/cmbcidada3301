@@ -45,12 +45,36 @@ public partial class AffineCipherViewModel: ViewModelBase
         if (string.IsNullOrEmpty(Shift) || string.IsNullOrEmpty(Multiplier) ||
             string.IsNullOrWhiteSpace(Shift) || string.IsNullOrWhiteSpace(Multiplier))
         {
-            DecodeAffineCipher.Command command = new(StringToDecode, null, null, Alphabet);
-            DecodedString = await _mediator.Send(command);
+            DecodedString = "";
+            for (int i = 0; i < Alphabet.Length; i++)
+            {
+                for (int j = 0; j < Alphabet.Length; j++)
+                {
+                    try
+                    {
+                        DecodeAffineCipher.Command command = new(
+                            StringToDecode.ToUpper(), 
+                            i, 
+                            j, 
+                            Alphabet);
+                        DecodedString += await _mediator.Send(command);
+                        DecodedString += Environment.NewLine;
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine(e);
+                    }
+                }
+            }
+            
         }
         else
         {
-            DecodeAffineCipher.Command command = new(StringToDecode, Convert.ToInt32(Multiplier), Convert.ToInt32(Shift), Alphabet);
+            DecodeAffineCipher.Command command = new(
+                StringToDecode.ToUpper(), 
+                Convert.ToInt32(Multiplier), 
+                Convert.ToInt32(Shift), 
+                Alphabet);
             DecodedString = await _mediator.Send(command);
         }
     }
@@ -58,7 +82,11 @@ public partial class AffineCipherViewModel: ViewModelBase
     [RelayCommand]
     private async Task EncodeString()
     {
-        EncodeAffineCipher.Command command = new(StringToDecode, Convert.ToInt32(Multiplier), Convert.ToInt32(Shift), Alphabet);
+        EncodeAffineCipher.Command command = new(
+            StringToDecode, 
+            Convert.ToInt32(Multiplier), 
+            Convert.ToInt32(Shift), 
+            Alphabet);
         DecodedString = await _mediator.Send(command);
     }
 }

@@ -10,12 +10,12 @@ namespace LiberPrimusAnalysisTool.Application.Commands.Decoders
             public Command(string text, string alphabet)
             {
                 Text = text;
-                Alphabet = alphabet;
+                Alphabet = alphabet.Split(",", StringSplitOptions.RemoveEmptyEntries);
             }
 
             public string Text { get; set; }
 
-            public string Alphabet { get; set; }
+            public string[] Alphabet { get; set; }
         }
 
         public class Handler : IRequestHandler<Command, string>
@@ -30,10 +30,10 @@ namespace LiberPrimusAnalysisTool.Application.Commands.Decoders
                 {
                     if (char.IsLetter(c))
                     {
-                        var index = alphabet.IndexOf(char.ToLower(c));
+                        var index = Array.IndexOf(alphabet, c.ToString());
                         var reversedIndex = alphabet.Length - 1 - index;
                         var reversedChar = alphabet[reversedIndex];
-                        result.Append(char.IsUpper(c) ? char.ToUpper(reversedChar) : reversedChar);
+                        result.Append(char.IsUpper(c) ? char.ToUpper(reversedChar[0]) : reversedChar[0]);
                     }
                     else
                     {

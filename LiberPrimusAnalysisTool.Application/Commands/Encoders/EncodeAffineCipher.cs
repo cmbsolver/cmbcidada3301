@@ -12,13 +12,13 @@ namespace LiberPrimusAnalysisTool.Application.Commands.Encoders
                 Text = text;
                 Multiplier = multiplier;
                 Shift = shift;
-                Alphabet = alphabet;
+                Alphabet = alphabet.ToLower().Split(",", StringSplitOptions.RemoveEmptyEntries);
             }
 
             public string Text { get; set; }
             public int Multiplier { get; set; }
             public int Shift { get; set; }
-            public string Alphabet { get; set; }
+            public string[] Alphabet { get; set; }
         }
 
         public class Handler : IRequestHandler<Command, string>
@@ -36,9 +36,9 @@ namespace LiberPrimusAnalysisTool.Application.Commands.Encoders
                 {
                     if (char.IsLetter(c))
                     {
-                        var index = alphabet.IndexOf(char.ToLower(c));
+                        var index = Array.IndexOf(alphabet, char.ToLower(c).ToString());
                         var encodedIndex = (a * index + b) % m;
-                        var encodedChar = alphabet[encodedIndex];
+                        var encodedChar = alphabet[encodedIndex][0];
                         result.Append(char.IsUpper(c) ? char.ToUpper(encodedChar) : encodedChar);
                     }
                     else

@@ -38,14 +38,14 @@ public partial class AtbashCipherViewModel: ViewModelBase
     [RelayCommand]
     private async Task DecodeString()
     {
-        DecodeAtbashCipher.Command command = new(StringToDecode, Alphabet);
+        DecodeAtbashCipher.Command command = new(StringToDecode.ToUpper(), Alphabet);
         DecodedString = await _mediator.Send(command);
     }
 
     [RelayCommand]
     private async Task EncodeString()
     {
-        EncodeAtbashCipher.Command command = new(StringToDecode, Alphabet);
+        EncodeAtbashCipher.Command command = new(StringToDecode.ToUpper(), Alphabet);
         DecodedString = await _mediator.Send(command);
     }
 }

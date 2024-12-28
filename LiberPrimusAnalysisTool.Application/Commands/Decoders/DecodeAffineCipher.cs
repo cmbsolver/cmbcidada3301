@@ -12,13 +12,13 @@ namespace LiberPrimusAnalysisTool.Application.Commands.Decoders
                 Text = text;
                 Multiplier = multiplier;
                 Shift = shift;
-                Alphabet = alphabet;
+                Alphabet = alphabet.ToLower().Split(",", System.StringSplitOptions.RemoveEmptyEntries);
             }
 
             public string Text { get; set; }
             public int? Multiplier { get; set; }
             public int? Shift { get; set; }
-            public string Alphabet { get; set; }
+            public string[] Alphabet { get; set; }
         }
 
         public class Handler : IRequestHandler<Command, string>
@@ -51,16 +51,16 @@ namespace LiberPrimusAnalysisTool.Application.Commands.Decoders
                 return Task.FromResult(string.Empty);
             }
 
-            private string Decode(string text, int a, int b, string alphabet, int m)
+            private string Decode(string text, int a, int b, string[] alphabet, int m)
             {
                 var result = new StringBuilder();
                 foreach (var c in text)
                 {
                     if (char.IsLetter(c))
                     {
-                        var index = alphabet.IndexOf(char.ToLower(c));
+                        var index = Array.IndexOf(alphabet, char.ToLower(c).ToString());
                         var decodedIndex = ModInverse(a, m) * (index - b + m) % m;
-                        var decodedChar = alphabet[decodedIndex];
+                        var decodedChar = alphabet[decodedIndex][0];
                         result.Append(char.IsUpper(c) ? char.ToUpper(decodedChar) : decodedChar);
                     }
                     else
