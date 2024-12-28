@@ -1,4 +1,5 @@
 using LiberPrimusAnalysisTool.Database;
+using LiberPrimusAnalysisTool.Utility.Character;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -8,15 +9,12 @@ public class ScoreText
 {
     public class Command: IRequest<Tuple<ulong, double>>  
     {
-        public Command(string originalText, string text, List<string> wordList)
+        public Command(string text, List<string> wordList)
         {
-            OriginalText = originalText;
             Text = text;
             WordList = wordList;
         }
         
-        public string OriginalText { get; set; }
-
         public string Text { get; set; }
         
         public List<string> WordList { get; set; }
@@ -24,6 +22,13 @@ public class ScoreText
     
     public class Handler : IRequestHandler<Command, Tuple<ulong, double>>
     {
+        private readonly ICharacterRepo _characterRepo;
+        
+        public Handler(ICharacterRepo characterRepo)
+        {
+            _characterRepo = characterRepo;
+        }
+        
         public async Task<Tuple<ulong, double>> Handle(Command request, CancellationToken cancellationToken)
         {
             ulong count = 0;
@@ -36,32 +41,48 @@ public class ScoreText
                 }
             });
             
-            double ioc = CalculateIndexOfCoincidence(request.OriginalText, request.Text) * 100;
+            double ioc = CalculateIncidenceOfCoincidence(request.Text);
             
             return new Tuple<ulong, double>(count, ioc);
         }
         
-        private double CalculateIndexOfCoincidence(string originalText, string text)
+        public double CalculateIncidenceOfCoincidence(string text)
         {
-            if (originalText.Length != text.Length)
-            {
-                throw new ArgumentException("Texts must be of the same length");
-            }
+            var frequencies = new Dictionary<char, int>();
+            int totalLetters = 0;
 
-            int matchCount = 0;
-            int length = originalText.Length;
-
-            for (int i = 0; i < length; i++)
+            // Count the frequency of each letter in the text
+            foreach (char c in text)
             {
-                if (originalText[i] == text[i])
+                if (char.IsLetter(c) || _characterRepo.IsRune(c.ToString(), false))
                 {
-                    matchCount++;
+                    char upperChar = char.ToUpper(c);
+                    if (frequencies.ContainsKey(upperChar))
+                    {
+                        frequencies[upperChar]++;
+                    }
+                    else
+                    {
+                        frequencies[upperChar] = 1;
+                    }
+                    totalLetters++;
                 }
             }
 
-            return (double)matchCount / length;
+            // Calculate the IoC
+            double ioc = 0.0;
+            foreach (var frequency in frequencies.Values)
+            {
+                ioc += frequency * (frequency - 1);
+            }
+
+            if (totalLetters > 1)
+            {
+                ioc /= (double)(totalLetters * (totalLetters - 1));
+            }
+
+            return ioc;
         }
-        
         
     }
 }

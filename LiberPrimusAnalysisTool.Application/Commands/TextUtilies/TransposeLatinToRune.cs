@@ -33,7 +33,7 @@ public class TransposeLatinToRune
             for (int i = 0; i < request.Text.Length; i++)
             {
                 var xchar = request.Text[i];
-                if (!_characterRepo.IsRune(xchar.ToString()))
+                if (!_characterRepo.IsRune(xchar.ToString(), true))
                 {
                     switch (xchar)
                     {

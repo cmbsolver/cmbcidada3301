@@ -41,7 +41,7 @@ namespace LiberPrimusAnalysisTool.Utility.Character
         /// <returns></returns>
         string[] GetGematriaRunes();
         
-        bool IsRune(string value);
+        bool IsRune(string value, bool includeDunkus);
 
         /// <summary>
         /// Gets the character from rune.

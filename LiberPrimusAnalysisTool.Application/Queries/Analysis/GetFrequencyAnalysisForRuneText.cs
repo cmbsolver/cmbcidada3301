@@ -125,7 +125,7 @@ public class GetFrequencyAnalysisForRuneText
 
                     // Now we need to score the text for matches.
                     // Highest matches are output to the files.
-                    var totalScore = await _mediator.Send(new ScoreText.Command(text, sb.ToString(), wordList));
+                    var totalScore = await _mediator.Send(new ScoreText.Command(sb.ToString(), wordList));
                     var permutationString = string.Join(",",
                         permutation.Select(x => { return $"{x.Letter} -> {x.GetCurrentReplacementLetter()}"; }));
                     

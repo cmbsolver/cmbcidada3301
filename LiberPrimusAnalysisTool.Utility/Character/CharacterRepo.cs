@@ -816,9 +816,18 @@ namespace LiberPrimusAnalysisTool.Utility.Character
             return retval;
         }
 
-        public bool IsRune(string value)
+        public bool IsRune(string value, bool includeDunkus)
         {
             bool retval = false;
+            
+            if (includeDunkus)
+            {
+                if (value == "•" || value == "⊹")
+                {
+                    return true;
+                }
+            }
+            
             switch (value)
             {
                 case "ᛝ":
@@ -850,8 +859,6 @@ namespace LiberPrimusAnalysisTool.Utility.Character
                 case "ᛞ":
                 case "ᚪ":
                 case "ᚣ":
-                case "•":
-                case "⊹":
                     retval = true;
                     break;
 

@@ -26,7 +26,7 @@ public class TransposeRuneToLatinTests
         foreach (var character in latinResult)
         {
             var xcahr = character.ToString();
-            var assertion = !characterRepo.IsRune(xcahr);
+            var assertion = !characterRepo.IsRune(xcahr, true);
             Assert.True(assertion);
         }
     }

@@ -34,7 +34,7 @@ public class HexDecodeRunes
 
             for (var i = 0; i < runes.Length; i++)
             {
-                if (_characterRepo.IsRune(runes[i].ToString()))
+                if (_characterRepo.IsRune(runes[i].ToString(), true))
                 {
                     var rune = _characterRepo.GetHexValFromRune(runes[i].ToString());
                     decodedRunes.Append(rune);
