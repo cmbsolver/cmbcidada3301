@@ -75,7 +75,7 @@ public partial class AffineCipherViewModel: ViewModelBase
                         
                         string decoded = await _mediator.Send(command);
                         var score = await _mediator.Send(new ScoreText.Command(decoded, dict));
-                        var textScore = new TextScore(StringToDecode, decoded, score.Item1, "", score.Item2);
+                        var textScore = new TextScore(StringToDecode, decoded, score.Item1, $"Multiplier{i}:Shift{j}", score.Item2);
                         textScores.Add(textScore);
                     }
                     catch (Exception e)
@@ -85,10 +85,10 @@ public partial class AffineCipherViewModel: ViewModelBase
                 }
             }
             
-            textScores = textScores.OrderByDescending(x => x.Score).ToList();
+            textScores = textScores.OrderByDescending(x => x.Score).ToList().Take(100).ToList();
             foreach (var textScore in textScores)
             {
-                DecodedString += $"{textScore.Score} - {textScore.Text}\n";
+                DecodedString += $"{textScore.Score} - {textScore.PermutationString} - {textScore.Text}\n";
             }
         }
         else
