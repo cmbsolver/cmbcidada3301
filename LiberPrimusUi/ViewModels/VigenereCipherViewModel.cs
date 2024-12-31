@@ -101,28 +101,35 @@ public partial class VigenereCipherViewModel: ViewModelBase
         {
             foreach (var combo in GetWordCombos(1, Convert.ToInt32(SelectedMaxWordCombinations), word, dictionary))
             {
-                DecodeVigenereCipher.Command command = new(
-                    Alphabet.Split(",", StringSplitOptions.RemoveEmptyEntries),
-                    combo,
-                    StringToDecode);
-                var decoded = await _mediator.Send(command);
-                
-                var score = await _mediator.Send(new ScoreText.Command(decoded, dictionary));
-                scores.Add(new Tuple<ulong, string, string>(score.Item1, combo, decoded));
-                if (scores.Count > 100)
+                try
                 {
-                    var beforeScores = scores.Select(x => x.Item1).ToList();
-                    DecodedString = string.Empty;
-                    scores = scores.OrderByDescending(x => x.Item1).Take(100).ToList();
-                    var afterScores = scores.Select(x => x.Item1).ToList();
-                    
-                    if (!beforeScores.SequenceEqual(afterScores))
+                    DecodeVigenereCipher.Command command = new(
+                        Alphabet.Split(",", StringSplitOptions.RemoveEmptyEntries),
+                        combo,
+                        StringToDecode);
+                    var decoded = await _mediator.Send(command);
+
+                    var score = await _mediator.Send(new ScoreText.Command(decoded, dictionary));
+                    scores.Add(new Tuple<ulong, string, string>(score.Item1, combo, decoded));
+                    if (scores.Count > 100)
                     {
-                        foreach (var tscore in scores)
+                        var beforeScores = scores.Select(x => x.Item1).ToList();
+                        DecodedString = string.Empty;
+                        scores = scores.OrderByDescending(x => x.Item1).Take(100).ToList();
+                        var afterScores = scores.Select(x => x.Item1).ToList();
+
+                        if (!beforeScores.SequenceEqual(afterScores))
                         {
-                            DecodedString += $"Score: {tscore.Item1} - Keyword: {tscore.Item2} - {tscore.Item3}\n";
-                        }    
+                            foreach (var tscore in scores)
+                            {
+                                DecodedString += $"Score: {tscore.Item1} - Keyword: {tscore.Item2} - {tscore.Item3}\n";
+                            }
+                        }
                     }
+                }
+                catch (Exception e)
+                {
+                    DecodedString += $"Error: {e.Message}\n";
                 }
             }
         }
