@@ -90,6 +90,12 @@ public partial class VigenereCipherViewModel: ViewModelBase
                     break;
             }
         }
+        
+        if (dictionary.Count == 0)
+        {
+            DecodedString = "No dictionary words found.  Please select a dictionary.";
+            return;
+        }
 
         foreach (var word in dictionary)
         {
