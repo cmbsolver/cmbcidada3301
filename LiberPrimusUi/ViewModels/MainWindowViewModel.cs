@@ -60,6 +60,7 @@ public partial class MainWindowViewModel : ViewModelBase
         new ListItemTemplate(typeof(VigenereCipherViewModel), "Lock", "Vigenere"),
         new ListItemTemplate(typeof(SpiralSquareSolveViewModel), "Lock", "Spiral"),
         new ListItemTemplate(typeof(SubstituteUltimaViewModel), "Lock", "Rune Substitute Ultima"),
+        new ListItemTemplate(typeof(RebuildDictionaryViewModel), "Lock", "Rebuild Word Dictionary"),
         
         // Image analysis
         new ListItemTemplate(typeof(ColorReportViewModel), "ImageIcon", "Color Report"),
@@ -276,6 +277,12 @@ public partial class MainWindowViewModel : ViewModelBase
                 if (!_windows.Any(w => w.Item1 == value.Label))
                     _windows.Add(new Tuple<string, object>(value.Label, new VigenereCipherViewModel(_mediator)));
                 CurrentPage = _windows.FirstOrDefault(w => w.Item1 == value.Label)?.Item2 as VigenereCipherViewModel;
+                break;
+            
+            case Type t when t == typeof(RebuildDictionaryViewModel):
+                if (!_windows.Any(w => w.Item1 == value.Label))
+                    _windows.Add(new Tuple<string, object>(value.Label, new RebuildDictionaryViewModel(_mediator)));
+                CurrentPage = _windows.FirstOrDefault(w => w.Item1 == value.Label)?.Item2 as RebuildDictionaryViewModel;
                 break;
         }
         

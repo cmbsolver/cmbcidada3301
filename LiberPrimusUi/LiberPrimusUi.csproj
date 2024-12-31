@@ -20,12 +20,12 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Avalonia" Version="11.2.2"/>
-        <PackageReference Include="Avalonia.Desktop" Version="11.2.2"/>
-        <PackageReference Include="Avalonia.Themes.Fluent" Version="11.2.2"/>
-        <PackageReference Include="Avalonia.Fonts.Inter" Version="11.2.2"/>
+        <PackageReference Include="Avalonia" Version="11.2.3"/>
+        <PackageReference Include="Avalonia.Desktop" Version="11.2.3"/>
+        <PackageReference Include="Avalonia.Themes.Fluent" Version="11.2.3"/>
+        <PackageReference Include="Avalonia.Fonts.Inter" Version="11.2.3"/>
         <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
-        <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.2.2"/>
+        <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.2.3"/>
         <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
         <PackageReference Include="LiveChartsCore.SkiaSharpView.Avalonia" Version="2.0.0-rc2" />
         <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.0" />
@@ -700,6 +700,10 @@
       </Compile>
       <Compile Update="Views\VigenereCipherView.axaml.cs">
         <DependentUpon>VigenereCipherView.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
+      <Compile Update="Views\RebuildDictionaryView.axaml.cs">
+        <DependentUpon>RebuildDictionaryView.axaml</DependentUpon>
         <SubType>Code</SubType>
       </Compile>
     </ItemGroup>

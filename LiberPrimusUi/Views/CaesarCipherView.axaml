@@ -25,6 +25,8 @@
         <StackPanel Orientation="Horizontal" Spacing="5">
             <Button Command="{Binding EncodeStringCommand}">Encode</Button>
             <Button Command="{Binding DecodeStringCommand}">Decode</Button>
+            <TextBlock VerticalAlignment="Center">Dictionary</TextBlock>
+            <ComboBox ItemsSource="{Binding Dictionaries}" SelectedItem="{Binding SelectedDictionary}"></ComboBox>
             <Button Command="{Binding BulkDecodeStringCommand}">Bulk Decode</Button>
         </StackPanel>
         <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Height="500">
