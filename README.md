@@ -61,7 +61,7 @@ The letter frequency analysis and brute force tools requires a Postgres database
 I prefer to use podman to host the database.  You can use docker if you want.  You can use the following command to start the database for podman.
 
 ### Powershell
-You will need to install Python 3.9+ and Podman.  You can get Podman from https://podman.io/docs/installation.  You can get Python from https://www.python.org/downloads/.
+You will need to install WSL2, Python 3.9+, and Podman.  You can get Podman from https://podman.io/docs/installation.  You can get Python from https://www.python.org/downloads/.
 ```
 pip3 install podman-compose
 .\create_podman.ps1
