@@ -20,7 +20,7 @@ public partial class AtbashCipherView : UserControl
         switch (viewModel.SelectedEncoding)
         {
             case "Gematria":
-                viewModel.Alphabet = "ᚠ,ᚢ,ᚦ,ᚩ,ᚱ,ᚳ,ᚷ,ᚹ,ᚻ,ᚾ,ᛁ,ᛂ,ᛇ,ᛈ,ᛉ,ᛋ,ᛏ,ᛒ,ᛖ,ᛗ,ᛚ,ᛝ,ᛟ,ᛞ,ᚪ,ᚫ,ᚣ,ᛡ,ᛠ";
+                viewModel.Alphabet = "ᚠ,ᚢ,ᚦ,ᚩ,ᚱ,ᚳ,ᚷ,ᚹ,ᚻ,ᚾ,ᛁ,ᛄ,ᛇ,ᛈ,ᛉ,ᛋ,ᛏ,ᛒ,ᛖ,ᛗ,ᛚ,ᛝ,ᛟ,ᛞ,ᚪ,ᚫ,ᚣ,ᛡ,ᛠ";
                 break;
             case "English":
                 viewModel.Alphabet = "A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z";
