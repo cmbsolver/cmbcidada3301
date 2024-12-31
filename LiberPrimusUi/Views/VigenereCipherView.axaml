@@ -27,7 +27,7 @@
             <Button Command="{Binding DecodeStringCommand}">Decode</Button>
             <TextBlock VerticalAlignment="Center">Dictionary</TextBlock>
             <ComboBox ItemsSource="{Binding Dictionaries}" SelectedItem="{Binding SelectedDictionary}"></ComboBox>
-            <TextBlock VerticalAlignment="Center">Max Word Combos</TextBlock>
+            <TextBlock VerticalAlignment="Center">Word Combo Size</TextBlock>
             <ComboBox ItemsSource="{Binding MaxWordCombinations}" SelectedItem="{Binding SelectedMaxWordCombinations}"></ComboBox>
             <Button Command="{Binding DictionaryDecodeStringCommand}">Brute Force Decode</Button>
         </StackPanel>
