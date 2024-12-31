@@ -28,10 +28,29 @@ public class IndexWordDirectory
         {
             await using (var context = new LiberContext())
             {
-                // Make sure the database is created
-                await context.Database.EnsureCreatedAsync(cancellationToken);
+                try
+                {   
+                    // Make sure the database is created
+                    await context.Database.EnsureCreatedAsync(cancellationToken);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                }
+
+                try
+                {
+                    foreach (var word in context.DictionaryWords)
+                    {
+                        context.Remove(word);
+                    }
+                    await context.SaveChangesAsync(cancellationToken);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                }
                 
-                await context.Database.ExecuteSqlRawAsync("DELETE FROM TABLE TB_DICT_WORD;", cancellationToken);
             }
             
             var processExe = Environment.ProcessPath;
