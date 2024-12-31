@@ -55,8 +55,8 @@ The executable is LiberPrimusUi.exe.  You can run it from the command line or by
 - Color Inversion
 - Byte and Pixel winnowing and LSB calculation
 
-## Frequency Analysis - Database Required!!!
-The letter frequency analysis tool requires a Postgres database to be present.
+## Frequency Analysis & Brute Force Tools - Database Required!!!
+The letter frequency analysis and brute force tools requires a Postgres database to be present.
 
 I prefer to use podman to host the database.  You can use docker if you want.  You can use the following command to start the database for podman.
 
