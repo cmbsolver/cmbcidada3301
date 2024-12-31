@@ -698,5 +698,9 @@
         <DependentUpon>AffineCipherView.axaml</DependentUpon>
         <SubType>Code</SubType>
       </Compile>
+      <Compile Update="Views\VigenereCipherView.axaml.cs">
+        <DependentUpon>VigenereCipherView.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
     </ItemGroup>
 </Project>

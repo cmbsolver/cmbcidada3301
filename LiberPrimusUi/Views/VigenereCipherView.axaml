@@ -1,0 +1,38 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:LiberPrimusUi.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="LiberPrimusUi.Views.VigenereCipherView"
+             x:DataType="vm:VigenereCipherViewModel">
+    <StackPanel Margin="20" Spacing="10">
+        <StackPanel Orientation="Horizontal" Spacing="5">
+            <TextBlock VerticalAlignment="Center">Alphabet</TextBlock>
+            <ComboBox ItemsSource="{Binding InputTypes}" SelectedItem="{Binding SelectedEncoding}" SelectionChanged="SelectingItemsControl_OnSelectionChanged"></ComboBox>
+            <TextBlock VerticalAlignment="Center">Characters</TextBlock>
+            <TextBox Text="{Binding Alphabet}"></TextBox>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" Spacing="5">
+            <TextBlock VerticalAlignment="Center">Input Text</TextBlock>
+            <TextBox Text="{Binding StringToDecode}" TextChanged="TextBox_OnTextChanged" MaxWidth="300"></TextBox>
+            <TextBlock VerticalAlignment="Center" Text="{Binding CharCount}"></TextBlock>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" Spacing="5">
+            <TextBlock VerticalAlignment="Center">Keyword</TextBlock>
+            <TextBox Text="{Binding Keyword}" MaxWidth="300"></TextBox>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" Spacing="5">
+            <Button Command="{Binding EncodeStringCommand}">Encode</Button>
+            <Button Command="{Binding DecodeStringCommand}">Decode</Button>
+            <TextBlock VerticalAlignment="Center">Dictionary</TextBlock>
+            <ComboBox ItemsSource="{Binding Dictionaries}" SelectedItem="{Binding SelectedDictionary}"></ComboBox>
+            <TextBlock VerticalAlignment="Center">Max Word Combos</TextBlock>
+            <ComboBox ItemsSource="{Binding MaxWordCombinations}" SelectedItem="{Binding SelectedMaxWordCombinations}"></ComboBox>
+            <Button Command="{Binding DictionaryDecodeStringCommand}">Brute Force Decode</Button>
+        </StackPanel>
+        <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Height="500">
+            <TextBox Text="{Binding DecodedString}"></TextBox>
+        </ScrollViewer>
+    </StackPanel>
+</UserControl>

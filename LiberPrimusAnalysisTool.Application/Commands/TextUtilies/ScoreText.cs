@@ -32,10 +32,12 @@ public class ScoreText
         public async Task<Tuple<ulong, double>> Handle(Command request, CancellationToken cancellationToken)
         {
             ulong count = 0;
+            
+            string[] textArray = request.Text.Split(new string[9] {" ", "•", "␍", "⊹", "␊", "\n", "\t", "\r", "."}, StringSplitOptions.RemoveEmptyEntries);
 
-            await Parallel.ForEachAsync(request.WordList, async (word, cancellationToken) =>
+            await Parallel.ForEachAsync(textArray, async (word, cancellationToken) =>
             {
-                if (request.Text.Contains(word))
+                if (request.WordList.Contains(word.Trim().ToUpper()))
                 {
                     count += (ulong)word.Length ^ 2;
                 }

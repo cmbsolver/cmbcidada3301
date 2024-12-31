@@ -57,6 +57,7 @@ public partial class MainWindowViewModel : ViewModelBase
         new ListItemTemplate(typeof(CaesarCipherViewModel), "Lock", "Caesar"),
         new ListItemTemplate(typeof(AtbashCipherViewModel), "Lock", "Atbash"),
         new ListItemTemplate(typeof(AffineCipherViewModel), "Lock", "Affine"),
+        new ListItemTemplate(typeof(VigenereCipherViewModel), "Lock", "Vigenere"),
         new ListItemTemplate(typeof(SpiralSquareSolveViewModel), "Lock", "Spiral"),
         new ListItemTemplate(typeof(SubstituteUltimaViewModel), "Lock", "Rune Substitute Ultima"),
         
@@ -269,6 +270,12 @@ public partial class MainWindowViewModel : ViewModelBase
                 if (!_windows.Any(w => w.Item1 == value.Label))
                     _windows.Add(new Tuple<string, object>(value.Label, new AffineCipherViewModel(_mediator)));
                 CurrentPage = _windows.FirstOrDefault(w => w.Item1 == value.Label)?.Item2 as AffineCipherViewModel;
+                break;
+            
+            case Type t when t == typeof(VigenereCipherViewModel):
+                if (!_windows.Any(w => w.Item1 == value.Label))
+                    _windows.Add(new Tuple<string, object>(value.Label, new VigenereCipherViewModel(_mediator)));
+                CurrentPage = _windows.FirstOrDefault(w => w.Item1 == value.Label)?.Item2 as VigenereCipherViewModel;
                 break;
         }
         
