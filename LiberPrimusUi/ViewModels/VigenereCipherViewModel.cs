@@ -59,6 +59,8 @@ public partial class VigenereCipherViewModel: ViewModelBase
     public ObservableCollection<string> Dictionaries { get; } = new ObservableCollection<string>();
     
     [ObservableProperty] private string _selectedDictionary = "";
+    
+    [ObservableProperty] private string _currentDepth = "";
 
     [RelayCommand]
     private async Task DecodeString()
@@ -101,6 +103,7 @@ public partial class VigenereCipherViewModel: ViewModelBase
         {
             foreach (var word in dictionary)
             {
+                CurrentDepth = $"Current Depth: {i}/{SelectedMaxWordCombinations} - Current Word: {word}";
                 foreach (var combo in GetWordCombos(1, i, word, dictionary))
                 {
                     try
