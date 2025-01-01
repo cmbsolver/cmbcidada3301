@@ -101,9 +101,9 @@ public partial class VigenereCipherViewModel: ViewModelBase
 
         for (int i = 1; i <= Convert.ToInt32(SelectedMaxWordCombinations); i++)
         {
+            CurrentDepth = $"Current Depth: {i}/{SelectedMaxWordCombinations}";
             foreach (var word in dictionary)
             {
-                CurrentDepth = $"Current Depth: {i}/{SelectedMaxWordCombinations} - Current Word: {word}";
                 foreach (var combo in GetWordCombos(1, i, word, dictionary))
                 {
                     try
