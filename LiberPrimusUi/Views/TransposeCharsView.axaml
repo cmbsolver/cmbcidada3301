@@ -9,7 +9,7 @@
     <StackPanel Margin="20" Spacing="10">
         <StackPanel Orientation="Horizontal" Spacing="5">
             <TextBlock VerticalAlignment="Center">Text</TextBlock>
-            <TextBox Text="{Binding TextToTranspose}" MaxWidth="400"></TextBox>
+            <TextBox Text="{Binding TextToTranspose}" MaxWidth="800" MaxHeight="150" AcceptsReturn="True"></TextBox>
         </StackPanel>
         <StackPanel Orientation="Horizontal" Spacing="5">
             <TextBlock VerticalAlignment="Center">Modes</TextBlock>
@@ -22,7 +22,7 @@
             <TextBlock VerticalAlignment="Center">Gematria Sum:</TextBlock>
             <TextBlock VerticalAlignment="Center" Text="{Binding GemSum}"></TextBlock>
         </StackPanel>
-        <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Height="500">
+        <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Height="400">
             <TextBox Text="{Binding Response}"></TextBox>
         </ScrollViewer>
     </StackPanel>
