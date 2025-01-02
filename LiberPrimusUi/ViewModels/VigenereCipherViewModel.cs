@@ -169,7 +169,6 @@ public partial class VigenereCipherViewModel : ViewModelBase
             foreach (var word in wordList)
             {
                 var newWordString = currentWordString + word;
-                theQueue.Enqueue(newWordString);
                 await GetWordCombos(depth + 1, maxDepth, newWordString, wordList);
             }
         }
