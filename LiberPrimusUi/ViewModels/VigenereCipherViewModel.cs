@@ -129,7 +129,7 @@ public partial class VigenereCipherViewModel : ViewModelBase
                 
                 theQueue.TryDequeue(out var combo);
                 
-                UpdateProcessedCount($"Queue Count: {theQueue.Count}");
+                UpdateProcessedCount($"Queue Count: {theQueue.Count} & Top Score: {scores.OrderByDescending(x => x.Item1).FirstOrDefault()?.Item1}");
                 
                 if (combo != null)
                 {

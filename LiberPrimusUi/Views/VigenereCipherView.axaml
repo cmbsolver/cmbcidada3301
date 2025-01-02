@@ -30,7 +30,7 @@
             <TextBlock VerticalAlignment="Center">Word Combo Size</TextBlock>
             <ComboBox ItemsSource="{Binding MaxWordCombinations}" SelectedItem="{Binding SelectedMaxWordCombinations}"></ComboBox>
             <Button Command="{Binding DictionaryDecodeStringCommand}">Brute Force Decode</Button>
-            <TextBlock Text="{Binding CurrentDepth}"></TextBlock>
+            <TextBlock VerticalAlignment="Center" Text="{Binding CurrentDepth}"></TextBlock>
         </StackPanel>
         <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Height="500">
             <TextBox Text="{Binding DecodedString}"></TextBox>
