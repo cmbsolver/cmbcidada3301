@@ -67,8 +67,6 @@ public partial class VigenereCipherViewModel : ViewModelBase
 
     private ConcurrentQueue<string> theQueue = new ConcurrentQueue<string>();
 
-    private bool _isBusy = false;
-
     [RelayCommand]
     private async Task DecodeString()
     {
@@ -110,26 +108,13 @@ public partial class VigenereCipherViewModel : ViewModelBase
 
         await Task.Run(() => GetWordCombos(0, maxDepth, string.Empty, dictionary));
 
-        _isBusy = true;
-
-        ParallelOptions options = new ParallelOptions
-        {
-            MaxDegreeOfParallelism = Environment.ProcessorCount / 2
-        };
-
-        while (_isBusy || theQueue.Count > 0)
+        while (theQueue.Count > 0)
         {
             try
             {
-                if (theQueue.Count <= 0)
-                {
-                    await Task.Delay(100);
-                    continue;
-                }
-                
                 theQueue.TryDequeue(out var combo);
                 
-                UpdateProcessedCount($"Queue Count: {theQueue.Count} & Top Score: {scores.OrderByDescending(x => x.Item1).FirstOrDefault()?.Item1}");
+                UpdateProcessedCount($"Queue Count: {theQueue.Count} & Top Score: {scores.FirstOrDefault()?.Item1}");
                 
                 if (combo != null)
                 {
@@ -144,9 +129,9 @@ public partial class VigenereCipherViewModel : ViewModelBase
                     lock (scores)
                     {
                         scores.Add(new Tuple<ulong, string, string>(score.Item1, combo, decoded));
-                        if (scores.Count > 100)
+                        if (scores.Count > 25)
                         {
-                            var tscore = scores.OrderByDescending(x => x.Item1).Take(100).ToList(); 
+                            var tscore = scores.OrderByDescending(x => x.Item1).Take(25).ToList(); 
                             scores.Clear();
                             scores.AddRange(tscore);
                         }
@@ -161,8 +146,6 @@ public partial class VigenereCipherViewModel : ViewModelBase
                 }
             }
         }
-
-        _isBusy = false;
 
         theQueue.Clear();
 
@@ -189,11 +172,6 @@ public partial class VigenereCipherViewModel : ViewModelBase
                 theQueue.Enqueue(newWordString);
                 await GetWordCombos(depth + 1, maxDepth, newWordString, wordList);
             }
-        }
-
-        if (depth == 0)
-        {
-            _isBusy = false;
         }
     }
 
