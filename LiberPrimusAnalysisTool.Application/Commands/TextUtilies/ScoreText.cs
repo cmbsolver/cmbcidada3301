@@ -1,59 +1,57 @@
-using LiberPrimusAnalysisTool.Database;
 using LiberPrimusAnalysisTool.Utility.Character;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 
 namespace LiberPrimusAnalysisTool.Application.Commands.TextUtilies;
 
 public class ScoreText
 {
-    public class Command: IRequest<Tuple<ulong, double>>  
+    public class Command : IRequest<Tuple<ulong, double>>
     {
         public Command(string text, List<string> wordList)
         {
             Text = text;
             WordList = wordList;
         }
-        
+
         public string Text { get; set; }
-        
+
         public List<string> WordList { get; set; }
     }
-    
+
     public class Handler : IRequestHandler<Command, Tuple<ulong, double>>
     {
         private readonly ICharacterRepo _characterRepo;
-        
+
         public Handler(ICharacterRepo characterRepo)
         {
             _characterRepo = characterRepo;
         }
-        
+
         public async Task<Tuple<ulong, double>> Handle(Command request, CancellationToken cancellationToken)
         {
             ulong count = 0;
-            
-            string[] textArray = request.Text.Split(new string[9] {" ", "•", "␍", "⊹", "␊", "\n", "\t", "\r", "."}, StringSplitOptions.RemoveEmptyEntries);
+            var wordSet = new HashSet<string>(request.WordList.Select(w => w.Trim().ToUpper()));
+            string[] textArray = request.Text.Split(new string[9] { " ", "•", "␍", "⊹", "␊", "\n", "\t", "\r", "." }, StringSplitOptions.RemoveEmptyEntries);
 
             await Parallel.ForEachAsync(textArray, async (word, cancellationToken) =>
             {
-                if (request.WordList.Contains(word.Trim().ToUpper()))
+                var trimmedWord = word.Trim().ToUpper();
+                if (wordSet.Contains(trimmedWord))
                 {
-                    count += (ulong)word.Length ^ 2;
+                    Interlocked.Add(ref count, (ulong)(trimmedWord.Length * trimmedWord.Length));
                 }
             });
-            
+
             double ioc = CalculateIncidenceOfCoincidence(request.Text);
-            
+
             return new Tuple<ulong, double>(count, ioc);
         }
-        
+
         public double CalculateIncidenceOfCoincidence(string text)
         {
             var frequencies = new Dictionary<char, int>();
             int totalLetters = 0;
 
-            // Count the frequency of each letter in the text
             foreach (char c in text)
             {
                 if (char.IsLetter(c) || _characterRepo.IsRune(c.ToString(), false))
@@ -71,7 +69,6 @@ public class ScoreText
                 }
             }
 
-            // Calculate the IoC
             double ioc = 0.0;
             foreach (var frequency in frequencies.Values)
             {
@@ -85,6 +82,5 @@ public class ScoreText
 
             return ioc;
         }
-        
     }
 }
