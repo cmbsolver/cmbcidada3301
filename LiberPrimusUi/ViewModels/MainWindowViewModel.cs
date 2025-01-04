@@ -39,7 +39,6 @@ public partial class MainWindowViewModel : ViewModelBase
         new ListItemTemplate(typeof(Base64DecodeViewModel), "Wrench", "Base64 Decode"),
         new ListItemTemplate(typeof(BinaryDecodeViewModel), "Wrench", "Binary Decode"),
         new ListItemTemplate(typeof(CircularShiftViewModel), "Wrench", "Circular Shift"),
-        // new ListItemTemplate(typeof(HexDecodeRunesViewModel), "Wrench", "Hex Decode Runes"),
         new ListItemTemplate(typeof(IdentifyBinFileViewModel), "Wrench", "Identify Bin File"),
         new ListItemTemplate(typeof(BinaryInvertViewModel), "Wrench", "Invert Binary Values"),
         new ListItemTemplate(typeof(RuneDecimalLsbViewModel), "Wrench", "Rune Decimal LSB"),
@@ -59,7 +58,6 @@ public partial class MainWindowViewModel : ViewModelBase
         new ListItemTemplate(typeof(AffineCipherViewModel), "Lock", "Affine"),
         new ListItemTemplate(typeof(VigenereCipherViewModel), "Lock", "Vigenere"),
         new ListItemTemplate(typeof(SpiralSquareSolveViewModel), "Lock", "Spiral"),
-        // new ListItemTemplate(typeof(SubstituteUltimaViewModel), "Lock", "Rune Substitute Ultima"),
         new ListItemTemplate(typeof(RebuildDictionaryViewModel), "Lock", "Rebuild Word Dictionary"),
         
         // Image analysis
@@ -147,12 +145,6 @@ public partial class MainWindowViewModel : ViewModelBase
                 CurrentPage = _windows.FirstOrDefault(w => w.Item1 == value.Label)?.Item2 as DeScytaleViewModel;
                 break;
             
-            case Type t when t == typeof(SubstituteUltimaViewModel):
-                if (!_windows.Any(w => w.Item1 == value.Label))
-                    _windows.Add(new Tuple<string, object>(value.Label, new SubstituteUltimaViewModel(_mediator, _messageBus)));
-                CurrentPage = _windows.FirstOrDefault(w => w.Item1 == value.Label)?.Item2 as SubstituteUltimaViewModel;
-                break; 
-            
             case Type t when t == typeof(BulkByteWinnowPagesViewModel):
                 if (!_windows.Any(w => w.Item1 == value.Label))
                     _windows.Add(new Tuple<string, object>(value.Label, new BulkByteWinnowPagesViewModel(_mediator, _messageBus)));
@@ -163,12 +155,6 @@ public partial class MainWindowViewModel : ViewModelBase
                 if (!_windows.Any(w => w.Item1 == value.Label))
                     _windows.Add(new Tuple<string, object>(value.Label, new IdentifyBinFileViewModel(_mediator)));
                 CurrentPage = _windows.FirstOrDefault(w => w.Item1 == value.Label)?.Item2 as IdentifyBinFileViewModel;
-                break;
-            
-            case Type t when t == typeof(HexDecodeRunesViewModel):
-                if (!_windows.Any(w => w.Item1 == value.Label))
-                    _windows.Add(new Tuple<string, object>(value.Label, new HexDecodeRunesViewModel(_mediator)));
-                CurrentPage = _windows.FirstOrDefault(w => w.Item1 == value.Label)?.Item2 as HexDecodeRunesViewModel;
                 break;
             
             case Type t when t == typeof(BinaryInvertViewModel):
