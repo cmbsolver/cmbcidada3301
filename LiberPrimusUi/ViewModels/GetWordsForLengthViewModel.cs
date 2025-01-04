@@ -8,11 +8,11 @@ using MediatR;
 
 namespace LiberPrimusUi.ViewModels;
 
-public partial class GetWordsForValueViewModel: ViewModelBase
+public partial class GetWordsForLengthViewModel: ViewModelBase
 {
     private readonly IMediator _mediator;
     
-    public GetWordsForValueViewModel(IMediator mediator)
+    public GetWordsForLengthViewModel(IMediator mediator)
     {
         _mediator = mediator;
         
@@ -37,7 +37,7 @@ public partial class GetWordsForValueViewModel: ViewModelBase
         
         foreach (var textValue in TextToTranspose.Split(",", StringSplitOptions.RemoveEmptyEntries))
         {
-            var tresponse = await _mediator.Send(new GetWordsFromInts.Command(textValue.Trim(), SelectedCatalog));
+            var tresponse = await _mediator.Send(new GetWordsFromLengths.Command(textValue.Trim(), SelectedCatalog));
 
             if (tresponse.Count() == 0)
             {
@@ -45,7 +45,7 @@ public partial class GetWordsForValueViewModel: ViewModelBase
             }
             else
             {
-                Response += $"Value: {textValue}" + Environment.NewLine;
+                Response += $"Length: {textValue}" + Environment.NewLine;
                 Response += string.Join(Environment.NewLine, tresponse) + Environment.NewLine + Environment.NewLine;
             }
         }

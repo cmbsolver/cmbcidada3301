@@ -36,6 +36,7 @@ public partial class MainWindowViewModel : ViewModelBase
         new ListItemTemplate(typeof(TransposeCharsViewModel), "Wrench", "Latin and Rune Transposer"),
         new ListItemTemplate(typeof(SumGemSentencesViewModel), "Wrench", "Gem Sum Utility"),
         new ListItemTemplate(typeof(GetWordsForValueViewModel), "Wrench", "Get Words for Value"),
+        new ListItemTemplate(typeof(GetWordsForLengthViewModel), "Wrench", "Get Words for Length"),
         new ListItemTemplate(typeof(Base64DecodeViewModel), "Wrench", "Base64 Decode"),
         new ListItemTemplate(typeof(BinaryDecodeViewModel), "Wrench", "Binary Decode"),
         new ListItemTemplate(typeof(CircularShiftViewModel), "Wrench", "Circular Shift"),
@@ -269,6 +270,12 @@ public partial class MainWindowViewModel : ViewModelBase
                 if (!_windows.Any(w => w.Item1 == value.Label))
                     _windows.Add(new Tuple<string, object>(value.Label, new RebuildDictionaryViewModel(_mediator)));
                 CurrentPage = _windows.FirstOrDefault(w => w.Item1 == value.Label)?.Item2 as RebuildDictionaryViewModel;
+                break;
+            
+            case Type t when t == typeof(GetWordsForLengthViewModel):
+                if (!_windows.Any(w => w.Item1 == value.Label))
+                    _windows.Add(new Tuple<string, object>(value.Label, new GetWordsForLengthViewModel(_mediator)));
+                CurrentPage = _windows.FirstOrDefault(w => w.Item1 == value.Label)?.Item2 as GetWordsForLengthViewModel;
                 break;
         }
         

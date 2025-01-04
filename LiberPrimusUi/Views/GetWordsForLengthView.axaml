@@ -4,11 +4,11 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="using:LiberPrimusUi.ViewModels"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="LiberPrimusUi.Views.GetWordsForValueView"
-             x:DataType="vm:GetWordsForValueViewModel">
+             x:Class="LiberPrimusUi.Views.GetWordsForLengthView"
+             x:DataType="vm:GetWordsForLengthViewModel">
     <StackPanel Margin="20" Spacing="10">
         <StackPanel Orientation="Horizontal" Spacing="5">
-            <TextBlock VerticalAlignment="Center">Value</TextBlock>
+            <TextBlock VerticalAlignment="Center">Length</TextBlock>
             <TextBox Text="{Binding TextToTranspose}"></TextBox>
             <TextBlock VerticalAlignment="Center">Word Type</TextBlock>
             <ComboBox ItemsSource="{Binding Catalogs}" 

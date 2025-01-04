@@ -706,5 +706,9 @@
         <DependentUpon>RebuildDictionaryView.axaml</DependentUpon>
         <SubType>Code</SubType>
       </Compile>
+      <Compile Update="Views\GetWordsForLengthView.axaml.cs">
+        <DependentUpon>GetWordsForLengthView.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
     </ItemGroup>
 </Project>
