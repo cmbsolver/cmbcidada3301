@@ -12,6 +12,7 @@ using LiberPrimusAnalysisTool.Application.Commands.Decoders;
 using LiberPrimusAnalysisTool.Application.Commands.Encoders;
 using LiberPrimusAnalysisTool.Application.Commands.TextUtilies;
 using LiberPrimusAnalysisTool.Database;
+using LiberPrimusAnalysisTool.Entity.Text;
 using MediatR;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
@@ -64,8 +65,8 @@ public partial class VigenereCipherViewModel : ViewModelBase
     [ObservableProperty] private string _selectedDictionary = "";
 
     [ObservableProperty] private string _currentDepth = "";
-
-    private ConcurrentQueue<string> theQueue = new ConcurrentQueue<string>();
+    
+    private ulong _processedCount = 0;
 
     [RelayCommand]
     private async Task DecodeString()
@@ -104,50 +105,59 @@ public partial class VigenereCipherViewModel : ViewModelBase
             return;
         }
 
-        var maxDepth = Convert.ToInt32(SelectedMaxWordCombinations);
+        ulong processedCount = 0;
 
-        await Task.Run(() => GetWordCombos(0, maxDepth, string.Empty, dictionary));
-
-        while (theQueue.Count > 0)
+        using (var context = new LiberContext())
         {
-            try
+            var processQueueItem = context.ProcessQueueItems.FirstOrDefault();
+            while (processQueueItem != null)
             {
-                theQueue.TryDequeue(out var combo);
-                
-                UpdateProcessedCount($"Queue Count: {theQueue.Count} & Top Score: {scores.FirstOrDefault()?.Item1}");
-                
-                if (combo != null)
+                try
                 {
-                    DecodeVigenereCipher.Command command = new(
-                        Alphabet.Split(",", StringSplitOptions.RemoveEmptyEntries),
-                        combo,
-                        StringToDecode);
-                    var decoded = await _mediator.Send(command);
+                    var combo = processQueueItem.HopperString;
 
-                    var score = await _mediator.Send(new ScoreText.Command(decoded, dictionary));
+                    UpdateProcessedCount($"Processed Count: {processedCount} & Top Score: {scores.FirstOrDefault()?.Item1}");
 
-                    lock (scores)
+                    if (combo != null)
                     {
-                        scores.Add(new Tuple<ulong, string, string>(score.Item1, combo, decoded));
-                        if (scores.Count > 25)
+                        DecodeVigenereCipher.Command command = new(
+                            Alphabet.Split(",", StringSplitOptions.RemoveEmptyEntries),
+                            combo,
+                            StringToDecode);
+                        var decoded = await _mediator.Send(command);
+
+                        var score = await _mediator.Send(new ScoreText.Command(decoded, dictionary));
+
+                        lock (scores)
                         {
-                            var tscore = scores.OrderByDescending(x => x.Item1).Take(25).ToList(); 
-                            scores.Clear();
-                            scores.AddRange(tscore);
+                            scores.Add(new Tuple<ulong, string, string>(score.Item1, combo, decoded));
+                            if (scores.Count > 25)
+                            {
+                                var tscore = scores.OrderByDescending(x => x.Item1).Take(25).ToList();
+                                scores.Clear();
+                                scores.AddRange(tscore);
+                            }
                         }
                     }
                 }
-            }
-            catch (Exception e)
-            {
-                lock (DecodedString)
+                catch (Exception e)
                 {
-                    DecodedString += $"Error: {e.Message}\n";
+                    lock (DecodedString)
+                    {
+                        DecodedString += $"Error: {e.Message}\n";
+                    }
                 }
+                
+                context.ProcessQueueItems.Remove(processQueueItem);
+                await context.SaveChangesAsync();
+                processedCount++;
+                if (processedCount > ulong.MaxValue - 100)
+                {
+                    processedCount = 0;
+                }
+                processQueueItem = context.ProcessQueueItems.FirstOrDefault();
             }
         }
-
-        theQueue.Clear();
 
         DecodedString = string.Join("\n",
             scores.Select(x => $"Score: {x.Item1} - Keyword: {x.Item2} - {x.Item3}"));
@@ -158,19 +168,68 @@ public partial class VigenereCipherViewModel : ViewModelBase
         CurrentDepth = text;
     }
 
-    private async Task GetWordCombos(int depth, int maxDepth, string currentWordString, List<string> wordList)
+    [RelayCommand]
+    private async void BuildHopper()
+    {
+        List<string> dictionary = new List<string>();
+        using (var context = new LiberContext())
+        {
+            switch (SelectedDictionary)
+            {
+                case "Regular":
+                    dictionary = new List<string>(context.DictionaryWords.Select(x => x.DictionaryWordText).ToList());
+                    break;
+                case "Runeglish":
+                    dictionary = new List<string>(context.DictionaryWords.Select(x => x.RuneglishWordText).ToList());
+                    break;
+                case "Runes":
+                    dictionary = new List<string>(context.DictionaryWords.Select(x => x.RuneWordText).ToList());
+                    break;
+            }
+        }
+
+        var maxDepth = Convert.ToInt32(SelectedMaxWordCombinations);
+        
+        _processedCount = 0;
+        
+        UpdateProcessedCount($"Building Hopper...");
+        using (var context = new LiberContext())
+        {
+            await Task.Run(() => GetWordCombos(0, maxDepth, string.Empty, dictionary, context));
+        }
+        UpdateProcessedCount($"Hopper built for {maxDepth} word combinations.");
+    }
+
+    private async Task GetWordCombos(
+        int depth, 
+        int maxDepth, 
+        string currentWordString, 
+        List<string> wordList, 
+        LiberContext context)
     {
         if (depth >= maxDepth)
         {
-            theQueue.Enqueue(currentWordString);
+            context.ProcessQueueItems.Add(ProcessQueueItem.GenerateQueueItem(currentWordString));
+            _processedCount++;
+            
+            if (_processedCount > 1000000)
+            {
+                await context.SaveChangesAsync();
+                _processedCount = 0;
+            }
         }
         else if (depth < maxDepth)
         {
             foreach (var word in wordList)
             {
                 var newWordString = currentWordString + word;
-                await GetWordCombos(depth + 1, maxDepth, newWordString, wordList);
+                await GetWordCombos(depth + 1, maxDepth, newWordString, wordList, context);
             }
+        }
+        
+        if (depth == 0)
+        {
+            await context.SaveChangesAsync();
         }
     }
 

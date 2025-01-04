@@ -29,7 +29,8 @@
             <ComboBox ItemsSource="{Binding Dictionaries}" SelectedItem="{Binding SelectedDictionary}"></ComboBox>
             <TextBlock VerticalAlignment="Center">Word Combo Size</TextBlock>
             <ComboBox ItemsSource="{Binding MaxWordCombinations}" SelectedItem="{Binding SelectedMaxWordCombinations}"></ComboBox>
-            <Button Command="{Binding DictionaryDecodeStringCommand}">Brute Force Decode</Button>
+            <Button Command="{Binding BuildHopperCommand}">Build Queue</Button>
+            <Button Command="{Binding DictionaryDecodeStringCommand}">Process Queue</Button>
             <TextBlock VerticalAlignment="Center" Text="{Binding CurrentDepth}"></TextBlock>
         </StackPanel>
         <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Height="500">

@@ -26,6 +26,8 @@ namespace LiberPrimusAnalysisTool.Database
         public DbSet<RuneTextDocumentCharacter> RuneTextDocumentCharacters { get; set; }
         
         public DbSet<DictionaryWord> DictionaryWords { get; set; }
+        
+        public DbSet<ProcessQueueItem> ProcessQueueItems { get; set; }
 
         /// <summary>
         /// Override this method to configure the database (and other options) to be used for this context.
@@ -93,6 +95,9 @@ namespace LiberPrimusAnalysisTool.Database
                 .ToTable("TB_DICT_WORD")
                 .Property(b => b.Id)
                 .UseIdentityAlwaysColumn();
+
+            modelBuilder.Entity<ProcessQueueItem>()
+                .ToTable("TB_PROCESS_QUEUE");
         }
     }
 }

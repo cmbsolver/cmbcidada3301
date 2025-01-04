@@ -39,7 +39,7 @@ public partial class MainWindowViewModel : ViewModelBase
         new ListItemTemplate(typeof(Base64DecodeViewModel), "Wrench", "Base64 Decode"),
         new ListItemTemplate(typeof(BinaryDecodeViewModel), "Wrench", "Binary Decode"),
         new ListItemTemplate(typeof(CircularShiftViewModel), "Wrench", "Circular Shift"),
-        new ListItemTemplate(typeof(HexDecodeRunesViewModel), "Wrench", "Hex Decode Runes"),
+        // new ListItemTemplate(typeof(HexDecodeRunesViewModel), "Wrench", "Hex Decode Runes"),
         new ListItemTemplate(typeof(IdentifyBinFileViewModel), "Wrench", "Identify Bin File"),
         new ListItemTemplate(typeof(BinaryInvertViewModel), "Wrench", "Invert Binary Values"),
         new ListItemTemplate(typeof(RuneDecimalLsbViewModel), "Wrench", "Rune Decimal LSB"),
@@ -59,7 +59,7 @@ public partial class MainWindowViewModel : ViewModelBase
         new ListItemTemplate(typeof(AffineCipherViewModel), "Lock", "Affine"),
         new ListItemTemplate(typeof(VigenereCipherViewModel), "Lock", "Vigenere"),
         new ListItemTemplate(typeof(SpiralSquareSolveViewModel), "Lock", "Spiral"),
-        new ListItemTemplate(typeof(SubstituteUltimaViewModel), "Lock", "Rune Substitute Ultima"),
+        // new ListItemTemplate(typeof(SubstituteUltimaViewModel), "Lock", "Rune Substitute Ultima"),
         new ListItemTemplate(typeof(RebuildDictionaryViewModel), "Lock", "Rebuild Word Dictionary"),
         
         // Image analysis

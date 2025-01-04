@@ -29,7 +29,10 @@ public class IndexWordDirectory
             await using (var context = new LiberContext())
             {
                 try
-                {   
+                {
+                    // Make sure the database is created
+                    await context.Database.EnsureDeletedAsync(cancellationToken);
+                    
                     // Make sure the database is created
                     await context.Database.EnsureCreatedAsync(cancellationToken);
                 }
