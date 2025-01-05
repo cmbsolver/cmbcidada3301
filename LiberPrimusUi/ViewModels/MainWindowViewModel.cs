@@ -99,11 +99,13 @@ public partial class MainWindowViewModel : ViewModelBase
                     _windows.Add(new Tuple<string, object>(value.Label, new HomePageViewModel()));
                 CurrentPage = _windows.FirstOrDefault(w => w.Item1 == value.Label)?.Item2 as HomePageViewModel;
                 break;
+            
             case Type t when t == typeof(PrimeCheckerViewModel):
                 if (!_windows.Any(w => w.Item1 == value.Label))
                     _windows.Add(new Tuple<string, object>(value.Label, new PrimeCheckerViewModel(_mediator)));
                 CurrentPage = _windows.FirstOrDefault(w => w.Item1 == value.Label)?.Item2 as PrimeCheckerViewModel;
                 break;
+            
             case Type t when t == typeof(GenerateSequenceViewModel):
                 if (!_windows.Any(w => w.Item1 == value.Label))
                     _windows.Add(new Tuple<string, object>(value.Label, new GenerateSequenceViewModel(_mediator)));

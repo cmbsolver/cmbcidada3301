@@ -29,18 +29,23 @@ public partial class SumGemSentencesViewModel: ViewModelBase
         var sentences = _textToTranspose.Split(Environment.NewLine);
         foreach (var sentence in sentences)
         {
-            var result = await _mediator.Send(new CalculateGematriaSum.Command(sentence.Trim()));
-            if (result != "0")
+            if (sentence.Trim().Length == 0)
             {
-                var value = Convert.ToUInt64(result);
-                var isPrime = await _mediator.Send(new GetIsPrime.Query(value));
-                
-                counter++;
-                sb.Append($"Line: {counter} - Is Prime: {isPrime} - Sum: {result}");
-                sb.AppendLine("");
+                continue;
             }
+            
+            var result = await _mediator.Send(new CalculateDetailGematriaSum.Command(sentence.Trim()));
+            var value = Convert.ToUInt64(result.Item1);
+            var isPrime = await _mediator.Send(new GetIsPrime.Query(value));
+
+            counter++;
+            sb.AppendLine($"Line: {counter} - {sentence.Trim()}");
+            sb.AppendLine($"Line: {counter} - Is Prime: {isPrime} - Sum: {result.Item1}");
+            sb.AppendLine($"Line: {counter} - Letter Values: {string.Join(",", result.Item2)}");
+            sb.AppendLine($"Line: {counter} - Word Sums: {string.Join(",", result.Item3)}");
+            sb.AppendLine("");
         }
-        
+
         Response = sb.ToString();
     }
 
