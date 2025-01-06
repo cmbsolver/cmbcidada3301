@@ -46,6 +46,7 @@ public partial class MainWindowViewModel : ViewModelBase
         new ListItemTemplate(typeof(SkipAndTakeViewModel), "Wrench", "Skip and Take"),
         new ListItemTemplate(typeof(DictionaryCheckTextFilesViewModel), "Wrench", "Dictionary Check Text Files"),
         new ListItemTemplate(typeof(CalculateClockAngleViewModel), "Wrench", "Clock Angle Calculator"),
+        new ListItemTemplate(typeof(RebuildDictionaryViewModel), "Wrench", "Word Dictionary"),
         new ListItemTemplate(typeof(RuneInteractiveSubstitutionViewModel), "Wrench", "Interactive Rune Substitution"),
         
         // Text analysis
@@ -60,7 +61,6 @@ public partial class MainWindowViewModel : ViewModelBase
         new ListItemTemplate(typeof(AffineCipherViewModel), "Lock", "Affine"),
         new ListItemTemplate(typeof(VigenereCipherViewModel), "Lock", "Vigenere"),
         new ListItemTemplate(typeof(SpiralSquareSolveViewModel), "Lock", "Spiral"),
-        new ListItemTemplate(typeof(RebuildDictionaryViewModel), "Lock", "Rebuild Word Dictionary"),
         
         // Image analysis
         new ListItemTemplate(typeof(ColorReportViewModel), "ImageIcon", "Color Report"),
