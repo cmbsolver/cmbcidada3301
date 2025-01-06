@@ -10,9 +10,6 @@
         <StackPanel Orientation="Horizontal" Spacing="5">
             <TextBlock VerticalAlignment="Center">Value</TextBlock>
             <TextBox Text="{Binding TextToTranspose}"></TextBox>
-            <TextBlock VerticalAlignment="Center">Word Type</TextBlock>
-            <ComboBox ItemsSource="{Binding Catalogs}" 
-                      SelectedItem="{Binding SelectedCatalog}"></ComboBox>
         </StackPanel>
         <StackPanel Orientation="Horizontal" Spacing="5">
             <Button Command="{Binding CalculateTextCommand}">Get Words</Button>

@@ -15,19 +15,11 @@ public partial class GetWordsForValueViewModel: ViewModelBase
     public GetWordsForValueViewModel(IMediator mediator)
     {
         _mediator = mediator;
-        
-        Catalogs.Add("Regular");
-        Catalogs.Add("Runeglish");
-        Catalogs.Add("Runes");
     }
     
     [ObservableProperty] private string _textToTranspose = "";
     
     [ObservableProperty] private string _response = "";
-    
-    public ObservableCollection<string> Catalogs { get; set; } = new ObservableCollection<string>();
-    
-    [ObservableProperty] private string _selectedCatalog;
     
     [RelayCommand]
     public async void CalculateText()
@@ -37,7 +29,7 @@ public partial class GetWordsForValueViewModel: ViewModelBase
         
         foreach (var textValue in TextToTranspose.Split(",", StringSplitOptions.RemoveEmptyEntries))
         {
-            var tresponse = await _mediator.Send(new GetWordsFromInts.Command(textValue.Trim(), SelectedCatalog));
+            var tresponse = await _mediator.Send(new GetWordsFromInts.Command(textValue.Trim()));
 
             if (tresponse.Count() == 0)
             {

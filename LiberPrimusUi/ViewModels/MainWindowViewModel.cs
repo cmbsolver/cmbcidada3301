@@ -46,6 +46,7 @@ public partial class MainWindowViewModel : ViewModelBase
         new ListItemTemplate(typeof(SkipAndTakeViewModel), "Wrench", "Skip and Take"),
         new ListItemTemplate(typeof(DictionaryCheckTextFilesViewModel), "Wrench", "Dictionary Check Text Files"),
         new ListItemTemplate(typeof(CalculateClockAngleViewModel), "Wrench", "Clock Angle Calculator"),
+        new ListItemTemplate(typeof(RuneInteractiveSubstitutionViewModel), "Wrench", "Interactive Rune Substitution"),
         
         // Text analysis
         new ListItemTemplate(typeof(LetterFrequencyAnalysisViewModel), "Analysis", "Letter Frequency Analysis"),
@@ -278,6 +279,12 @@ public partial class MainWindowViewModel : ViewModelBase
                 if (!_windows.Any(w => w.Item1 == value.Label))
                     _windows.Add(new Tuple<string, object>(value.Label, new GetWordsForLengthViewModel(_mediator)));
                 CurrentPage = _windows.FirstOrDefault(w => w.Item1 == value.Label)?.Item2 as GetWordsForLengthViewModel;
+                break;
+            
+            case Type t when t == typeof(RuneInteractiveSubstitutionViewModel):
+                if (!_windows.Any(w => w.Item1 == value.Label))
+                    _windows.Add(new Tuple<string, object>(value.Label, new RuneInteractiveSubstitutionViewModel(_mediator)));
+                CurrentPage = _windows.FirstOrDefault(w => w.Item1 == value.Label)?.Item2 as RuneInteractiveSubstitutionViewModel;
                 break;
         }
         

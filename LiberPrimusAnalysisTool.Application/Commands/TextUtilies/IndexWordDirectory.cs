@@ -72,6 +72,13 @@ public class IndexWordDirectory
                 var runeText = await _mediator.Send(new TransposeLatinToRune.Command(runeglishText),
                     cancellationToken);
                 word.RuneWordText = runeText;
+                
+                var gemSum = await _mediator.Send(new CalculateGematriaSum.Command(runeText), cancellationToken);
+                word.GemSum = Convert.ToInt64(gemSum);
+
+                word.DictionaryWordLength = word.DictionaryWordText.Length;
+                word.RuneglishWordLength = word.RuneglishWordText.Length;
+                word.RuneWordLength = word.RuneWordText.Length;
 
                 await using (var context = new LiberContext())
                 {

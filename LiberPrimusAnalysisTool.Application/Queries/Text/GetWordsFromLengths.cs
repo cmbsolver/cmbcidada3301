@@ -1,12 +1,13 @@
 using LiberPrimusAnalysisTool.Application.Commands.TextUtilies;
 using LiberPrimusAnalysisTool.Database;
+using LiberPrimusAnalysisTool.Entity.Text;
 using MediatR;
 
 namespace LiberPrimusAnalysisTool.Application.Queries.Text;
 
 public class GetWordsFromLengths
 {
-    public class Command : IRequest<IEnumerable<string>>
+    public class Command : IRequest<IEnumerable<DictionaryWord>>
     {
         public string Ints { get; set; }
 
@@ -19,7 +20,7 @@ public class GetWordsFromLengths
         }
     }
 
-    public class Handler : IRequestHandler<Command, IEnumerable<string>>
+    public class Handler : IRequestHandler<Command, IEnumerable<DictionaryWord>>
     {
         private readonly MediatR.IMediator _mediator;
 
@@ -28,10 +29,10 @@ public class GetWordsFromLengths
             _mediator = mediator;
         }
 
-        public async Task<IEnumerable<string>> Handle(Command request, CancellationToken cancellationToken)
+        public async Task<IEnumerable<DictionaryWord>> Handle(Command request, CancellationToken cancellationToken)
         {
             List<int> ints = new();
-            List<string> words = new();
+            List<DictionaryWord> words = new();
 
             if (request.Ints.Contains(","))
             {
@@ -48,34 +49,22 @@ public class GetWordsFromLengths
             {
                 using (var context = new LiberContext())
                 {
-                    foreach (var word in context.DictionaryWords)
+                    switch (request.Catalog)
                     {
-                        switch (request.Catalog)
-                        {
-                            case "Regular":
-                                if (word.DictionaryWordText.Length == value)
-                                {
-                                    words.Add(word.DictionaryWordText);
-                                }
-                                break;
-                            case "Runeglish":
-                                if (word.RuneglishWordText.Length == value)
-                                {
-                                    words.Add(word.RuneglishWordText);
-                                }
-                                break;
-                            case "Runes":
-                                if (word.RuneWordText.Length == value)
-                                {
-                                    words.Add(word.RuneWordText);
-                                }
-                                break;
-                        }
+                        case "Regular":
+                            words = context.DictionaryWords.Where(x => x.DictionaryWordLength == value).ToList();
+                            break;
+                        case "Runeglish":
+                            words = context.DictionaryWords.Where(x => x.RuneglishWordLength == value).ToList();
+                            break;
+                        case "Runes":
+                            words = context.DictionaryWords.Where(x => x.RuneWordLength == value).ToList();
+                            break;
                     }
                 }
             }
 
-            return words;
+            return words.OrderBy(x => x.DictionaryWordText).ToList();
         }
     }
 }

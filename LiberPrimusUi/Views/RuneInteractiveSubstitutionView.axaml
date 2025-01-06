@@ -1,0 +1,39 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:LiberPrimusUi.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="LiberPrimusUi.Views.RuneInteractiveSubstitutionView"
+             x:DataType="vm:RuneInteractiveSubstitutionViewModel">
+    <StackPanel Margin="20" Spacing="10">
+        <StackPanel Orientation="Horizontal" Spacing="5">
+            <TextBlock VerticalAlignment="Center">Text</TextBlock>
+            <TextBox Text="{Binding TextToTranslate}" Width="800" Height="150" AcceptsReturn="True"></TextBox>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" Spacing="5">
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Top" Spacing="3">
+                <TextBlock VerticalAlignment="Center">From Rune</TextBlock>
+                <ComboBox ItemsSource="{Binding FromRunes}" 
+                          SelectedItem="{Binding SelectedFromRuneDetail}"></ComboBox>
+                <TextBlock VerticalAlignment="Center">From Rune</TextBlock>
+                <ComboBox ItemsSource="{Binding ToRunes}" 
+                          SelectedItem="{Binding SelectedToRuneDetail}"></ComboBox>
+                <Button Command="{Binding AddRuneMappingCommand}">Add Mapping</Button>
+            </StackPanel>
+            <StackPanel Orientation="Vertical">
+                <ListBox ItemsSource="{Binding RuneMappings}" SelectionMode="Single" 
+                         SelectedItem="{Binding SelectedRuneMapping}" Height="100"></ListBox>
+                <Button Command="{Binding RemoveRuneMappingCommand}">Remove Mapping</Button>
+            </StackPanel>
+        </StackPanel>
+        <TextBlock VerticalAlignment="Center">Replaced</TextBlock>
+        <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Height="150">
+            <TextBox Text="{Binding ReplacedText}"></TextBox>
+        </ScrollViewer>
+        <TextBlock VerticalAlignment="Center">Transposed</TextBlock>
+        <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Height="150">
+            <TextBox Text="{Binding TransposedText}"></TextBox>
+        </ScrollViewer>
+    </StackPanel>
+</UserControl>
