@@ -9,6 +9,8 @@
     <StackPanel Margin="20" Spacing="10">
         <StackPanel Orientation="Horizontal" Spacing="5">
             <Button Command="{Binding RebuildDictCommand}">Rebuild Dictionary</Button>
+            <Button Name="ExportButton" Click="ExportButton_OnClick">Export Dictionary</Button>
+            <Button Name="LoadCustomDict" Click="LoadCustomDict_OnClick">Load Custom Dictionary</Button>
         </StackPanel>
         <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Height="500">
             <TextBox Text="{Binding DecodedString}"></TextBox>
