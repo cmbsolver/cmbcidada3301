@@ -24,6 +24,9 @@
                     <Button Command="{Binding AddRuneMappingCommand}">Add/Update Mapping</Button>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Top" Spacing="3">
+                    <CheckBox IsChecked="{Binding IgnorePattern}" IsCheckedChanged="ToggleButton_OnIsCheckedChanged">Ignore Pattern</CheckBox>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Top" Spacing="3">
                     <TextBlock VerticalAlignment="Center">From Word</TextBlock>
                     <ComboBox ItemsSource="{Binding Words}" 
                               SelectedItem="{Binding SelectedFromWord}" SelectionChanged="ComboItemsControl_OnSelectionChanged"></ComboBox>

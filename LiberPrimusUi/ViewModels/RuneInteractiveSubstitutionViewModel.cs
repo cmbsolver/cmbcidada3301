@@ -60,6 +60,8 @@ public partial class RuneInteractiveSubstitutionViewModel: ViewModelBase
     
     [ObservableProperty] private string _transposedText = string.Empty;
     
+    [ObservableProperty] private bool _ignorePattern = false;
+    
     [RelayCommand]
     public async void GetPossibleWords()
     {
@@ -72,15 +74,25 @@ public partial class RuneInteractiveSubstitutionViewModel: ViewModelBase
         var words = _mediator.Send(new GetWordsFromLengths.Command(
             SelectedFromWord.Word.Length.ToString(), "Runes")).Result;
         
-        var fromPattern = SelectedFromWord.GetRunePattern();
-        
-        foreach (var word in words)
+        if (IgnorePattern)
         {
-            var toPattern = word.GetRunePattern();
-            
-            if (fromPattern == toPattern)
+            foreach (var word in words)
             {
                 PossibleWords.Add(word);
+            }
+        }
+        else
+        {
+            var fromPattern = SelectedFromWord.GetRunePattern();
+
+            foreach (var word in words)
+            {
+                var toPattern = word.GetRunePattern();
+
+                if (fromPattern == toPattern)
+                {
+                    PossibleWords.Add(word);
+                }
             }
         }
     }

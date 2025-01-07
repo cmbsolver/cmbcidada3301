@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Avalonia.Controls;
+using Avalonia.Interactivity;
 using LiberPrimusAnalysisTool.Entity.Text;
 using LiberPrimusUi.ViewModels;
 
@@ -82,6 +83,15 @@ public partial class RuneInteractiveSubstitutionView : UserControl
     }
 
     private void ComboItemsControl_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
+    {
+        var viewModel = (RuneInteractiveSubstitutionViewModel)DataContext;
+        viewModel.SelectedToWord = null;
+        viewModel.PossibleWords.Clear();
+        
+        viewModel.GetPossibleWords();
+    }
+
+    private void ToggleButton_OnIsCheckedChanged(object? sender, RoutedEventArgs e)
     {
         var viewModel = (RuneInteractiveSubstitutionViewModel)DataContext;
         viewModel.SelectedToWord = null;
