@@ -7,6 +7,8 @@ using LiberPrimusAnalysisTool.Application.Commands.TextUtilies;
 using LiberPrimusAnalysisTool.Application.Queries.Text;
 using LiberPrimusAnalysisTool.Entity.Text;
 using MediatR;
+using MoreLinq;
+using MoreLinq.Extensions;
 
 namespace LiberPrimusUi.ViewModels;
 
@@ -36,6 +38,16 @@ public partial class RuneInteractiveSubstitutionViewModel: ViewModelBase
     public ObservableCollection<RuneDetailMapping> RuneMappings { get; set; } =
         new ObservableCollection<RuneDetailMapping>();
     
+    public ObservableCollection<WordListing> Words { get; set; } =
+        new ObservableCollection<WordListing>();
+    
+    public ObservableCollection<DictionaryWord> PossibleWords { get; set; } =
+        new ObservableCollection<DictionaryWord>();
+    
+    [ObservableProperty] private WordListing _selectedFromWord;
+    
+    [ObservableProperty] private DictionaryWord _selectedToWord;
+    
     [ObservableProperty] private RuneDetail _selectedFromRuneDetail;
     
     [ObservableProperty] private RuneDetail _selectedToRuneDetail;
@@ -47,13 +59,98 @@ public partial class RuneInteractiveSubstitutionViewModel: ViewModelBase
     [ObservableProperty] private string _replacedText = string.Empty;
     
     [ObservableProperty] private string _transposedText = string.Empty;
+    
+    [RelayCommand]
+    public async void GetPossibleWords()
+    {
+        if (SelectedFromWord == null)
+        {
+            return;
+        }
+        
+        PossibleWords.Clear();
+        var words = _mediator.Send(new GetWordsFromLengths.Command(
+            SelectedFromWord.Word.Length.ToString(), "Runes")).Result;
+        
+        var fromPattern = SelectedFromWord.GetRunePattern();
+        
+        foreach (var word in words)
+        {
+            var toPattern = word.GetRunePattern();
+            
+            if (fromPattern == toPattern)
+            {
+                PossibleWords.Add(word);
+            }
+        }
+    }
+    
+    [RelayCommand]
+    public async void AddWordRuneMapping()
+    {
+        if (SelectedFromWord == null || SelectedToWord == null)
+        {
+            return;
+        }
+        
+        List<RuneDetail> runeDetails = new();
+        runeDetails.AddRange(_mediator.Send(new GetRunes.Query()).Result);
+        
+        var fromRunes = SelectedFromWord.Word.ToCharArray();
+        var toRunes = SelectedToWord.RuneWordText.ToCharArray();
+        
+        for (int i = 0; i < fromRunes.Length; i++)
+        {
+            var fromRune = runeDetails.FirstOrDefault(x => x.Rune == fromRunes[i].ToString());
+            var toRune = runeDetails.FirstOrDefault(x => x.Rune == toRunes[i].ToString());
+            
+            if (fromRune != null && toRune != null)
+            {
+                if (RuneMappings.Any(x => x.FromRune.Rune == fromRune.Rune))
+                {
+                    int counter = 0;
+                    foreach (var map in RuneMappings)
+                    {
+                        if (map.FromRune.Value == fromRune.Value)
+                        {
+                            RuneMappings[counter] = new RuneDetailMapping(fromRune, toRune);
+                            break;
+                        }
+
+                        counter++;
+                    }
+                }
+                else
+                {
+                    RuneMappings.Add(new RuneDetailMapping(fromRune, toRune));    
+                }
+            }
+        }
+        
+        RecalculateText();
+    }
 
     [RelayCommand]
     public async void AddRuneMapping()
     {
-        RuneMappings.Add(new RuneDetailMapping(SelectedFromRuneDetail, SelectedToRuneDetail));
-        
-        RecalculateDropDowns();
+        if (RuneMappings.Any(x => x.FromRune.Rune == SelectedFromRuneDetail.Rune))
+        {
+            int counter = 0;
+            foreach (var map in RuneMappings)
+            {
+                if (map.FromRune.Value == SelectedFromRuneDetail.Value)
+                {
+                    RuneMappings[counter] = new RuneDetailMapping(SelectedFromRuneDetail, SelectedToRuneDetail);
+                    break;
+                }
+
+                counter++;
+            }
+        }
+        else
+        {
+            RuneMappings.Add(new RuneDetailMapping(SelectedFromRuneDetail, SelectedToRuneDetail));    
+        }
         RecalculateText();
     }
 
@@ -72,11 +169,32 @@ public partial class RuneInteractiveSubstitutionViewModel: ViewModelBase
             RuneMappings.RemoveAt(index);
         }
         
-        RecalculateDropDowns();
         RecalculateText();
     }
+    
+    [RelayCommand]
+    public async void RemoveRuneMappings()
+    {
+        RuneMappings.Clear();
+        SelectedFromRuneDetail = null;
+        SelectedToRuneDetail = null;
+        
+        RecalculateText();
+    }
+    
+    public string[] GetRunes()
+    {
+        return _mediator.Send(new GetRunes.Query()).Result.Select(x => x.Rune).ToArray();
+    }
+    
+    public string GetRuneGlish(string word)
+    {
+        var runeglish = _mediator.Send(new TransposeRuneToLatin.Command(word)).Result;
+        
+        return runeglish;
+    }
 
-    private void RecalculateText()
+    public void RecalculateText()
     {
         ReplacedText = string.Empty;
         TransposedText = string.Empty;
@@ -95,38 +213,5 @@ public partial class RuneInteractiveSubstitutionViewModel: ViewModelBase
         }
         
         TransposedText = _mediator.Send(new TransposeRuneToLatin.Command(ReplacedText)).Result;
-    }
-
-    private void RecalculateDropDowns()
-    {
-        SelectedFromRuneDetail = null;
-        SelectedToRuneDetail = null;
-
-        List<RuneDetail> fromRunes = new();
-        fromRunes.AddRange(_mediator.Send(new GetRunes.Query()).Result);
-        List<RuneDetail> toRunes = new();
-        toRunes.AddRange(_mediator.Send(new GetRunes.Query()).Result);
-        
-        foreach (var mapping in RuneMappings)
-        {
-            var fromRuneIdx = fromRunes.FindIndex(x => x.Value == mapping.FromRune.Value);
-            var toRuneIdx = toRunes.FindIndex(x => x.Value == mapping.ToRune.Value);
-            
-            fromRunes.RemoveAt(fromRuneIdx);
-            toRunes.RemoveAt(toRuneIdx);
-        }
-
-        FromRunes.Clear();
-        ToRunes.Clear();
-        
-        foreach (var rune in fromRunes)
-        {
-            FromRunes.Add(rune);
-        }
-        
-        foreach (var rune in toRunes)
-        {
-            ToRunes.Add(rune);
-        }
     }
 }

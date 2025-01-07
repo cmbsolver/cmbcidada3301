@@ -37,6 +37,36 @@ public class DictionaryWord
     [Required]
     [Column("DICT_RUNE_LENGTH")]
     public int RuneWordLength { get; set; }
+    
+    public string GetRunePattern()
+    {
+        Dictionary<int, string> patternDictionary = new();
+        List<string> runes = new();
+        var counter = 1;
+        
+        foreach (var character in RuneWordText)
+        {
+            if (character == '\'')
+            {
+                runes.Add("'");
+                continue;
+            }
+            
+            if (patternDictionary.Any(x => x.Value == character.ToString()))
+            {
+                var pattern = patternDictionary.First(x => x.Value == character.ToString());
+                runes.Add(pattern.Key.ToString());
+            }
+            else
+            {
+                runes.Add(counter.ToString());
+                patternDictionary.Add(counter, character.ToString());
+                counter++;
+            }
+        }
+        
+        return string.Join(string.Empty, runes);
+    }
 
     public override string ToString()
     {

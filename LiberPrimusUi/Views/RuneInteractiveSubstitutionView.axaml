@@ -7,24 +7,37 @@
              x:Class="LiberPrimusUi.Views.RuneInteractiveSubstitutionView"
              x:DataType="vm:RuneInteractiveSubstitutionViewModel">
     <StackPanel Margin="20" Spacing="10">
+
         <StackPanel Orientation="Horizontal" Spacing="5">
-            <TextBlock VerticalAlignment="Center">Text</TextBlock>
-            <TextBox Text="{Binding TextToTranslate}" Width="800" Height="150" AcceptsReturn="True"></TextBox>
-        </StackPanel>
-        <StackPanel Orientation="Horizontal" Spacing="5">
-            <StackPanel Orientation="Horizontal" VerticalAlignment="Top" Spacing="3">
-                <TextBlock VerticalAlignment="Center">From Rune</TextBlock>
-                <ComboBox ItemsSource="{Binding FromRunes}" 
-                          SelectedItem="{Binding SelectedFromRuneDetail}"></ComboBox>
-                <TextBlock VerticalAlignment="Center">From Rune</TextBlock>
-                <ComboBox ItemsSource="{Binding ToRunes}" 
-                          SelectedItem="{Binding SelectedToRuneDetail}"></ComboBox>
-                <Button Command="{Binding AddRuneMappingCommand}">Add Mapping</Button>
+            <StackPanel Orientation="Vertical" Spacing="7">
+                <StackPanel Orientation="Horizontal" Spacing="5">
+                    <TextBlock VerticalAlignment="Center">Text</TextBlock>
+                    <TextBox Text="{Binding TextToTranslate}" Width="800" Height="150" AcceptsReturn="True" TextWrapping="Wrap" TextChanged="TextBox_OnTextChanged"></TextBox>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Top" Spacing="3">
+                    <TextBlock VerticalAlignment="Center">From Rune</TextBlock>
+                    <ComboBox ItemsSource="{Binding FromRunes}" 
+                              SelectedItem="{Binding SelectedFromRuneDetail}"></ComboBox>
+                    <TextBlock VerticalAlignment="Center">To Rune</TextBlock>
+                    <ComboBox ItemsSource="{Binding ToRunes}" 
+                              SelectedItem="{Binding SelectedToRuneDetail}"></ComboBox>
+                    <Button Command="{Binding AddRuneMappingCommand}">Add/Update Mapping</Button>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Top" Spacing="3">
+                    <TextBlock VerticalAlignment="Center">From Word</TextBlock>
+                    <ComboBox ItemsSource="{Binding Words}" 
+                              SelectedItem="{Binding SelectedFromWord}" SelectionChanged="ComboItemsControl_OnSelectionChanged"></ComboBox>
+                    <TextBlock VerticalAlignment="Center">To Word</TextBlock>
+                    <ComboBox ItemsSource="{Binding PossibleWords}" 
+                              SelectedItem="{Binding SelectedToWord}"></ComboBox>
+                    <Button Command="{Binding AddWordRuneMappingCommand}">Add/Update Mapping</Button>
+                </StackPanel>
             </StackPanel>
             <StackPanel Orientation="Vertical">
                 <ListBox ItemsSource="{Binding RuneMappings}" SelectionMode="Single" 
-                         SelectedItem="{Binding SelectedRuneMapping}" Height="100"></ListBox>
+                         SelectedItem="{Binding SelectedRuneMapping}" Height="250" SelectionChanged="SelectingItemsControl_OnSelectionChanged"></ListBox>
                 <Button Command="{Binding RemoveRuneMappingCommand}">Remove Mapping</Button>
+                <Button Command="{Binding RemoveRuneMappingsCommand}">Clear Mappings</Button>
             </StackPanel>
         </StackPanel>
         <TextBlock VerticalAlignment="Center">Replaced</TextBlock>
