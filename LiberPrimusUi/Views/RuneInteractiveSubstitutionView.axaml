@@ -7,12 +7,15 @@
              x:Class="LiberPrimusUi.Views.RuneInteractiveSubstitutionView"
              x:DataType="vm:RuneInteractiveSubstitutionViewModel">
     <StackPanel Margin="20" Spacing="10">
-
         <StackPanel Orientation="Horizontal" Spacing="5">
             <StackPanel Orientation="Vertical" Spacing="7">
                 <StackPanel Orientation="Horizontal" Spacing="5">
                     <TextBlock VerticalAlignment="Center">Text</TextBlock>
                     <TextBox Text="{Binding TextToTranslate}" Width="800" Height="150" AcceptsReturn="True" TextWrapping="Wrap" TextChanged="TextBox_OnTextChanged"></TextBox>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Top" Spacing="3">
+                    <TextBlock>Not Mapped</TextBlock>
+                    <TextBlock Text="{Binding CharactersLeft}"></TextBlock>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Top" Spacing="3">
                     <TextBlock VerticalAlignment="Center">From Rune</TextBlock>
@@ -25,6 +28,7 @@
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Top" Spacing="3">
                     <CheckBox IsChecked="{Binding IgnorePattern}" IsCheckedChanged="ToggleButton_OnIsCheckedChanged">Ignore Pattern</CheckBox>
+                    <CheckBox IsChecked="{Binding OnlyUnmappedWords}" Name="OnlyUnmappedWords" IsCheckedChanged="OnlyUnmappedWords_OnIsCheckedChanged">Only Unmapped Words</CheckBox>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Top" Spacing="3">
                     <TextBlock VerticalAlignment="Center">From Word</TextBlock>
@@ -41,15 +45,12 @@
                          SelectedItem="{Binding SelectedRuneMapping}" Height="250" SelectionChanged="SelectingItemsControl_OnSelectionChanged"></ListBox>
                 <Button Command="{Binding RemoveRuneMappingCommand}">Remove Mapping</Button>
                 <Button Command="{Binding RemoveRuneMappingsCommand}">Clear Mappings</Button>
+                <!-- <Button Command="{Binding GetPatternForTextCommand}">Get Pattern</Button> -->
             </StackPanel>
         </StackPanel>
-        <TextBlock VerticalAlignment="Center">Replaced</TextBlock>
-        <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Height="150">
-            <TextBox Text="{Binding ReplacedText}"></TextBox>
-        </ScrollViewer>
-        <TextBlock VerticalAlignment="Center">Transposed</TextBlock>
-        <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Height="150">
-            <TextBox Text="{Binding TransposedText}"></TextBox>
-        </ScrollViewer>
+        <TextBlock>Replaced</TextBlock>
+        <TextBox Text="{Binding ReplacedText}" HorizontalAlignment="Left" TextWrapping="Wrap" AcceptsReturn="True" Height="150" Width="1000"></TextBox>
+        <TextBlock>Transposed</TextBlock>
+        <TextBox Text="{Binding TransposedText}" HorizontalAlignment="Left" TextWrapping="Wrap" AcceptsReturn="True" Height="150" Width="1000"></TextBox>
     </StackPanel>
 </UserControl>

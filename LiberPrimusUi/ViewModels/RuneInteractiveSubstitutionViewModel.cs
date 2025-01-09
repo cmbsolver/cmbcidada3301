@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -60,7 +61,11 @@ public partial class RuneInteractiveSubstitutionViewModel: ViewModelBase
     
     [ObservableProperty] private string _transposedText = string.Empty;
     
+    [ObservableProperty] private string _charactersLeft = string.Empty;
+    
     [ObservableProperty] private bool _ignorePattern = false;
+    
+    [ObservableProperty] private bool _onlyUnmappedWords = true;
     
     [RelayCommand]
     public async void GetPossibleWords()
@@ -95,6 +100,8 @@ public partial class RuneInteractiveSubstitutionViewModel: ViewModelBase
                 }
             }
         }
+        
+        FindHowManyNotMapped();
     }
     
     [RelayCommand]
@@ -140,6 +147,8 @@ public partial class RuneInteractiveSubstitutionViewModel: ViewModelBase
         }
         
         RecalculateText();
+        FindHowManyNotMapped();
+        RecalculateDropdown();
     }
 
     [RelayCommand]
@@ -164,6 +173,8 @@ public partial class RuneInteractiveSubstitutionViewModel: ViewModelBase
             RuneMappings.Add(new RuneDetailMapping(SelectedFromRuneDetail, SelectedToRuneDetail));    
         }
         RecalculateText();
+        FindHowManyNotMapped();
+        RecalculateDropdown();
     }
 
     [RelayCommand]
@@ -182,6 +193,8 @@ public partial class RuneInteractiveSubstitutionViewModel: ViewModelBase
         }
         
         RecalculateText();
+        FindHowManyNotMapped();
+        RecalculateDropdown();
     }
     
     [RelayCommand]
@@ -192,6 +205,44 @@ public partial class RuneInteractiveSubstitutionViewModel: ViewModelBase
         SelectedToRuneDetail = null;
         
         RecalculateText();
+        FindHowManyNotMapped();
+        RecalculateDropdown();
+    }
+    
+    [RelayCommand]
+    public async void GetPatternForText()
+    {
+        string pattern = WordListing.GetFullRunePattern(TextToTranslate);
+        ReplacedText = pattern;
+    }
+
+    public string[] FindHowManyNotMapped()
+    {
+        var runes = _mediator.Send(new GetRunes.Query()).Result;
+        List<RuneDetail> notMapped = new();
+        notMapped.AddRange(runes);
+        
+        List<RuneDetail> tnotMapped = new();
+        tnotMapped.AddRange(runes);
+
+        foreach (var rune in tnotMapped)
+        {
+            if (!TextToTranslate.Contains(rune.Rune))
+            {
+                var index = notMapped.IndexOf(notMapped.FirstOrDefault(x => x.Rune == rune.Rune));
+                notMapped.RemoveAt(index);
+            }
+        }
+
+        foreach (var mapping in RuneMappings)
+        {
+            var index = notMapped.IndexOf(notMapped.FirstOrDefault(x => x.Rune == mapping.FromRune.Rune));
+            notMapped.RemoveAt(index);
+        }
+        
+        CharactersLeft = string.Join(",", notMapped.Select(x => x.Rune));
+        
+        return notMapped.Select(x => x.Rune).ToArray();
     }
     
     public string[] GetRunes()
@@ -225,5 +276,84 @@ public partial class RuneInteractiveSubstitutionViewModel: ViewModelBase
         }
         
         TransposedText = _mediator.Send(new TransposeRuneToLatin.Command(ReplacedText)).Result;
+    }
+
+    public void RecalculateDropdown(bool? onlyUnmapped = null)
+    {
+        if (onlyUnmapped != null)
+        {
+            OnlyUnmappedWords = (bool)onlyUnmapped;
+        }
+        
+        this.Words.Clear();
+        var runes = GetRunes();
+        
+        List<string> splitCharacters = new();
+        
+        // Getting the split characters
+        foreach (var character in TextToTranslate)
+        {
+            if (!runes.Contains(character.ToString()))
+            {
+                splitCharacters.Add(character.ToString());
+            }
+        }
+
+        if (splitCharacters.Any(x => x == "'"))
+        {
+            splitCharacters.Remove("'");
+        }
+        
+        // Splitting the text
+        var splitText = TextToTranslate.Split(splitCharacters.ToArray(), StringSplitOptions.RemoveEmptyEntries);
+        
+        // Getting the words
+        Words.Clear();
+        int counter = 0;
+        
+        if (OnlyUnmappedWords)
+        {
+            var notMapped = FindHowManyNotMapped();
+            
+            foreach (var word in splitText)
+            {
+                bool isMapped = true;
+                foreach (var letter in word)
+                {
+                    if (notMapped.Contains(letter.ToString()))
+                    {
+                        isMapped = false;
+                        break;
+                    }
+                }
+
+                counter++;
+
+                if (isMapped)
+                {
+                    continue;
+                }
+
+                Words.Add(new WordListing
+                (
+                    word,
+                    counter,
+                    GetRuneGlish(word)
+                ));
+            }
+        }
+        else
+        {
+            foreach (var word in splitText)
+            {
+                counter++;
+                Words.Add(new WordListing
+                (
+                    word,
+                    counter,
+                    GetRuneGlish(word)
+                ));
+            }
+        }
     }
 }

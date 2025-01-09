@@ -26,40 +26,11 @@ public partial class RuneInteractiveSubstitutionView : UserControl
         viewModel.PossibleWords.Clear();
         viewModel.SelectedToWord = null;
         
-        List<string> splitCharacters = new();
-        
-        // Getting the split characters
-        foreach (var character in ((TextBox)sender).Text)
-        {
-            if (!runes.Contains(character.ToString()))
-            {
-                splitCharacters.Add(character.ToString());
-            }
-        }
-
-        if (splitCharacters.Any(x => x == "'"))
-        {
-            splitCharacters.Remove("'");
-        }
-        
-        // Splitting the text
-        var splitText = ((TextBox)sender).Text.Split(splitCharacters.ToArray(), StringSplitOptions.RemoveEmptyEntries);
-        
-        // Getting the words
-        viewModel.Words.Clear();
-        int counter = 0;
-        foreach (var word in splitText)
-        {
-            counter++;
-            viewModel.Words.Add(new WordListing
-            (
-                word,
-                counter,
-                viewModel.GetRuneGlish(word)
-            ));
-        }
+        viewModel.RecalculateDropdown();
         
         viewModel.RecalculateText();
+        
+        viewModel.FindHowManyNotMapped();
     }
 
     private void SelectingItemsControl_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
@@ -75,6 +46,8 @@ public partial class RuneInteractiveSubstitutionView : UserControl
             var mapping = (RuneDetailMapping)e.AddedItems[0];
             viewModel.SelectedFromRuneDetail = viewModel.FromRunes.FirstOrDefault(x => x.Rune == mapping.FromRune.Rune);
             viewModel.SelectedToRuneDetail = viewModel.ToRunes.FirstOrDefault(x => x.Rune == mapping.ToRune.Rune);
+            
+            viewModel.FindHowManyNotMapped();
         }
         catch (Exception exception)
         {
@@ -89,6 +62,8 @@ public partial class RuneInteractiveSubstitutionView : UserControl
         viewModel.PossibleWords.Clear();
         
         viewModel.GetPossibleWords();
+        
+        viewModel.FindHowManyNotMapped();
     }
 
     private void ToggleButton_OnIsCheckedChanged(object? sender, RoutedEventArgs e)
@@ -98,5 +73,16 @@ public partial class RuneInteractiveSubstitutionView : UserControl
         viewModel.PossibleWords.Clear();
         
         viewModel.GetPossibleWords();
+        
+        viewModel.FindHowManyNotMapped();
+    }
+
+    private void OnlyUnmappedWords_OnIsCheckedChanged(object? sender, RoutedEventArgs e)
+    {
+        var viewModel = (RuneInteractiveSubstitutionViewModel)DataContext;
+        
+        var unMapped = ((CheckBox)sender).IsChecked;
+        
+        viewModel.RecalculateDropdown(unMapped);
     }
 }

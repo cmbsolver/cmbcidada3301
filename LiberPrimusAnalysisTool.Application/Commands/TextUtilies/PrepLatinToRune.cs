@@ -1,5 +1,4 @@
 using System.Text;
-using LiberPrimusAnalysisTool.Utility.Character;
 using MediatR;
 
 namespace LiberPrimusAnalysisTool.Application.Commands.TextUtilies;
@@ -61,7 +60,39 @@ public class PrepLatinToRune
                     "U");
             }
             
-            return Task.FromResult(request.Text);
+            StringBuilder sb = new StringBuilder(); 
+
+            for (int i = 0; i < request.Text.Length; i++)
+            {
+                var xchar = request.Text[i];
+
+                switch (xchar)
+                {
+                    case 'I':
+                        if (((i + 1) < (request.Text.Length)) && request.Text[i + 1] == 'O')
+                        {
+                            sb.Append("IO");
+                            i++;
+                        }
+                        else if (((i + 1) < (request.Text.Length)) && request.Text[i + 1] == 'A')
+                        {
+                            sb.Append("IO");
+                            i++;
+                        }
+                        else
+                        {
+                            sb.Append("I");
+                        }
+
+                        break;
+
+                    default:
+                        sb.Append(xchar.ToString());
+                        break;
+                }
+            }
+
+            return Task.FromResult(sb.ToString());
         }
     }
 }
