@@ -128,7 +128,11 @@ public partial class HasherViewModel : ViewModelBase
                         }
                     }
 
-                    await context.Database.ExecuteSqlAsync($"DELETE FROM public.\"TB_PROCESS_QUEUE\" WHERE \"ID\" = {item.Id};");
+                    if (keepGoing)
+                    {
+                        await context.Database.ExecuteSqlAsync(
+                            $"DELETE FROM public.\"TB_PROCESS_QUEUE\" WHERE \"ID\" = {item.Id};");
+                    }
                 }
                 else
                 {
