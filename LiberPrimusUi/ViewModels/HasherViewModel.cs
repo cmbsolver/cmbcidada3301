@@ -61,14 +61,13 @@ public partial class HasherViewModel : ViewModelBase
     {
         if (RegenDataset)
         {
-            Result += $"Generating byte arrays for {MaxArrayLength}..." + Environment.NewLine;
-
             using (var context = new LiberContext())
             {
                 await context.Database.ExecuteSqlRawAsync("TRUNCATE TABLE public.\"TB_PROCESS_QUEUE\";");
 
                 for (var i = 1; i <= int.Parse(MaxArrayLength); i++)
                 {
+                    Result += $"Generating {i}/{MaxArrayLength} length byte arrays..." + Environment.NewLine;
                     await GenerateByteArrays(context, i);
                 }
             }
@@ -147,15 +146,18 @@ public partial class HasherViewModel : ViewModelBase
     private async Task GenerateByteArrays(LiberContext context, int maxArrayLength, int currentArrayLevel = 1,
         byte[]? passedArray = null)
     {
-        List<byte> currentArray = new List<byte>();
+        byte[] currentArray = new byte[currentArrayLevel];
         if (passedArray != null)
         {
-            currentArray.AddRange(passedArray);
+            for(int i = 0; i < passedArray.Length; i++)
+            {
+                currentArray[i] = passedArray[i];
+            }
         }
 
         for (int i = byte.MinValue; i <= byte.MaxValue; i++)
         {
-            currentArray.Add((byte)i);
+            currentArray[currentArrayLevel - 1] = (byte)i;
 
             if (currentArrayLevel == maxArrayLength)
             {
@@ -164,12 +166,8 @@ public partial class HasherViewModel : ViewModelBase
             }
             else
             {
-                await GenerateByteArrays(context, maxArrayLength, currentArrayLevel + 1, currentArray.ToArray());
+                await GenerateByteArrays(context, maxArrayLength, currentArrayLevel + 1, currentArray);
             }
-            
-            currentArray.RemoveAt(currentArray.Count - 1);
         }
-
-        currentArray.Clear();
     }
 }
