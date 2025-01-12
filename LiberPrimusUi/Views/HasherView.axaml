@@ -1,0 +1,35 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             xmlns:vm="using:LiberPrimusUi.ViewModels"
+             x:Class="LiberPrimusUi.Views.HasherView"
+             x:DataType="vm:HasherViewModel">
+    <StackPanel Margin="20" Spacing="10">
+        <StackPanel Orientation="Horizontal" Spacing="5">
+            <TextBlock VerticalAlignment="Center">Hash</TextBlock>
+            <ComboBox ItemsSource="{Binding HashTypes}" 
+                      SelectedItem="{Binding SelectedHash}"></ComboBox>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" Spacing="5">
+            <TextBlock VerticalAlignment="Center">String To Hash</TextBlock>
+            <TextBox MaxWidth="600" Text="{Binding StringToHash}"></TextBox>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" Spacing="5">
+            <TextBlock VerticalAlignment="Center">Hash To Match</TextBlock>
+            <TextBox MaxWidth="800" Text="{Binding HashToMatch}"></TextBox>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" Spacing="5">
+            <Button Command="{Binding GenerateHashCommand}">Hash</Button>
+            <TextBlock VerticalAlignment="Center">Max Byte Array Length</TextBlock>
+            <TextBox Text="{Binding MaxArrayLength}"></TextBox>
+            <CheckBox IsChecked="{Binding RegenDataset}">Regenerate Dataset?</CheckBox>
+            <Button Command="{Binding HashingBruteForceCommand}">Brute Force</Button>
+            <TextBlock VerticalAlignment="Center" Text="{Binding Processed}"></TextBlock>
+        </StackPanel>
+        <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Height="500">
+            <TextBox Text="{Binding Result}"></TextBox>
+        </ScrollViewer>
+    </StackPanel>
+</UserControl>

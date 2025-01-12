@@ -1,0 +1,164 @@
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using LiberPrimusAnalysisTool.Application.Commands.Hash;
+using LiberPrimusAnalysisTool.Database;
+using LiberPrimusAnalysisTool.Entity.Text;
+using MediatR;
+
+namespace LiberPrimusUi.ViewModels;
+
+public partial class HasherViewModel : ViewModelBase
+{
+    private readonly IMediator _mediator;
+
+    public HasherViewModel(IMediator mediator)
+    {
+        _mediator = mediator;
+
+        HashTypes.Add("SHA-512");
+        HashTypes.Add("SHA3-512");
+        HashTypes.Add("Blake2b");
+        HashTypes.Add("Blake2s");
+    }
+
+    [ObservableProperty] private string _hashToMatch =
+        "36367763ab73783c7af284446c59466b4cd653239a311cb7116d4618dee09a8425893dc7500b464fdaf1672d7bef5e891c6e2274568926a49fb4f45132c2a8b4";
+
+    public ObservableCollection<string> HashTypes { get; set; } = new ObservableCollection<string>();
+
+    [ObservableProperty] private string _selectedHash = "SHA-512";
+
+    [ObservableProperty] private string _stringToHash = "";
+
+    [ObservableProperty] private string _maxArrayLength = "512";
+
+    [ObservableProperty] private string _result = "";
+    
+    [ObservableProperty] private bool _regenDataset = true;
+
+    [ObservableProperty] private string _processed = "";
+
+    [RelayCommand]
+    public async void GenerateHash()
+    {
+        var command = new GenerateHashForByteArray.Command
+        {
+            ByteArray = System.Text.Encoding.UTF8.GetBytes(StringToHash),
+            HashType = SelectedHash
+        };
+
+        Result = await _mediator.Send(command);
+    }
+
+    [RelayCommand]
+    public async void HashingBruteForce()
+    {
+        if (RegenDataset)
+        {
+            Result += $"Generating byte arrays for {MaxArrayLength}...";
+
+            using (var context = new LiberContext())
+            {
+                context.Database.EnsureDeleted();
+                context.Database.EnsureCreated();
+
+                for (var i = 1; i <= int.Parse(MaxArrayLength); i++)
+                {
+                    GenerateByteArrays(context, i);
+                }
+            }
+
+            Result += "Done generating byte arrays!";
+            Result += "Starting to hash byte arrays...";
+        }
+
+        bool keepGoing = true;
+
+        ulong counter = 0;
+
+        while (keepGoing)
+        {
+            counter++;
+
+            if (counter % 10000 == 0)
+            {
+                Processed = $"Processed {counter} items";
+            }
+
+            if (counter >= ulong.MaxValue - 100)
+            {
+                counter = 0;
+            }
+
+            using (var context = new LiberContext())
+            {
+                var item = context.ProcessQueueItems.FirstOrDefault();
+                if (item != null)
+                {
+                    List<byte> byteArray = new List<byte>();
+                    byteArray.AddRange(item.HopperString.Split(",").Select(byte.Parse));
+
+                    foreach (var hashType in HashTypes)
+                    {
+                        var command = new GenerateHashForByteArray.Command
+                        {
+                            ByteArray = byteArray.ToArray(),
+                            HashType = hashType
+                        };
+
+                        var hashResult = await _mediator.Send(command);
+
+                        if (hashResult == HashToMatch)
+                        {
+                            Result += $"Found a match! {item.HopperString}";
+                            Result += $"Hash Type: {hashType}";
+                            keepGoing = false;
+                            break;
+                        }
+                    }
+
+                    context.ProcessQueueItems.Remove(item);
+                    context.SaveChanges();
+                }
+                else
+                {
+                    keepGoing = false;
+                }
+            }
+        }
+    }
+
+    public void GenerateByteArrays(LiberContext context, int maxArrayLength, int currentArrayLevel = 1,
+        byte[]? passedArray = null)
+    {
+        List<byte> currentArray = new List<byte>();
+        if (passedArray != null)
+        {
+            currentArray.AddRange(passedArray);
+        }
+
+        for (int i = byte.MinValue; i <= byte.MaxValue; i++)
+        {
+            currentArray.Add((byte)i);
+
+            if (currentArrayLevel == maxArrayLength)
+            {
+                var item = ProcessQueueItem.GenerateQueueItem(string.Join(",", currentArray));
+                context.ProcessQueueItems.Add(item);
+            }
+            else
+            {
+                GenerateByteArrays(context, maxArrayLength, currentArrayLevel + 1, currentArray.ToArray());
+            }
+            
+            currentArray.RemoveAt(currentArray.Count - 1);
+        }
+
+        context.SaveChanges();
+
+        currentArray.Clear();
+    }
+}

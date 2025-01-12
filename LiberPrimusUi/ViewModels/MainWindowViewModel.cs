@@ -61,6 +61,7 @@ public partial class MainWindowViewModel : ViewModelBase
         new ListItemTemplate(typeof(AffineCipherViewModel), "Lock", "Affine"),
         new ListItemTemplate(typeof(VigenereCipherViewModel), "Lock", "Vigenere"),
         new ListItemTemplate(typeof(SpiralSquareSolveViewModel), "Lock", "Spiral"),
+        new ListItemTemplate(typeof(HasherViewModel), "Lock", "Hasher"),
         
         // Image analysis
         new ListItemTemplate(typeof(ColorReportViewModel), "ImageIcon", "Color Report"),
@@ -285,6 +286,12 @@ public partial class MainWindowViewModel : ViewModelBase
                 if (!_windows.Any(w => w.Item1 == value.Label))
                     _windows.Add(new Tuple<string, object>(value.Label, new RuneInteractiveSubstitutionViewModel(_mediator)));
                 CurrentPage = _windows.FirstOrDefault(w => w.Item1 == value.Label)?.Item2 as RuneInteractiveSubstitutionViewModel;
+                break;
+            
+            case Type t when t == typeof(HasherViewModel):
+                if (!_windows.Any(w => w.Item1 == value.Label))
+                    _windows.Add(new Tuple<string, object>(value.Label, new HasherViewModel(_mediator)));
+                CurrentPage = _windows.FirstOrDefault(w => w.Item1 == value.Label)?.Item2 as HasherViewModel;
                 break;
         }
         
