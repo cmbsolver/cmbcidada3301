@@ -40,11 +40,11 @@ public partial class HasherViewModel : ViewModelBase
     [ObservableProperty] private string _maxArrayLength = "512";
 
     [ObservableProperty] private string _result = "";
-    
+
     [ObservableProperty] private bool _regenDataset = true;
 
     [ObservableProperty] private string _processed = "";
-    
+
     private ConcurrentQueue<string> _tasks = new ConcurrentQueue<string>();
 
     [RelayCommand]
@@ -68,19 +68,23 @@ public partial class HasherViewModel : ViewModelBase
         }
 
         await Task.Delay(10000);
-        
+
         Result += "Starting to hash byte arrays..." + Environment.NewLine;
 
         bool keepGoing = true;
 
         ulong counter = 0;
+        ulong modulo = 1000;
+        
+        Random random = new Random();
 
         while (keepGoing)
         {
             counter++;
 
-            if (counter % 10000 == 0)
+            if (counter % modulo == 0)
             {
+                modulo = (ulong)random.Next(1, 1000);
                 Processed = $"Processed {counter} items" + Environment.NewLine;
             }
 
@@ -91,19 +95,13 @@ public partial class HasherViewModel : ViewModelBase
 
             using (var context = new LiberContext())
             {
-                var item = context.ProcessQueueItems.FirstOrDefault();
-                
+                var item = await context.ProcessQueueItems.FirstOrDefaultAsync();
+
                 if (item != null)
                 {
-                    List<byte> byteArray = new List<byte>();
-                    byteArray.AddRange(item.HopperString.Split(",").Select(
-                        s =>
-                        {
-                            var byteInt = Convert.ToByte(s);
-                            return byteInt;
-                        }));
+                    List<byte> byteArray = item.HopperString.Split(",").Select(byte.Parse).ToList();
 
-                    foreach (var hashType in HashTypes)
+                    await Parallel.ForEachAsync(HashTypes, async (hashType, cancellationToken) =>
                     {
                         var command = new GenerateHashForByteArray.Command
                         {
@@ -118,14 +116,13 @@ public partial class HasherViewModel : ViewModelBase
                             Result += $"Found a match! {item.HopperString}" + Environment.NewLine;
                             Result += $"Hash Type: {hashType}" + Environment.NewLine;
                             keepGoing = false;
-                            break;
                         }
-                    }
+                    });
 
                     if (keepGoing)
                     {
-                        await context.Database.ExecuteSqlAsync(
-                            $"DELETE FROM public.\"TB_PROCESS_QUEUE\" WHERE \"ID\" = {item.Id};");
+                        await context.Database.ExecuteSqlRawAsync(
+                            $"DELETE FROM public.\"TB_PROCESS_QUEUE\" WHERE \"ID\" = '{item.Id}';");
                     }
                 }
                 else
@@ -134,7 +131,7 @@ public partial class HasherViewModel : ViewModelBase
                 }
             }
         }
-        
+
         Result += "Done hashing byte arrays!" + Environment.NewLine;
     }
 
@@ -156,22 +153,19 @@ public partial class HasherViewModel : ViewModelBase
             Result += $"Generating {i}/{MaxArrayLength} length byte arrays..." + Environment.NewLine;
             await GenerateByteArrays(i);
         }
-            
+
         Result += "Done generating byte arrays!" + Environment.NewLine;
     }
 
     private async Task GenerateByteArrays(
-        int maxArrayLength, 
+        int maxArrayLength,
         int currentArrayLevel = 1,
         byte[]? passedArray = null)
     {
         byte[] currentArray = new byte[currentArrayLevel];
         if (passedArray != null)
         {
-            for(int i = 0; i < passedArray.Length; i++)
-            {
-                currentArray[i] = passedArray[i];
-            }
+            Array.Copy(passedArray, currentArray, passedArray.Length);
         }
 
         for (int i = byte.MinValue; i <= byte.MaxValue; i++)
@@ -182,9 +176,9 @@ public partial class HasherViewModel : ViewModelBase
             {
                 var item = ProcessQueueItem.GenerateQueueItem(string.Join(",", currentArray));
                 _tasks.Enqueue(item.GetHopperInsertString());
-                
-                // Batch insert every 1000000 items
-                if (_tasks.Count >= 1000000)
+
+                // Batch insert every 5000 items
+                if (_tasks.Count >= 5000)
                 {
                     await ProcessTasks();
                 }
@@ -194,7 +188,7 @@ public partial class HasherViewModel : ViewModelBase
                 await GenerateByteArrays(maxArrayLength, currentArrayLevel + 1, currentArray);
             }
         }
-        
+
         if (currentArrayLevel == 1)
         {
             await ProcessTasks();
@@ -205,9 +199,20 @@ public partial class HasherViewModel : ViewModelBase
     {
         using (var context = new LiberContext())
         {
+            var batch = new List<string>();
             while (_tasks.TryDequeue(out var task))
             {
-                await context.Database.ExecuteSqlRawAsync(task);
+                batch.Add(task);
+                if (batch.Count >= 5000)
+                {
+                    await context.Database.ExecuteSqlRawAsync(string.Join(";", batch));
+                    batch.Clear();
+                }
+            }
+
+            if (batch.Count > 0)
+            {
+                await context.Database.ExecuteSqlRawAsync(string.Join(";", batch));
             }
         }
     }
