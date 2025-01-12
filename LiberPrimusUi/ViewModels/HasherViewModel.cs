@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -43,6 +44,8 @@ public partial class HasherViewModel : ViewModelBase
     [ObservableProperty] private bool _regenDataset = true;
 
     [ObservableProperty] private string _processed = "";
+    
+    private ConcurrentQueue<string> _tasks = new ConcurrentQueue<string>();
 
     [RelayCommand]
     public async void GenerateHash()
@@ -61,20 +64,12 @@ public partial class HasherViewModel : ViewModelBase
     {
         if (RegenDataset)
         {
-            using (var context = new LiberContext())
-            {
-                await context.Database.ExecuteSqlRawAsync("TRUNCATE TABLE public.\"TB_PROCESS_QUEUE\";");
-
-                for (var i = 1; i <= int.Parse(MaxArrayLength); i++)
-                {
-                    Result += $"Generating {i}/{MaxArrayLength} length byte arrays..." + Environment.NewLine;
-                    await GenerateByteArrays(context, i);
-                }
-            }
-
-            Result += "Done generating byte arrays!" + Environment.NewLine;
-            Result += "Starting to hash byte arrays..." + Environment.NewLine;
+            _ = Task.Run(() => GenerateAllByteArrays());
         }
+
+        await Task.Delay(10000);
+        
+        Result += "Starting to hash byte arrays..." + Environment.NewLine;
 
         bool keepGoing = true;
 
@@ -143,7 +138,31 @@ public partial class HasherViewModel : ViewModelBase
         Result += "Done hashing byte arrays!" + Environment.NewLine;
     }
 
-    private async Task GenerateByteArrays(LiberContext context, int maxArrayLength, int currentArrayLevel = 1,
+    [RelayCommand]
+    private async void RegenerateDataset()
+    {
+        _ = Task.Run(() => GenerateAllByteArrays());
+    }
+
+    private async Task GenerateAllByteArrays()
+    {
+        using (var context = new LiberContext())
+        {
+            await context.Database.ExecuteSqlRawAsync("TRUNCATE TABLE public.\"TB_PROCESS_QUEUE\";");
+        }
+
+        for (var i = 1; i <= int.Parse(MaxArrayLength); i++)
+        {
+            Result += $"Generating {i}/{MaxArrayLength} length byte arrays..." + Environment.NewLine;
+            await GenerateByteArrays(i);
+        }
+            
+        Result += "Done generating byte arrays!" + Environment.NewLine;
+    }
+
+    private async Task GenerateByteArrays(
+        int maxArrayLength, 
+        int currentArrayLevel = 1,
         byte[]? passedArray = null)
     {
         byte[] currentArray = new byte[currentArrayLevel];
@@ -162,11 +181,33 @@ public partial class HasherViewModel : ViewModelBase
             if (currentArrayLevel == maxArrayLength)
             {
                 var item = ProcessQueueItem.GenerateQueueItem(string.Join(",", currentArray));
-                await context.Database.ExecuteSqlRawAsync(item.GetHopperInsertString());
+                _tasks.Enqueue(item.GetHopperInsertString());
+                
+                // Batch insert every 1000000 items
+                if (_tasks.Count >= 1000000)
+                {
+                    await ProcessTasks();
+                }
             }
             else
             {
-                await GenerateByteArrays(context, maxArrayLength, currentArrayLevel + 1, currentArray);
+                await GenerateByteArrays(maxArrayLength, currentArrayLevel + 1, currentArray);
+            }
+        }
+        
+        if (currentArrayLevel == 1)
+        {
+            await ProcessTasks();
+        }
+    }
+
+    private async Task ProcessTasks()
+    {
+        using (var context = new LiberContext())
+        {
+            while (_tasks.TryDequeue(out var task))
+            {
+                await context.Database.ExecuteSqlRawAsync(task);
             }
         }
     }

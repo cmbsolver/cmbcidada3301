@@ -25,6 +25,7 @@
             <TextBlock VerticalAlignment="Center">Max Byte Array Length</TextBlock>
             <TextBox Text="{Binding MaxArrayLength}"></TextBox>
             <CheckBox IsChecked="{Binding RegenDataset}">Regenerate Dataset?</CheckBox>
+            <Button Command="{Binding RegenerateDatasetCommand}">Generate Datasets</Button>
             <Button Command="{Binding HashingBruteForceCommand}">Brute Force</Button>
             <TextBlock VerticalAlignment="Center" Text="{Binding Processed}"></TextBlock>
         </StackPanel>
