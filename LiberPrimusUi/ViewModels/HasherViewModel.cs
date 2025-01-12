@@ -2,7 +2,9 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -115,6 +117,12 @@ public partial class HasherViewModel : ViewModelBase
                         {
                             Result += $"Found a match! {item.HopperString}" + Environment.NewLine;
                             Result += $"Hash Type: {hashType}" + Environment.NewLine;
+
+                            var fileInfo = new FileInfo(Environment.ProcessPath);
+                            var directory = fileInfo.DirectoryName;
+                            File.AppendAllText($"Found a match! {item.HopperString}" + Environment.NewLine, $"${directory}/hashes.txt");
+                            File.AppendAllText($"Hash Type: {hashType}" + Environment.NewLine, $"${directory}/hashes.txt");
+                            
                             keepGoing = false;
                         }
                     });
