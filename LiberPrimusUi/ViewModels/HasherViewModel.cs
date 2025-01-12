@@ -102,7 +102,12 @@ public partial class HasherViewModel : ViewModelBase
                 if (item != null)
                 {
                     List<byte> byteArray = new List<byte>();
-                    byteArray.AddRange(item.HopperString.Split(",").Select(byte.Parse));
+                    byteArray.AddRange(item.HopperString.Split(",").Select(
+                        s =>
+                        {
+                            var byteInt = Convert.ToByte(s);
+                            return byteInt;
+                        }));
 
                     foreach (var hashType in HashTypes)
                     {
