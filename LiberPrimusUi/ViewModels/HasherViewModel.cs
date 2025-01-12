@@ -1,12 +1,15 @@
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using LiberPrimusAnalysisTool.Application.Commands.Hash;
 using LiberPrimusAnalysisTool.Database;
 using LiberPrimusAnalysisTool.Entity.Text;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace LiberPrimusUi.ViewModels;
 
@@ -58,21 +61,20 @@ public partial class HasherViewModel : ViewModelBase
     {
         if (RegenDataset)
         {
-            Result += $"Generating byte arrays for {MaxArrayLength}...";
+            Result += $"Generating byte arrays for {MaxArrayLength}..." + Environment.NewLine;
 
             using (var context = new LiberContext())
             {
-                context.Database.EnsureDeleted();
-                context.Database.EnsureCreated();
+                await context.Database.ExecuteSqlRawAsync("TRUNCATE TABLE public.\"TB_PROCESS_QUEUE\";");
 
                 for (var i = 1; i <= int.Parse(MaxArrayLength); i++)
                 {
-                    GenerateByteArrays(context, i);
+                    await GenerateByteArrays(context, i);
                 }
             }
 
-            Result += "Done generating byte arrays!";
-            Result += "Starting to hash byte arrays...";
+            Result += "Done generating byte arrays!" + Environment.NewLine;
+            Result += "Starting to hash byte arrays..." + Environment.NewLine;
         }
 
         bool keepGoing = true;
@@ -85,7 +87,7 @@ public partial class HasherViewModel : ViewModelBase
 
             if (counter % 10000 == 0)
             {
-                Processed = $"Processed {counter} items";
+                Processed = $"Processed {counter} items" + Environment.NewLine;
             }
 
             if (counter >= ulong.MaxValue - 100)
@@ -96,6 +98,7 @@ public partial class HasherViewModel : ViewModelBase
             using (var context = new LiberContext())
             {
                 var item = context.ProcessQueueItems.FirstOrDefault();
+                
                 if (item != null)
                 {
                     List<byte> byteArray = new List<byte>();
@@ -113,15 +116,14 @@ public partial class HasherViewModel : ViewModelBase
 
                         if (hashResult == HashToMatch)
                         {
-                            Result += $"Found a match! {item.HopperString}";
-                            Result += $"Hash Type: {hashType}";
+                            Result += $"Found a match! {item.HopperString}" + Environment.NewLine;
+                            Result += $"Hash Type: {hashType}" + Environment.NewLine;
                             keepGoing = false;
                             break;
                         }
                     }
 
-                    context.ProcessQueueItems.Remove(item);
-                    context.SaveChanges();
+                    await context.Database.ExecuteSqlAsync($"DELETE FROM public.\"TB_PROCESS_QUEUE\" WHERE \"ID\" = {item.Id};");
                 }
                 else
                 {
@@ -129,9 +131,11 @@ public partial class HasherViewModel : ViewModelBase
                 }
             }
         }
+        
+        Result += "Done hashing byte arrays!" + Environment.NewLine;
     }
 
-    public void GenerateByteArrays(LiberContext context, int maxArrayLength, int currentArrayLevel = 1,
+    private async Task GenerateByteArrays(LiberContext context, int maxArrayLength, int currentArrayLevel = 1,
         byte[]? passedArray = null)
     {
         List<byte> currentArray = new List<byte>();
@@ -147,17 +151,15 @@ public partial class HasherViewModel : ViewModelBase
             if (currentArrayLevel == maxArrayLength)
             {
                 var item = ProcessQueueItem.GenerateQueueItem(string.Join(",", currentArray));
-                context.ProcessQueueItems.Add(item);
+                await context.Database.ExecuteSqlRawAsync(item.GetHopperInsertString());
             }
             else
             {
-                GenerateByteArrays(context, maxArrayLength, currentArrayLevel + 1, currentArray.ToArray());
+                await GenerateByteArrays(context, maxArrayLength, currentArrayLevel + 1, currentArray.ToArray());
             }
             
             currentArray.RemoveAt(currentArray.Count - 1);
         }
-
-        context.SaveChanges();
 
         currentArray.Clear();
     }

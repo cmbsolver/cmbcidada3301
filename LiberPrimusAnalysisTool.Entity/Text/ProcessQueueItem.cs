@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text;
 
 namespace LiberPrimusAnalysisTool.Entity.Text;
 
@@ -20,5 +21,12 @@ public class ProcessQueueItem
             Id = Guid.NewGuid(),
             HopperString = hopperString
         };
+    }
+
+    public string GetHopperInsertString()
+    {
+        StringBuilder sb = new StringBuilder();
+        sb.AppendLine($"INSERT INTO public.\"TB_PROCESS_QUEUE\"(\"ID\", \"HOPPER_STRING\") VALUES ('{Id.ToString()}', '{HopperString}');");
+        return sb.ToString();
     }
 }
