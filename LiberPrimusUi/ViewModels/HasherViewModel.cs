@@ -93,7 +93,7 @@ public partial class HasherViewModel : ViewModelBase
 
         await Task.Delay(10000);
 
-        Result += "Starting to hash byte arrays..." + Environment.NewLine;
+        Result += "Starting to hash byte arrays...\n";
 
         ulong counter = 0;
         ulong modulo = 1000;
@@ -107,7 +107,7 @@ public partial class HasherViewModel : ViewModelBase
             if (counter % modulo == 0)
             {
                 modulo = (ulong)random.Next(1, 1000);
-                Processed = $"Processed {counter} items" + Environment.NewLine;
+                Processed = $"Hashed {counter} items\n";
             }
 
             if (counter >= ulong.MaxValue - 100)
@@ -140,14 +140,14 @@ public partial class HasherViewModel : ViewModelBase
 
                             if (hashResult == HashToMatch)
                             {
-                                Result += $"Found a match! {string.Join(",", byteArray)}" + Environment.NewLine;
-                                Result += $"Hash Type: {hashType}" + Environment.NewLine;
+                                Result += $"\nFound a match! {string.Join(",", byteArray)}\n";
+                                Result += $"\nHash Type: {hashType}\n";
 
                                 var fileInfo = new FileInfo(Environment.ProcessPath);
                                 var directory = fileInfo.DirectoryName;
-                                File.AppendAllText($"Found a match! {string.Join(",", byteArray)}" + Environment.NewLine,
+                                File.AppendAllText($"\nFound a match! {string.Join(",", byteArray)}\n", 
                                     $"${directory}/hashes.txt");
-                                File.AppendAllText($"Hash Type: {hashType}" + Environment.NewLine,
+                                File.AppendAllText($"\nHash Type: {hashType}\n", 
                                     $"${directory}/hashes.txt");
 
                                 _keepGoing = false;
@@ -169,6 +169,7 @@ public partial class HasherViewModel : ViewModelBase
         }
 
         Result += "Done hashing byte arrays!" + Environment.NewLine;
+        Processed = string.Empty;
     }
 
     [RelayCommand]
@@ -200,7 +201,7 @@ public partial class HasherViewModel : ViewModelBase
         _currentCombinations = BigInteger.Zero;
         await GenerateByteArrays(int.Parse(MaxArrayLength));
 
-        Result += "Done generating byte arrays!" + Environment.NewLine;
+        Result += "\nDone generating byte arrays!\n";
     }
 
     private async Task GenerateByteArrays(
@@ -262,10 +263,13 @@ public partial class HasherViewModel : ViewModelBase
 
     private async Task ProcessTasks()
     {
-        using (var context = new LiberContext())
+        if (_tasks.Count > 0)
         {
-            await context.Database.ExecuteSqlRawAsync(string.Join(";", _tasks));
-            _tasks.Clear();
+            using (var context = new LiberContext())
+            {
+                await context.Database.ExecuteSqlRawAsync(string.Join(";", _tasks));
+                _tasks.Clear();
+            }
         }
     }
 }
