@@ -54,6 +54,8 @@ public partial class HasherViewModel : ViewModelBase
     private BigInteger _maxCombinations;
     
     private BigInteger _currentCombinations;
+    
+    private bool _keepGoing = true;
 
     [RelayCommand]
     public async void GenerateHash()
@@ -70,6 +72,8 @@ public partial class HasherViewModel : ViewModelBase
     [RelayCommand]
     public async void HashingBruteForce()
     {
+        _keepGoing = true;
+        
         try
         {
             using (var context = new LiberContext())
@@ -91,14 +95,12 @@ public partial class HasherViewModel : ViewModelBase
 
         Result += "Starting to hash byte arrays..." + Environment.NewLine;
 
-        bool keepGoing = true;
-
         ulong counter = 0;
         ulong modulo = 1000;
 
         Random random = new Random();
 
-        while (keepGoing)
+        while (_keepGoing)
         {
             counter++;
 
@@ -119,35 +121,41 @@ public partial class HasherViewModel : ViewModelBase
 
                 if (item != null)
                 {
-                    List<byte> byteArray = item.HopperString.Split(",").Select(byte.Parse).ToList();
+                    List<byte> maxByteArray = item.HopperString.Split(",").Select(byte.Parse).ToList();
 
-                    await Parallel.ForEachAsync(HashTypes, async (hashType, cancellationToken) =>
+                    await Parallel.ForAsync(0, maxByteArray.Count, async (i, cancellationToken) =>
                     {
-                        var command = new GenerateHashForByteArray.Command
+                        byte[] byteArray = new byte[i + 1];
+                        maxByteArray.CopyTo(0, byteArray, 0, i + 1);
+                        
+                        foreach (var hashType in HashTypes)
                         {
-                            ByteArray = byteArray.ToArray(),
-                            HashType = hashType
-                        };
+                            var command = new GenerateHashForByteArray.Command
+                            {
+                                ByteArray = byteArray.ToArray(),
+                                HashType = hashType
+                            };
 
-                        var hashResult = await _mediator.Send(command);
+                            var hashResult = await _mediator.Send(command);
 
-                        if (hashResult == HashToMatch)
-                        {
-                            Result += $"Found a match! {item.HopperString}" + Environment.NewLine;
-                            Result += $"Hash Type: {hashType}" + Environment.NewLine;
+                            if (hashResult == HashToMatch)
+                            {
+                                Result += $"Found a match! {string.Join(",", byteArray)}" + Environment.NewLine;
+                                Result += $"Hash Type: {hashType}" + Environment.NewLine;
 
-                            var fileInfo = new FileInfo(Environment.ProcessPath);
-                            var directory = fileInfo.DirectoryName;
-                            File.AppendAllText($"Found a match! {item.HopperString}" + Environment.NewLine,
-                                $"${directory}/hashes.txt");
-                            File.AppendAllText($"Hash Type: {hashType}" + Environment.NewLine,
-                                $"${directory}/hashes.txt");
+                                var fileInfo = new FileInfo(Environment.ProcessPath);
+                                var directory = fileInfo.DirectoryName;
+                                File.AppendAllText($"Found a match! {string.Join(",", byteArray)}" + Environment.NewLine,
+                                    $"${directory}/hashes.txt");
+                                File.AppendAllText($"Hash Type: {hashType}" + Environment.NewLine,
+                                    $"${directory}/hashes.txt");
 
-                            keepGoing = false;
+                                _keepGoing = false;
+                            }
                         }
                     });
-
-                    if (keepGoing)
+                    
+                    if (_keepGoing)
                     {
                         await context.Database.ExecuteSqlRawAsync(
                             $"DELETE FROM public.\"TB_PROCESS_QUEUE\" WHERE \"ID\" = '{item.Id}';");
@@ -155,7 +163,7 @@ public partial class HasherViewModel : ViewModelBase
                 }
                 else
                 {
-                    keepGoing = false;
+                    _keepGoing = false;
                 }
             }
         }
@@ -200,6 +208,11 @@ public partial class HasherViewModel : ViewModelBase
         int currentArrayLevel = 1,
         byte[]? passedArray = null)
     {
+        if (!_keepGoing)
+        {
+            return;
+        }
+        
         if (currentArrayLevel == maxArrayLength)
         {
             await Parallel.ForAsync(0, 256, async (i, cancellationToken) =>
@@ -220,11 +233,10 @@ public partial class HasherViewModel : ViewModelBase
             
             _currentCombinations = BigInteger.Add(_currentCombinations, 256);
             _maxCombinations = BigInteger.Subtract(_maxCombinations, 256);
-            var percentage = BigInteger.Divide(_currentCombinations, _maxCombinations) * 100;
             
             if (BigInteger.Remainder(_currentCombinations, 256) == 0)
             {
-                Result = $"Generating {MaxArrayLength} length byte arrays...\n {percentage}% Complete";
+                Result = $"Generating {MaxArrayLength} length byte arrays...\n{_currentCombinations} Computed\n{_maxCombinations} Remaining";
             }
         }
         else
@@ -240,6 +252,11 @@ public partial class HasherViewModel : ViewModelBase
                 currentArray[currentArrayLevel - 1] = (byte)i;
                 await GenerateByteArrays(maxArrayLength, currentArrayLevel + 1, currentArray);
             }
+        }
+        
+        if (currentArrayLevel == 1)
+        {
+            await ProcessTasks();
         }
     }
 
