@@ -29,8 +29,6 @@
             <Button Command="{Binding HashingBruteForceCommand}">Brute Force</Button>
             <TextBlock VerticalAlignment="Center" Text="{Binding Processed}"></TextBlock>
         </StackPanel>
-        <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Height="500">
-            <TextBox Text="{Binding Result}"></TextBox>
-        </ScrollViewer>
+        <TextBox HorizontalAlignment="Left" Text="{Binding Result}" Height="500" Width="1024" TextWrapping="Wrap"></TextBox>
     </StackPanel>
 </UserControl>
