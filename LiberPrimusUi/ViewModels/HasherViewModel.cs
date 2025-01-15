@@ -272,6 +272,7 @@ public partial class HasherViewModel : ViewModelBase
                 
                 if(context.ProcessQueueItems.Count() > Int32.MaxValue - 1024)
                 {
+                    Result += "We need to wait for the hashing to catch up.\n";
                     // We need to wait for the hashing to catch up.
                     await Task.Delay(new TimeSpan(0, 12, 0, 0));
                 }
