@@ -91,7 +91,7 @@ public partial class HasherViewModel : ViewModelBase
             _ = Task.Run(() => GenerateAllByteArrays());
         }
 
-        await Task.Delay(10000);
+        await Task.Delay(new TimeSpan(0, 8, 0, 0));
 
         Result += "Starting to hash byte arrays...\n";
 
@@ -145,10 +145,8 @@ public partial class HasherViewModel : ViewModelBase
 
                                 var fileInfo = new FileInfo(Environment.ProcessPath);
                                 var directory = fileInfo.DirectoryName;
-                                File.AppendAllText($"\nFound a match! {string.Join(",", byteArray)}\n", 
-                                    $"${directory}/hashes.txt");
-                                File.AppendAllText($"\nHash Type: {hashType}\n", 
-                                    $"${directory}/hashes.txt");
+                                File.AppendAllText($"${directory}/hashes.txt", $"\nFound a match! {string.Join(",", byteArray)}\n");
+                                File.AppendAllText($"${directory}/hashes.txt", $"\nHash Type: {hashType}\n");
 
                                 _keepGoing = false;
                             }
@@ -238,6 +236,10 @@ public partial class HasherViewModel : ViewModelBase
             if (BigInteger.Remainder(_currentCombinations, 256) == 0)
             {
                 Result = $"Generating {MaxArrayLength} length byte arrays...\n{_currentCombinations} Computed\n{_maxCombinations} Remaining";
+                
+                var fileInfo = new FileInfo(Environment.ProcessPath);
+                var directory = fileInfo.DirectoryName;
+                await File.WriteAllTextAsync($"${directory}/lasthash.txt", $"{_currentCombinations}");
             }
         }
         else
@@ -273,8 +275,11 @@ public partial class HasherViewModel : ViewModelBase
                 if(context.ProcessQueueItems.Count() > Int32.MaxValue - 1024)
                 {
                     Result += "We need to wait for the hashing to catch up.\n";
-                    // We need to wait for the hashing to catch up.
-                    await Task.Delay(new TimeSpan(0, 12, 0, 0));
+                    
+                    while(context.ProcessQueueItems.Count() > 10000)
+                    {
+                        await Task.Delay(new TimeSpan(0, 0, 30, 0));
+                    }
                 }
             }
         }
