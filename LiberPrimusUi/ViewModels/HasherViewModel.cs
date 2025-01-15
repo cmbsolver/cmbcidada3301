@@ -269,6 +269,12 @@ public partial class HasherViewModel : ViewModelBase
             {
                 await context.Database.ExecuteSqlRawAsync(string.Join(";", _tasks));
                 _tasks.Clear();
+                
+                if(context.ProcessQueueItems.Count() > int.MaxValue - 100)
+                {
+                    // We need to wait for the hashing to catch up.
+                    await Task.Delay(new TimeSpan(0, 12, 0, 0));
+                }
             }
         }
     }
