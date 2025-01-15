@@ -143,10 +143,8 @@ public partial class HasherViewModel : ViewModelBase
                                 Result += $"\nFound a match! {string.Join(",", byteArray)}\n";
                                 Result += $"\nHash Type: {hashType}\n";
 
-                                var fileInfo = new FileInfo(Environment.ProcessPath);
-                                var directory = fileInfo.DirectoryName;
-                                File.AppendAllText($"${directory}/hashes.txt", $"\nFound a match! {string.Join(",", byteArray)}\n");
-                                File.AppendAllText($"${directory}/hashes.txt", $"\nHash Type: {hashType}\n");
+                                File.AppendAllText("hashes.txt", $"\nFound a match! {string.Join(",", byteArray)}\n");
+                                File.AppendAllText("hashes.txt", $"\nHash Type: {hashType}\n");
 
                                 _keepGoing = false;
                             }
@@ -237,9 +235,7 @@ public partial class HasherViewModel : ViewModelBase
             {
                 Result = $"Generating {MaxArrayLength} length byte arrays...\n{_currentCombinations} Computed\n{_maxCombinations} Remaining";
                 
-                var fileInfo = new FileInfo(Environment.ProcessPath);
-                var directory = fileInfo.DirectoryName;
-                await File.WriteAllTextAsync($"${directory}/lasthash.txt", $"{_currentCombinations}");
+                await File.WriteAllTextAsync("lasthash.txt", $"{_currentCombinations}");
             }
         }
         else
